@@ -18,13 +18,16 @@ public class Device {
     public void setHarga(double harga) {
         this.harga = harga;
     }
+    public String getKategori() {
+        return "Device";
+    }
     public void tampilkanInfo() {
         System.out.println("Nama : " + nama);
         System.out.println("Harga : " + harga);
     }
     public void tampilkanInfo(boolean withKategori) {
         if (withKategori) {
-            System.out.println("Kategori : Device");
+            System.out.println("Kategori : " + getKategori());
         }
         tampilkanInfo();
     }

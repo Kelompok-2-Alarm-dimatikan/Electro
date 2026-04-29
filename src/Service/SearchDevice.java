@@ -15,7 +15,8 @@ public class SearchDevice {
                 int i = tengah;
                 while (i >= 0 && deviceList.get(i).getHarga() == searchHarga) {
                     if ((kategori == 1 && deviceList.get(i) instanceof Hp) ||
-                        (kategori == 2 && deviceList.get(i) instanceof Laptop)) {
+                        (kategori == 2 && deviceList.get(i) instanceof Laptop) ||
+                        (kategori == 3 && deviceList.get(i) instanceof Tablet)) {
 
                         deviceList.get(i).tampilkanInfo(true);
                         System.out.println("----------------");
@@ -26,7 +27,8 @@ public class SearchDevice {
                 i = tengah + 1;
                 while (i < deviceList.size() && deviceList.get(i).getHarga() == searchHarga) {
                     if ((kategori == 1 && deviceList.get(i) instanceof Hp) ||
-                        (kategori == 2 && deviceList.get(i) instanceof Laptop)) {
+                        (kategori == 2 && deviceList.get(i) instanceof Laptop) ||
+                        (kategori == 3 && deviceList.get(i) instanceof Tablet)) {
 
                         deviceList.get(i).tampilkanInfo(true);
                         System.out.println("----------------");
