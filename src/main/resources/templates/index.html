@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Electro — Device Store</title>
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0a0a0f;
+            --surface: #13131a;
+            --surface2: #1c1c27;
+            --border: #2a2a3a;
+            --accent: #6c63ff;
+            --accent2: #ff6584;
+            --accent3: #43e97b;
+            --text: #e8e8f0;
+            --muted: #6b6b80;
+            --hp: #ff6584;
+            --laptop: #6c63ff;
+            --tablet: #43e97b;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'DM Sans', sans-serif;
+            min-height: 100vh;
+            background-image:
+                radial-gradient(ellipse 80% 50% at 20% 0%, rgba(108,99,255,0.12) 0%, transparent 60%),
+                radial-gradient(ellipse 60% 40% at 80% 100%, rgba(255,101,132,0.08) 0%, transparent 60%);
+        }
+
+        /* HEADER */
+        header {
+            padding: 2rem 3rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .logo {
+            font-family: 'Syne', sans-serif;
+            font-weight: 800;
+            font-size: 1.6rem;
+            letter-spacing: -0.03em;
+        }
+        .logo span { color: var(--accent); }
+        .logo-badge {
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            color: var(--muted);
+            font-size: 0.7rem;
+            font-weight: 500;
+            padding: 0.25rem 0.6rem;
+            border-radius: 999px;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        /* MAIN LAYOUT */
+        main {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 2.5rem 2rem 4rem;
+        }
+
+        /* SECTION TITLES */
+        .section-title {
+            font-family: 'Syne', sans-serif;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: var(--muted);
+            margin-bottom: 1rem;
+        }
+
+        /* TOP GRID */
+        .top-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.2rem;
+            margin-bottom: 2.5rem;
+        }
+
+        /* CARDS */
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 1.5rem;
+            transition: border-color 0.2s;
+        }
+        .card:hover { border-color: var(--accent); }
+
+        /* FORM ELEMENTS */
+        .form-row {
+            display: flex;
+            gap: 0.6rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        select, input[type="text"], input[type="number"] {
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 0.55rem 0.9rem;
+            border-radius: 8px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.875rem;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        select:focus, input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(108,99,255,0.15);
+        }
+        select { cursor: pointer; }
+        input[type="text"] { flex: 1; min-width: 120px; }
+        input[type="number"] { width: 110px; }
+
+        /* BUTTONS */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.55rem 1.1rem;
+            border-radius: 8px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s;
+            white-space: nowrap;
+            text-decoration: none;
+        }
+        .btn-primary {
+            background: var(--accent);
+            color: #fff;
+        }
+        .btn-primary:hover { background: #7b74ff; transform: translateY(-1px); box-shadow: 0 4px 15px rgba(108,99,255,0.4); }
+
+        .btn-ghost {
+            background: var(--surface2);
+            color: var(--text);
+            border: 1px solid var(--border);
+        }
+        .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+
+        .btn-danger {
+            background: transparent;
+            color: var(--accent2);
+            border: 1px solid rgba(255,101,132,0.3);
+            padding: 0.35rem 0.7rem;
+            font-size: 0.8rem;
+        }
+        .btn-danger:hover { background: rgba(255,101,132,0.1); }
+
+        .btn-edit {
+            background: transparent;
+            color: var(--accent);
+            border: 1px solid rgba(108,99,255,0.3);
+            padding: 0.35rem 0.7rem;
+            font-size: 0.8rem;
+        }
+        .btn-edit:hover { background: rgba(108,99,255,0.1); }
+
+        /* SEARCH CARD ACTIONS */
+        .search-actions {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+
+        /* STATS ROW */
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-bottom: 2.5rem;
+        }
+        .stat-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 1.2rem 1.4rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .stat-dot {
+            width: 10px; height: 10px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+        .stat-info { flex: 1; }
+        .stat-label {
+            font-size: 0.75rem;
+            color: var(--muted);
+            margin-bottom: 0.15rem;
+        }
+        .stat-value {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--text);
+        }
+
+        /* TABLE */
+        .table-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+        .table-count {
+            font-size: 0.8rem;
+            color: var(--muted);
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            padding: 0.25rem 0.7rem;
+            border-radius: 999px;
+        }
+
+        .table-wrap {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            overflow: hidden;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead tr {
+            background: var(--surface2);
+            border-bottom: 1px solid var(--border);
+        }
+
+        th {
+            padding: 0.9rem 1.2rem;
+            text-align: left;
+            font-family: 'Syne', sans-serif;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: var(--muted);
+        }
+
+        tbody tr {
+            border-bottom: 1px solid var(--border);
+            transition: background 0.15s;
+        }
+        tbody tr:last-child { border-bottom: none; }
+        tbody tr:hover { background: var(--surface2); }
+
+        td {
+            padding: 0.9rem 1.2rem;
+            font-size: 0.875rem;
+            vertical-align: middle;
+        }
+
+        /* NO column */
+        .td-no {
+            color: var(--muted);
+            font-size: 0.8rem;
+            width: 40px;
+        }
+
+        /* KATEGORI BADGE */
+        .badge {
+            display: inline-block;
+            padding: 0.2rem 0.65rem;
+            border-radius: 999px;
+            font-size: 0.72rem;
+            font-weight: 600;
+            letter-spacing: 0.04em;
+        }
+        .badge-hp     { background: rgba(255,101,132,0.12); color: var(--hp); border: 1px solid rgba(255,101,132,0.25); }
+        .badge-laptop { background: rgba(108,99,255,0.12); color: var(--laptop); border: 1px solid rgba(108,99,255,0.25); }
+        .badge-tablet { background: rgba(67,233,123,0.12); color: var(--tablet); border: 1px solid rgba(67,233,123,0.25); }
+
+        /* HARGA */
+        .harga-cell {
+            font-family: 'Syne', sans-serif;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        /* AKSI inline form */
+        .aksi-form {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+        .edit-inputs {
+            display: none;
+            align-items: center;
+            gap: 0.4rem;
+        }
+        .edit-inputs input { width: 100px; }
+        .edit-inputs input[type="text"] { width: 130px; }
+
+        /* EMPTY STATE */
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--muted);
+        }
+        .empty-state .icon { font-size: 2.5rem; margin-bottom: 0.75rem; }
+        .empty-state p { font-size: 0.9rem; }
+
+        /* RESPONSIVE */
+        @media (max-width: 700px) {
+            header { padding: 1.2rem 1.2rem; }
+            main { padding: 1.5rem 1rem 3rem; }
+            .top-grid { grid-template-columns: 1fr; }
+            .stats-row { grid-template-columns: 1fr; }
+            th:nth-child(1), td:nth-child(1) { display: none; }
+        }
+
+        /* ANIMATIONS */
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(12px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        .card, .stat-card, .table-wrap {
+            animation: fadeUp 0.4s ease both;
+        }
+        .stat-card:nth-child(2) { animation-delay: 0.05s; }
+        .stat-card:nth-child(3) { animation-delay: 0.1s; }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="logo">⚡ Electro<span>.</span></div>
+    <span class="logo-badge">Data device</span>
+</header>
+
+<main>
+    <div class="top-grid">
+
+        <!-- TAMBAH DEVICE -->
+        <div class="card">
+            <div class="section-title">➕ Tambah Device</div>
+            <form action="/devices/tambah" method="post">
+                <div class="form-row">
+                    <select name="kategori">
+                        <option>Hp</option>
+                        <option>Laptop</option>
+                        <option>Tablet</option>
+                    </select>
+                    <input type="text" name="nama" placeholder="Nama device" required />
+                    <input type="number" name="harga" placeholder="Harga" step="0.01" required />
+                    <button type="submit" class="btn btn-primary">Tambah</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- CARI / URUTKAN -->
+        <div class="card">
+            <div class="section-title">🔍 Cari / Urutkan</div>
+            <form action="/devices/search" method="get">
+                <div class="form-row">
+                    <input type="number" name="harga" placeholder="Masukkan harga..." step="0.01" style="flex:1;" />
+                    <button type="submit" class="btn btn-primary">Cari</button>
+                </div>
+            </form>
+            <div class="search-actions">
+                <a href="/devices/sort" class="btn btn-ghost">↑↓ Urutkan by Harga</a>
+                <a href="/devices" class="btn btn-ghost">↺ Tampilkan Semua</a>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- STATS -->
+    <div class="stats-row">
+        <div class="stat-card">
+            <div class="stat-dot" style="background: var(--hp);"></div>
+            <div class="stat-info">
+                <div class="stat-label">Total HP</div>
+                <div class="stat-value" th:text="${devices.stream().filter(d -> d.kategori == 'Hp').count()}">–</div>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-dot" style="background: var(--laptop);"></div>
+            <div class="stat-info">
+                <div class="stat-label">Total Laptop</div>
+                <div class="stat-value" th:text="${devices.stream().filter(d -> d.kategori == 'Laptop').count()}">–</div>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-dot" style="background: var(--tablet);"></div>
+            <div class="stat-info">
+                <div class="stat-label">Total Tablet</div>
+                <div class="stat-value" th:text="${devices.stream().filter(d -> d.kategori == 'Tablet').count()}">–</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TABLE -->
+    <div class="table-header">
+        <div class="section-title" style="margin:0">📋 List Device</div>
+        <span class="table-count" th:text="${devices.size()} + ' device'">0 device</span>
+    </div>
+
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>No</th>
+                    <th>Kategori</th>
+                    <th>Nama</th>
+                    <th>Harga</th>
+                    <th>Aksi</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Empty state -->
+                <tr th:if="${devices.isEmpty()}">
+                    <td colspan="5">
+                        <div class="empty-state">
+                            <div class="icon">📭</div>
+                            <p>Belum ada device. Tambahkan yang pertama!</p>
+                        </div>
+                    </td>
+                </tr>
+
+                <tr th:each="d, stat : ${devices}">
+                    <td class="td-no" th:text="${stat.count}"></td>
+
+                    <td>
+                        <span class="badge"
+                              th:classappend="${d.kategori == 'Hp'} ? 'badge-hp' : (${d.kategori == 'Laptop'} ? 'badge-laptop' : 'badge-tablet')"
+                              th:text="${d.kategori}"></span>
+                    </td>
+
+                    <td th:text="${d.nama}"></td>
+
+                    <td class="harga-cell">
+                        Rp <span th:text="${#numbers.formatInteger(d.harga, 1, 'COMMA')}"></span>
+                    </td>
+
+                    <td>
+                        <div class="aksi-form" th:id="'row-' + ${d.id}">
+                            <!-- Tombol Edit (toggle) -->
+                            <button type="button" class="btn btn-edit"
+                                    th:onclick="'toggleEdit(' + ${d.id} + ')'">Edit</button>
+
+                            <!-- Hapus -->
+                            <a th:href="@{/devices/hapus/{id}(id=${d.id})}"
+                               class="btn btn-danger"
+                               onclick="return confirm('Hapus device ini?')">Hapus</a>
+                        </div>
+
+                        <!-- Form Edit (hidden, muncul saat klik Edit) -->
+                        <div class="edit-inputs" th:id="'edit-' + ${d.id}">
+                            <form action="/devices/edit" method="post" style="display:flex;gap:0.4rem;align-items:center;flex-wrap:wrap;">
+                                <input type="hidden" name="id" th:value="${d.id}" />
+                                <input type="text"   name="nama"  th:value="${d.nama}"  required />
+                                <input type="number" name="harga" th:value="${d.harga}" step="0.01" required />
+                                <button type="submit" class="btn btn-primary" style="padding:0.35rem 0.8rem;font-size:0.8rem;">Simpan</button>
+                                <button type="button" class="btn btn-ghost"
+                                        th:onclick="'toggleEdit(' + ${d.id} + ')'"
+                                        style="padding:0.35rem 0.8rem;font-size:0.8rem;">Batal</button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+</main>
+
+<script>
+    function toggleEdit(id) {
+        const row   = document.getElementById('row-'  + id);
+        const edit  = document.getElementById('edit-' + id);
+        const shown = edit.style.display === 'flex';
+        row.style.display  = shown ? 'flex'  : 'none';
+        edit.style.display = shown ? 'none'  : 'flex';
+    }
+</script>
+
+</body>
+</html>
