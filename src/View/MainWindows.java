@@ -1,10 +1,8 @@
 package View;
-
 import Model.*;
+import Service.*;
 import java.awt.*;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
@@ -12,6 +10,16 @@ public class MainWindows extends JFrame {
     private ArrayList<Device> deviceList;
     private DefaultTableModel tableModel;
     private JTable table;
+
+    // Method untuk memperbarui tampilan tabel
+    private void refreshTable(ArrayList<Device> list) {
+        tableModel.setRowCount(0); // Hapus semua baris
+        int no = 1;
+        for (Device d : list) {
+            Object[] row = {no++, d.getKategori(), d.getNama(), d.getHarga()};
+            tableModel.addRow(row);
+        }
+    }
 
     public MainWindows(ArrayList<Device> initialData) {
         this.deviceList = initialData;
@@ -63,41 +71,115 @@ public class MainWindows extends JFrame {
 
         // --- EVENT LISTENERS ---
 
-        // Tombol Tambah
-        btnTambah.addActionListener(e -> {
-            tambahDevice();
-        });
-
-        // Tombol Edit
-        btnEdit.addActionListener(e -> {
-            editDevice();
-        });
-
-        // Tombol Hapus
-        btnHapus.addActionListener(e -> {
-            hapusDevice();
-        });
-
-        // Tombol Sortir
-        btnSort.addActionListener(e -> {
-            ArrayList<Device> sortedList = new ArrayList<>(deviceList);
-            Collections.sort(sortedList, Comparator.comparingDouble(Device::getHarga));
-            refreshTable(sortedList);
-        });
-
-        // Tombol Search
+        // Tombol search
         btnSearch.addActionListener(e -> {
-            try {
-                double targetHarga = Double.parseDouble(searchField.getText());
-                ArrayList<Device> searchResult = new ArrayList<>();
-                for (Device d : deviceList) {
-                    if (d.getHarga() == targetHarga) {
-                        searchResult.add(d);
-                    }
-                }
-                refreshTable(searchResult);
-            } catch (NumberFormatException ex) {
+           try {
+               double target = Double.parseDouble(searchField.getText());
+               ArrayList<Device> hasil = Search.search(deviceList, target);
+               refreshTable(hasil);
+           }
+           catch (Exception ex) {
                 JOptionPane.showMessageDialog(this, "Masukkan angka harga yang valid!", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+        
+        });
+
+        // Tombol sorting
+        btnSort.addActionListener(e -> {
+            String[] pilihan = {"Harga Terkecil", "Harga Terbesar"};
+
+            String hasil = (String) JOptionPane.showInputDialog(
+                    this,
+                    "Pilih metode sorting",
+                    "Sort",
+                    JOptionPane.QUESTION_MESSAGE,
+                    null,
+                    pilihan,
+                    pilihan[0]);
+
+            if (hasil != null) {
+                boolean ascending = hasil.equals("Harga Terkecil");
+                refreshTable(Sort.sort(deviceList,ascending));
+            }
+        });
+
+        //Tombol tambah
+        btnTambah.addActionListener(e -> {
+            String[] kategori = {"Hp", "Laptop", "Tablet"};
+
+            JComboBox<String> cbKategori = new JComboBox<>(kategori);
+            JTextField txtNama = new JTextField();
+            JTextField txtHarga = new JTextField();
+
+            Object[] message = {"Kategori:", cbKategori, "Nama Device:", txtNama, "Harga:", txtHarga};
+
+            int option = JOptionPane.showConfirmDialog(this, message, "Tambah Device", JOptionPane.OK_CANCEL_OPTION);
+
+        if (option == JOptionPane.OK_OPTION) {
+
+            try {
+                String nama = txtNama.getText();
+                double harga = Double.parseDouble(txtHarga.getText());
+                String pilihan = (String) cbKategori.getSelectedItem();
+
+                CRUD.tambahDevice(deviceList, pilihan, nama, harga);
+
+                refreshTable(deviceList);
+
+                JOptionPane.showMessageDialog(this, "Data berhasil ditambahkan!");
+            } 
+            catch (Exception ex) {
+                JOptionPane.showMessageDialog(this, "Input tidak valid!", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        });
+
+        // Tombol hapus
+        btnHapus.addActionListener(e -> {
+            int selectedRow = table.getSelectedRow();
+            
+            if (selectedRow == -1){
+                JOptionPane.showMessageDialog(this, "Pilih data di tabel terlebih dahulu!", "Peringatan", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+
+            int confirm = JOptionPane.showConfirmDialog(this, "Yakin ingin menghapus data ini?", "Konfirmasi Hapus", JOptionPane.YES_NO_OPTION);
+
+            if (confirm == JOptionPane.YES_OPTION){
+                Device device = deviceList.get(selectedRow);
+                CRUD.hapusDevice(deviceList, device);
+
+                refreshTable(deviceList);
+
+                JOptionPane.showMessageDialog(this, "Data berhasil dihapus");
+            }
+        });
+
+        // Tombol edit
+        btnEdit.addActionListener(e ->{
+            int selectedRow = table.getSelectedRow();
+
+            if(selectedRow == -1){
+                JOptionPane.showMessageDialog(this, "Pilih data di tabel terlebih dahulu!", "Peringatan", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+            int confirm = JOptionPane.showConfirmDialog(this, "Yakin ingin mengedit data ini?", "konfirmasi edit", JOptionPane.YES_NO_OPTION);
+
+            if (confirm == JOptionPane.YES_OPTION){
+                Device device = deviceList.get(selectedRow);
+
+                JTextField txtNama = new JTextField(device.getNama());
+                JTextField txtHarga = new JTextField(
+                String.valueOf(device.getHarga()));
+
+                String namaBaru = txtNama.getText();
+                double hargaBaru = Double.parseDouble(txtHarga.getText());
+
+                CRUD.editDevice(device, namaBaru, hargaBaru);
+
+                refreshTable(deviceList);
+
+                JOptionPane.showMessageDialog(this, "Data berhasil diedit");
             }
         });
 
@@ -107,104 +189,5 @@ public class MainWindows extends JFrame {
             refreshTable(deviceList);
         });
     }
-
-    // Method untuk memperbarui tampilan tabel
-    private void refreshTable(ArrayList<Device> list) {
-        tableModel.setRowCount(0); // Hapus semua baris
-        int no = 1;
-        for (Device d : list) {
-            Object[] row = {no++, d.getKategori(), d.getNama(), d.getHarga()};
-            tableModel.addRow(row);
-        }
-    }
-
-    // Method Tambah Data
-    private void tambahDevice() {
-        String[] kategori = {"Hp", "Laptop", "Tablet"};
-        JComboBox<String> cbKategori = new JComboBox<>(kategori);
-        JTextField txtNama = new JTextField();
-        JTextField txtHarga = new JTextField();
-
-        Object[] message = {
-            "Kategori:", cbKategori,
-            "Nama Device:", txtNama,
-            "Harga:", txtHarga
-        };
-
-        int option = JOptionPane.showConfirmDialog(this, message, "Tambah Device", JOptionPane.OK_CANCEL_OPTION);
-        if (option == JOptionPane.OK_OPTION) {
-            try {
-                String nama = txtNama.getText();
-                double harga = Double.parseDouble(txtHarga.getText());
-                String pilihan = (String) cbKategori.getSelectedItem();
-
-                if (pilihan.equals("Hp")) deviceList.add(new Hp(nama, harga));
-                else if (pilihan.equals("Laptop")) deviceList.add(new Laptop(nama, harga));
-                else if (pilihan.equals("Tablet")) deviceList.add(new Tablet(nama, harga));
-
-                refreshTable(deviceList);
-                JOptionPane.showMessageDialog(this, "Data berhasil ditambahkan!");
-            } catch (Exception ex) {
-                JOptionPane.showMessageDialog(this, "Input tidak valid!", "Error", JOptionPane.ERROR_MESSAGE);
-            }
-        }
-    }
-
-    // Method Edit Data
-    private void editDevice() {
-        int selectedRow = table.getSelectedRow();
-        if (selectedRow == -1) {
-            JOptionPane.showMessageDialog(this, "Pilih data di tabel terlebih dahulu!", "Peringatan", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
-
-        // Ambil nama dari baris yang dipilih untuk dicari di list
-        String namaLama = tableModel.getValueAt(selectedRow, 2).toString();
-        Device deviceToEdit = null;
-        for (Device d : deviceList) {
-            if (d.getNama().equals(namaLama)) {
-                deviceToEdit = d;
-                break;
-            }
-        }
-
-        if (deviceToEdit != null) {
-            JTextField txtNama = new JTextField(deviceToEdit.getNama());
-            JTextField txtHarga = new JTextField(String.valueOf(deviceToEdit.getHarga()));
-
-            Object[] message = {
-                "Nama Device Baru:", txtNama,
-                "Harga Baru:", txtHarga
-            };
-
-            int option = JOptionPane.showConfirmDialog(this, message, "Edit Device", JOptionPane.OK_CANCEL_OPTION);
-            if (option == JOptionPane.OK_OPTION) {
-                try {
-                    deviceToEdit.setNama(txtNama.getText());
-                    deviceToEdit.setHarga(Double.parseDouble(txtHarga.getText()));
-                    refreshTable(deviceList);
-                    JOptionPane.showMessageDialog(this, "Data berhasil diupdate!");
-                } catch (Exception ex) {
-                    JOptionPane.showMessageDialog(this, "Input harga harus berupa angka!", "Error", JOptionPane.ERROR_MESSAGE);
-                }
-            }
-        }
-    }
-
-    // Method Hapus Data
-    private void hapusDevice() {
-        int selectedRow = table.getSelectedRow();
-        if (selectedRow == -1) {
-            JOptionPane.showMessageDialog(this, "Pilih data di tabel terlebih dahulu!", "Peringatan", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
-
-        int confirm = JOptionPane.showConfirmDialog(this, "Yakin ingin menghapus data ini?", "Konfirmasi Hapus", JOptionPane.YES_NO_OPTION);
-        if (confirm == JOptionPane.YES_OPTION) {
-            String namaHapus = tableModel.getValueAt(selectedRow, 2).toString();
-            deviceList.removeIf(d -> d.getNama().equals(namaHapus));
-            refreshTable(deviceList);
-            JOptionPane.showMessageDialog(this, "Data berhasil dihapus!");
-        }
-    }
+   
 }
