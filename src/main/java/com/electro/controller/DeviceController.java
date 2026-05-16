@@ -18,20 +18,39 @@ public class DeviceController {
 
     @GetMapping
     public String index(Model model) {
-        model.addAttribute("devices", deviceService.getAllDevices());
+        List<Device> devices = deviceService.getAllDevices();
+        model.addAttribute("devices", devices);
+        addStatistics(model, devices);
         return "index";
     }
 
     @GetMapping("/search")
-    public String search(@RequestParam double harga, Model model) {
-        model.addAttribute("devices", deviceService.searchByHarga(harga));
+    public String search(@RequestParam(required = false) String nama, Model model) {
+        List<Device> devices = deviceService.searchDevices(nama);
+        model.addAttribute("devices", devices);
+        addStatistics(model, devices);
         return "index";
     }
 
     @GetMapping("/sort")
-    public String sort(Model model) {
-        model.addAttribute("devices", deviceService.sortByHarga());
+    public String sort(@RequestParam(required = false, defaultValue = "asc") String order, Model model) {
+        List<Device> devices = "desc".equalsIgnoreCase(order)
+                ? deviceService.sortByHargaDesc()
+                : deviceService.sortByHargaAsc();
+        model.addAttribute("devices", devices);
+        addStatistics(model, devices);
+        model.addAttribute("sortOrder", order);
         return "index";
+    }
+
+    private void addStatistics(Model model, List<Device> devices) {
+        long totalHp = devices.stream().filter(d -> "Hp".equals(d.getKategori())).count();
+        long totalLaptop = devices.stream().filter(d -> "Laptop".equals(d.getKategori())).count();
+        long totalTablet = devices.stream().filter(d -> "Tablet".equals(d.getKategori())).count();
+
+        model.addAttribute("countHp", totalHp);
+        model.addAttribute("countLaptop", totalLaptop);
+        model.addAttribute("countTablet", totalTablet);
     }
 
     @PostMapping("/tambah")

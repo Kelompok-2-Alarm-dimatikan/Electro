@@ -13,35 +13,68 @@ public class DeviceService {
     @Autowired
     private DeviceRepository deviceRepository;
 
+   
     public List<Device> getAllDevices() {
         return deviceRepository.findAll();
     }
 
-    public List<Device> searchByHarga(double harga) {
-        return deviceRepository.findByHarga(harga);
+   
+    public List<Device> searchDevices(String nama) {
+        List<Device> devices;
+        if (nama != null && !nama.isBlank()) {
+            devices = deviceRepository.findByNama(nama.trim());
+        } else {
+            devices = deviceRepository.findAll();
+        }
+        return devices;
     }
 
-    public List<Device> sortByHarga() {
+  
+    public List<Device> sortByHargaAsc() {
         return deviceRepository.findAllByOrderByHargaAsc();
     }
 
-    public void tambahDevice(String kategori, String nama, double harga) {
-        Device device;
-        switch (kategori) {
-            case "Hp"     -> device = new Hp(nama, harga);
-            case "Laptop" -> device = new Laptop(nama, harga);
-            default       -> device = new Tablet(nama, harga);
+    public List<Device> sortByHargaDesc() {
+        return deviceRepository.findAllByOrderByHargaDesc();
+    }
+
+    
+    public Device tambahDevice(String kategori, String nama, double harga) {
+
+        if (nama == null || nama.isBlank()) {
+            throw new IllegalArgumentException("Nama device tidak boleh kosong");
         }
-        deviceRepository.save(device);
+
+        if (harga <= 0) {
+            throw new IllegalArgumentException("Harga harus lebih besar dari 0");
+        }
+
+        Device device = switch (kategori) {
+            case "Hp"     -> new Hp(nama.trim(), harga);
+            case "Laptop" -> new Laptop(nama.trim(), harga);
+            default       -> new Tablet(nama.trim(), harga);
+        };
+        return deviceRepository.save(device);
     }
 
     public void editDevice(Long id, String nama, double harga) {
-        Device device = deviceRepository.findById(id).orElseThrow();
-        device.setNama(nama);
+        
+        if (nama == null || nama.isBlank()) {
+            throw new IllegalArgumentException("Nama device tidak boleh kosong");
+        }
+
+        if (harga <= 0) {
+            throw new IllegalArgumentException("Harga harus lebih besar dari 0");
+        }
+
+        Device device = deviceRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Device dengan id " + id + " tidak ditemukan"));
+        device.setNama(nama.trim());
         device.setHarga(harga);
         deviceRepository.save(device);
     }
 
+    
     public void hapusDevice(Long id) {
         deviceRepository.deleteById(id);
     }
