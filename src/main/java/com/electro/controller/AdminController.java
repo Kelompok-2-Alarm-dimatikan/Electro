@@ -1,41 +1,22 @@
 package com.electro.controller;
 
-import org.springframework.security.core.Authentication;
-import com.electro.model.Device;
 import com.electro.service.DeviceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @Controller
-@RequestMapping("/devices")
-public class DeviceController {
-
+@RequestMapping("/admin")
+public class AdminController {
+    
     @Autowired
     private DeviceService deviceService;
 
     @GetMapping
-    public String index(Model model, Authentication authentication) {
-        if(authentication != null && authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"))) {
-            return "redirect:/admin";
-        }
+    public String adminPage(Model model) {
         model.addAttribute("devices", deviceService.getAllDevices());
-        return "index"; // → templates/index.html
-    }
-
-    @GetMapping("/search")
-    public String search(@RequestParam double harga, Model model) {
-        model.addAttribute("devices", deviceService.searchByHarga(harga));
-        return "index";
-    }
-
-    @GetMapping("/sort")
-    public String sort(Model model) {
-        model.addAttribute("devices", deviceService.sortByHarga());
-        return "index";
+        return "admin"; // → templates/admin.html
     }
 
     @PostMapping("/tambah")
@@ -43,7 +24,7 @@ public class DeviceController {
                          @RequestParam String nama,
                          @RequestParam double harga) {
         deviceService.tambahDevice(kategori, nama, harga);
-        return "redirect:/devices";
+        return "redirect:/admin";
     }
 
     @PostMapping("/edit")
@@ -51,12 +32,12 @@ public class DeviceController {
                        @RequestParam String nama,
                        @RequestParam double harga) {
         deviceService.editDevice(id, nama, harga);
-        return "redirect:/devices";
+        return "redirect:/admin";
     }
 
     @GetMapping("/hapus/{id}")
     public String hapus(@PathVariable Long id) {
         deviceService.hapusDevice(id);
-        return "redirect:/devices";
+        return "redirect:/admin";
     }
 }
