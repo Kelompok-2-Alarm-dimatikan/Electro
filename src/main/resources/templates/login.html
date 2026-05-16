@@ -5,58 +5,7 @@
     <title>Login — Electro</title>
     <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" th:href="@{/css/style.css}">
-    <style>
-        .login-wrap {
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .login-card {
-            width: 100%;
-            max-width: 380px;
-        }
-        .login-title {
-            font-family: 'Syne', sans-serif;
-            font-size: 1.8rem;
-            font-weight: 800;
-            margin-bottom: 0.3rem;
-        }
-        .login-sub {
-            color: var(--muted);
-            font-size: 0.875rem;
-            margin-bottom: 2rem;
-        }
-        .field {
-            display: flex;
-            flex-direction: column;
-            gap: 0.4rem;
-            margin-bottom: 1rem;
-        }
-        .field label {
-            font-size: 0.8rem;
-            color: var(--muted);
-            font-weight: 500;
-        }
-        .field input {
-            width: 100%;
-        }
-        .error-msg {
-            background: rgba(255,101,132,0.1);
-            border: 1px solid rgba(255,101,132,0.3);
-            color: var(--accent2);
-            padding: 0.7rem 1rem;
-            border-radius: 8px;
-            font-size: 0.85rem;
-            margin-bottom: 1rem;
-        }
-        .btn-login {
-            width: 100%;
-            justify-content: center;
-            padding: 0.75rem;
-            font-size: 1rem;
-        }
-    </style>
+    <link rel="stylesheet" th:href="@{/css/login.css}">
 </head>
 <body>
 <div class="login-wrap">
@@ -66,6 +15,10 @@
 
         <div class="error-msg" th:if="${param.error}">
             Username atau password salah!
+        </div>
+
+        <div class="success-msg" th:if="${param.registered}">
+            Registrasi berhasil! Silakan login.
         </div>
 
         <form th:action="@{/login}" method="post">
@@ -79,10 +32,10 @@
             </div>
             <button type="submit" class="btn btn-primary btn-login">Masuk</button>
         </form>
-            <div style="text-align:center; margin-top:1.2rem; font-size:0.875rem; color:var(--muted);">
-                Belum punya akun?
-            <a href="/register" style="color:var(--accent); font-weight:600; text-decoration:none;">Daftar di sini</a>
-            </div>
+
+        <div class="auth-footer">
+            Belum punya akun?
+            <a href="/register">Daftar di sini</a>
         </div>
     </div>
 </div>

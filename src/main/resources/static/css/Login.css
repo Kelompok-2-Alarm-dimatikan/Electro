@@ -1,0 +1,108 @@
+/* =====================
+   LOGIN PAGE
+   ===================== */
+
+.login-wrap {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.login-card {
+    width: 100%;
+    max-width: 380px;
+}
+
+.login-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.8rem;
+    font-weight: 800;
+    margin-bottom: 0.3rem;
+}
+
+.login-sub {
+    color: var(--muted);
+    font-size: 0.875rem;
+    margin-bottom: 2rem;
+}
+
+.field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    margin-bottom: 1rem;
+}
+
+.field label {
+    font-size: 0.8rem;
+    color: var(--muted);
+    font-weight: 500;
+}
+
+.field input {
+    width: 100%;
+    box-sizing: border-box;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 0.55rem 0.9rem;
+    border-radius: 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.875rem;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.field input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(108,99,255,0.15);
+}
+
+.field input::placeholder {
+    color: var(--muted);
+}
+
+.error-msg {
+    background: rgba(255,101,132,0.1);
+    border: 1px solid rgba(255,101,132,0.3);
+    color: var(--accent2);
+    padding: 0.7rem 1rem;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    margin-bottom: 1rem;
+}
+
+.success-msg {
+    background: rgba(0,200,100,0.1);
+    border: 1px solid rgba(0,200,100,0.3);
+    color: #00c864;
+    padding: 0.7rem 1rem;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    margin-bottom: 1rem;
+}
+
+.btn-login {
+    width: 100%;
+    justify-content: center;
+    padding: 0.75rem;
+    font-size: 1rem;
+}
+
+.auth-footer {
+    text-align: center;
+    margin-top: 1.2rem;
+    font-size: 0.875rem;
+    color: var(--muted);
+}
+
+.auth-footer a {
+    color: var(--accent);
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.auth-footer a:hover {
+    text-decoration: underline;
+}
