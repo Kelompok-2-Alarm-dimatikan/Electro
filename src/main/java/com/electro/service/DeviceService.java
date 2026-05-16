@@ -22,7 +22,7 @@ public class DeviceService {
     public List<Device> searchDevices(String nama) {
         List<Device> devices;
         if (nama != null && !nama.isBlank()) {
-            devices = deviceRepository.findByNama(nama.trim());
+            devices = deviceRepository.findByNamaContainingIgnoreCase(nama.trim());
         } else {
             devices = deviceRepository.findAll();
         }

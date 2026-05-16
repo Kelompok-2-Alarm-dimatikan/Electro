@@ -7,7 +7,7 @@ import java.util.List;
 
 @Repository
 public interface DeviceRepository extends JpaRepository<Device, Long> {
-    List<Device> findByNama(String nama);
+    List<Device> findByNamaContainingIgnoreCase(String nama);
     List<Device> findAllByOrderByHargaAsc();
     List<Device> findAllByOrderByHargaDesc();
 }
