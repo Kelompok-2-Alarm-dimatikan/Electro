@@ -338,6 +338,40 @@
         }
         .stat-card:nth-child(2) { animation-delay: 0.05s; }
         .stat-card:nth-child(3) { animation-delay: 0.1s; }
+
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.55);
+            z-index: 50;
+            padding: 1rem;
+        }
+
+        .modal-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            width: min(420px, 100%);
+            padding: 1.5rem;
+            box-shadow: 0 24px 80px rgba(0,0,0,0.32);
+            text-align: center;
+        }
+
+        .modal-message {
+            margin-bottom: 1.3rem;
+            font-size: 0.95rem;
+            color: var(--text);
+        }
+
+        .modal-actions {
+            display: flex;
+            justify-content: center;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
     </style>
 </head>
 <body>
@@ -371,14 +405,16 @@
         <div class="card">
             <div class="section-title">🔍 Cari / Urutkan</div>
             <form action="/devices/search" method="get">
-                <div class="form-row">
-                    <input type="number" name="harga" placeholder="Masukkan harga..." step="0.01" style="flex:1;" />
+                <div class="form-row" style="flex-wrap: wrap; gap: 0.6rem;">
+                    <input type="text" name="nama" placeholder="Cari nama device..." style="flex:1; min-width: 140px;" />
+
                     <button type="submit" class="btn btn-primary">Cari</button>
                 </div>
             </form>
             <div class="search-actions">
-                <a href="/devices/sort" class="btn btn-ghost">↑↓ Urutkan by Harga</a>
-                <a href="/devices" class="btn btn-ghost">↺ Tampilkan Semua</a>
+                <a href="/devices/sort?order=asc" class="btn btn-ghost">↑ Harga terbesar</a>
+                <a href="/devices/sort?order=desc" class="btn btn-ghost">↓ Harga terkecil</a>
+                <a href="/devices" class="btn btn-ghost">↺ Tampilkan Semua Device</a>
             </div>
         </div>
 
@@ -390,21 +426,21 @@
             <div class="stat-dot" style="background: var(--hp);"></div>
             <div class="stat-info">
                 <div class="stat-label">Total HP</div>
-                <div class="stat-value" th:text="${devices.stream().filter(d -> d.kategori == 'Hp').count()}">–</div>
+                <div class="stat-value" th:text="${countHp} ?: 0">0</div>
             </div>
         </div>
         <div class="stat-card">
             <div class="stat-dot" style="background: var(--laptop);"></div>
             <div class="stat-info">
                 <div class="stat-label">Total Laptop</div>
-                <div class="stat-value" th:text="${devices.stream().filter(d -> d.kategori == 'Laptop').count()}">–</div>
+                <div class="stat-value" th:text="${countLaptop} ?: 0">0</div>
             </div>
         </div>
         <div class="stat-card">
             <div class="stat-dot" style="background: var(--tablet);"></div>
             <div class="stat-info">
                 <div class="stat-label">Total Tablet</div>
-                <div class="stat-value" th:text="${devices.stream().filter(d -> d.kategori == 'Tablet').count()}">–</div>
+                <div class="stat-value" th:text="${countTablet} ?: 0">0</div>
             </div>
         </div>
     </div>
@@ -459,9 +495,8 @@
                                     th:onclick="'toggleEdit(' + ${d.id} + ')'">Edit</button>
 
                             <!-- Hapus -->
-                            <a th:href="@{/devices/hapus/{id}(id=${d.id})}"
-                               class="btn btn-danger"
-                               onclick="return confirm('Hapus device ini?')">Hapus</a>
+                            <button type="button" class="btn btn-danger"
+                                    th:onclick="'showDeleteConfirm(' + ${d.id} + ')'">Hapus</button>
                         </div>
 
                         <!-- Form Edit (hidden, muncul saat klik Edit) -->
@@ -484,6 +519,16 @@
 
 </main>
 
+<div id="delete-modal" class="modal-overlay" style="display:none;">
+    <div class="modal-card">
+        <div class="modal-message">Apakah kamu yakin ingin menghapus device ini?</div>
+        <div class="modal-actions">
+            <a id="delete-confirm-btn" class="btn btn-danger" href="#">Ya, hapus</a>
+            <button type="button" class="btn btn-ghost" onclick="hideDeleteConfirm()">Batal</button>
+        </div>
+    </div>
+</div>
+
 <script>
     function toggleEdit(id) {
         const row   = document.getElementById('row-'  + id);
@@ -491,6 +536,22 @@
         const shown = edit.style.display === 'flex';
         row.style.display  = shown ? 'flex'  : 'none';
         edit.style.display = shown ? 'none'  : 'flex';
+    }
+
+    function showDeleteConfirm(id) {
+        const modal = document.getElementById('delete-modal');
+        const confirmBtn = document.getElementById('delete-confirm-btn');
+        if (modal && confirmBtn) {
+            confirmBtn.href = '/devices/hapus/' + id;
+            modal.style.display = 'flex';
+        }
+    }
+
+    function hideDeleteConfirm() {
+        const modal = document.getElementById('delete-modal');
+        if (modal) {
+            modal.style.display = 'none';
+        }
     }
 </script>
 
