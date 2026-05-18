@@ -10,17 +10,61 @@
 <body>
     
 <!-- ===== NAVBAR ===== -->
-<header class="navbar">
-    <div class="navbar-inner">
-        <div class="nav-left">
-            <a href="/devices" class="logo">⚡ Electro<span>.</span></a>
-            <nav class="nav-links">
-                <a href="#hero">Home</a>
-                <a href="#produk">Produk</a>
-                <a href="#promo">Promo</a>
-            </nav>
+<header>
+    <div class="header-left">
+        <div class="logo">⚡ Electro<span>.</span></div>
+        <span class="logo-badge">Data device</span>
+    </div>
+    <nav class="header-nav">
+        <a href="#" class="nav-link active">Home</a>
+        <a href="#" class="nav-link">Produk</a>
+        <a href="#" class="nav-link">Promo</a>
+    </nav>
+
+    <!-- Profile -->
+    <div class="header-right">
+        <div class="profile-wrap" id="profileWrap">
+            <button class="profile-btn" onclick="toggleProfile()" aria-label="Profile menu">
+                <div class="profile-avatar">
+                    <span th:text="${#strings.substring(#authentication.name, 0, 1).toUpperCase()}">U</span>
+                </div>
+                <span class="profile-name" th:text="${#authentication.name}">User</span>
+                <svg class="profile-chevron" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="6 9 12 15 18 9"/>
+                </svg>
+            </button>
+
+            <!-- Dropdown -->
+            <div class="profile-dropdown" id="profileDropdown">
+                <div class="dropdown-header">
+                    <div class="dropdown-avatar">
+                        <span th:text="${#strings.substring(#authentication.name, 0, 1).toUpperCase()}">U</span>
+                    </div>
+                    <div>
+                        <div class="dropdown-name" th:text="${#authentication.name}">User</div>
+                        <div class="dropdown-role">Member</div>
+                    </div>
+                </div>
+                <div class="dropdown-divider"></div>
+                <a href="#" class="dropdown-item">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+                    Profil Saya
+                </a>
+                <a href="#" class="dropdown-item">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+                    Pengaturan
+                </a>
+                <div class="dropdown-divider"></div>
+                <form th:action="@{/logout}" method="post">
+                    <button type="submit" class="dropdown-item dropdown-logout">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                        Keluar
+                    </button>
+                </form>
+            </div>
         </div>
     </div>
+</header>
 
 <main>
     <div class="top-grid">
