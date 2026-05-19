@@ -1,263 +1,245 @@
 :root {
-    --bg: #07070f;
-    --surface: #12121c;
-    --surface2: #1a1a28;
-    --border: #252538;
-    --accent: #6c63ff;
-    --accent2: #ff6584;
-    --accent3: #43e97b;
-    --text: #e8e8f0;
-    --muted: #6b6b80;
+    --bg: #09090b;
+    --surface: #121214;
+    --border: #27272a;
+    --text-main: #f8fafc;
+    --text-muted: #a1a1aa;
+    --input-bg: rgba(255, 255, 255, 0.03);
+    --input-border: rgba(255, 255, 255, 0.1);
+    --btn-primary: #f8fafc;
+    --btn-primary-text: #09090b;
 }
 
-/* --- RESET --- */
-*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+* { margin: 0; padding: 0; box-sizing: border-box; }
 
-/* --- BODY & BACKGROUND --- */
 body {
     background: var(--bg);
-    color: var(--text);
-    font-family: 'DM Sans', sans-serif;
-    min-height: 100vh;
-
-    background-image:
-        radial-gradient(ellipse 120% 80% at 10% -10%, rgba(108,99,255,0.28) 0%, transparent 55%),
-        radial-gradient(ellipse 80% 60% at 90% 110%, rgba(255,101,132,0.18) 0%, transparent 50%),
-        radial-gradient(ellipse 60% 50% at 50% 50%, rgba(67,233,123,0.06) 0%, transparent 60%);
-    position: relative;
-}
-
-/* Animated gradient orb behind card */
-body::before {
-    content: '';
-    position: fixed;
-    top: -20%;
-    left: -10%;
-    width: 60vw;
-    height: 60vw;
-    border-radius: 50%;
-    background: radial-gradient(circle, rgba(108,99,255,0.15) 0%, transparent 70%);
-    animation: orb-drift 12s ease-in-out infinite alternate;
-    pointer-events: none;
-    z-index: 0;
-}
-body::after {
-    content: '';
-    position: fixed;
-    bottom: -15%;
-    right: -10%;
-    width: 50vw;
-    height: 50vw;
-    border-radius: 50%;
-    background: radial-gradient(circle, rgba(255,101,132,0.1) 0%, transparent 70%);
-    animation: orb-drift 15s ease-in-out infinite alternate-reverse;
-    pointer-events: none;
-    z-index: 0;
-}
-
-@keyframes orb-drift {
-    from { transform: translate(0, 0) scale(1); }
-    to   { transform: translate(5%, 8%) scale(1.08); }
-}
-
-/* --- LAYOUT --- */
-.login-wrap {
+    color: var(--text-main);
+    font-family: 'Inter', sans-serif;
     min-height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
     position: relative;
-    z-index: 1;
-    padding: 2rem 1rem;
+    overflow: hidden;
 }
 
-/* --- CARD --- */
-.card {
-    background: rgba(18, 18, 28, 0.7);
-    border: 1px solid rgba(255,255,255,0.07);
-    border-radius: 20px;
-    padding: 2rem 2rem;
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    box-shadow:
-        0 0 0 1px rgba(108,99,255,0.08) inset,
-        0 24px 60px rgba(0,0,0,0.5),
-        0 1px 0 rgba(255,255,255,0.05) inset;
+/* Latar Belakang Grid */
+.bg-pattern {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background-image: 
+        linear-gradient(to right, rgba(255,255,255,0.03) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255,255,255,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    mask-image: radial-gradient(ellipse 80% 50% at 50% 50%, black 40%, transparent 100%);
+    -webkit-mask-image: radial-gradient(ellipse 80% 50% at 50% 50%, black 40%, transparent 100%);
 }
 
-.login-card {
+.auth-wrapper {
     width: 100%;
-    max-width: 400px;
+    max-width: 420px;
+    padding: 2rem;
+    z-index: 1;
 }
 
-/* --- BRAND --- */
-.login-title {
-    font-family: 'Syne', sans-serif;
-    font-size: 1.9rem;
-    font-weight: 800;
-    margin-bottom: 0.25rem;
-    letter-spacing: -0.03em;
+/* Kartu Form (Glassmorphism) */
+.auth-card {
+    background: rgba(24, 24, 27, 0.6);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 20px;
+    padding: 2.5rem;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.4);
 }
 
-.login-sub {
-    color: var(--muted);
-    font-size: 0.875rem;
+.auth-header {
+    text-align: center;
     margin-bottom: 2rem;
 }
 
-/* --- FIELDS --- */
-.field {
+.logo {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 1.5rem;
+    color: var(--text-main);
     display: flex;
-    flex-direction: column;
-    gap: 0.4rem;
-    margin-bottom: 1rem;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 0.5rem;
+}
+
+.auth-subtitle {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+
+/* Form Inputs */
+.field {
+    margin-bottom: 1.25rem;
 }
 
 .field label {
-    font-size: 0.78rem;
-    color: var(--muted);
+    display: block;
+    font-size: 0.85rem;
     font-weight: 500;
-    letter-spacing: 0.02em;
+    color: #e4e4e7;
+    margin-bottom: 0.5rem;
 }
 
 .field input {
     width: 100%;
-    box-sizing: border-box;
-    background: rgba(26,26,40,0.8);
-    border: 1px solid var(--border);
-    color: var(--text);
-    padding: 0.65rem 1rem;
+    padding: 0.8rem 1rem;
+    background: var(--input-bg);
+    border: 1px solid var(--input-border);
     border-radius: 10px;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.9rem;
+    color: var(--text-main);
+    font-family: 'Inter', sans-serif;
+    font-size: 0.95rem;
+    transition: all 0.2s ease;
     outline: none;
-    transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
 }
 
 .field input:focus {
-    border-color: var(--accent);
-    background: rgba(108,99,255,0.05);
-    box-shadow: 0 0 0 3px rgba(108,99,255,0.12);
+    border-color: rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.06);
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.05);
 }
 
-.field input::placeholder { color: var(--muted); }
-
-/* --- MESSAGES --- */
-.error-msg {
-    background: rgba(255,101,132,0.08);
-    border: 1px solid rgba(255,101,132,0.25);
-    color: #ff8fa3;
-    padding: 0.7rem 1rem;
-    border-radius: 10px;
-    font-size: 0.85rem;
-    margin-bottom: 1rem;
+.field input::placeholder {
+    color: #52525b;
 }
 
-.success-msg {
-    background: rgba(67,233,123,0.08);
-    border: 1px solid rgba(67,233,123,0.25);
-    color: #43e97b;
-    padding: 0.7rem 1rem;
-    border-radius: 10px;
-    font-size: 0.85rem;
-    margin-bottom: 1rem;
+/* Toggle Password Input */
+.input-icon-wrap {
+    position: relative;
+}
+.toggle-password {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    opacity: 0.5;
+    transition: opacity 0.2s;
+    display: flex;
+    align-items: center;
+}
+.toggle-password:hover {
+    opacity: 1;
 }
 
-/* --- BUTTON --- */
+/* Buttons */
 .btn {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 0.4rem;
-    padding: 0.6rem 1.2rem;
+    gap: 8px;
     border-radius: 10px;
-    font-family: 'DM Sans', sans-serif;
     font-size: 0.9rem;
     font-weight: 600;
     cursor: pointer;
-    border: none;
-    transition: all 0.2s;
-    white-space: nowrap;
     text-decoration: none;
+    transition: all 0.2s ease;
+    font-family: 'Inter', sans-serif;
+    padding: 0.85rem 1.5rem;
+    border: none;
+}
+
+.btn-full {
+    width: 100%;
 }
 
 .btn-primary {
-    background: linear-gradient(135deg, #6c63ff 0%, #8b7fff 100%);
-    color: #fff;
-    box-shadow: 0 4px 20px rgba(108,99,255,0.3);
+    background: var(--btn-primary);
+    color: var(--btn-primary-text);
 }
+
 .btn-primary:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 28px rgba(108,99,255,0.45);
-    background: linear-gradient(135deg, #7b74ff 0%, #9a8fff 100%);
+    background: #e2e8f0;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 15px rgba(255,255,255,0.15);
 }
-.btn-primary:active { transform: translateY(0); }
 
-.btn-login {
-    width: 100%;
+.btn-outline {
+    background: rgba(255,255,255,0.03);
+    color: var(--text-main);
+    border: 1px solid var(--input-border);
+}
+
+.btn-outline:hover {
+    background: rgba(255,255,255,0.08);
+}
+
+/* Divider */
+.divider {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    margin: 1.5rem 0;
+    color: #52525b;
+    font-size: 0.8rem;
+}
+
+.divider::before, .divider::after {
+    content: '';
+    flex: 1;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.divider span {
+    padding: 0 10px;
+}
+
+/* Error Message */
+.error-msg {
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.2);
+    color: #fca5a5;
     padding: 0.8rem;
-    font-size: 1rem;
-    margin-top: 0.5rem;
-    letter-spacing: 0.02em;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    text-align: center;
+    margin-bottom: 1.5rem;
 }
 
-/* --- FOOTER --- */
+/* Footer Links */
 .auth-footer {
     text-align: center;
-    margin-top: 1.4rem;
-    font-size: 0.875rem;
-    color: var(--muted);
+    margin-top: 2rem;
+    font-size: 0.85rem;
+    color: var(--text-muted);
 }
 
 .auth-footer a {
-    color: var(--accent);
+    color: var(--text-main);
     font-weight: 600;
     text-decoration: none;
     transition: color 0.2s;
 }
 
 .auth-footer a:hover {
-    color: #8b7fff;
     text-decoration: underline;
 }
 
-/* --- ANIMATION --- */
+/* Animasi Masuk */
+.animate-up {
+    animation: fadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
 @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(20px); }
-    to   { opacity: 1; transform: translateY(0); }
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
-
-.login-card {
-    animation: fadeUp 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
-}
-
-/* --- TOGGLE PASSWORD --- */
-.input-icon-wrap {
-    position: relative;
-    display: flex;
-    align-items: center;
-}
-
-.input-icon-wrap .field input,
-.input-icon-wrap input {
-    width: 100%;
-    padding-right: 2.8rem; /* beri ruang untuk button mata */
-}
-
-.toggle-password {
-    position: absolute;
-    right: 0.75rem;
-    background: none;
-    border: none;
-    cursor: pointer;
-    color: var(--muted);
-    display: flex;
-    align-items: center;
-    padding: 0;
-    transition: color 0.2s;
-}
-
-.toggle-password:hover { color: var(--text); }
-.toggle-password:focus { outline: none; }
-
-.toggle-password.active { color: var(--accent); }

@@ -2,39 +2,53 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register — Electro</title>
-    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
-    <link rel="stylesheet" th:href="@{/css/register.css}">
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@500;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/Register.css}">
 </head>
 <body>
-<div class="login-wrap">
-    <div class="login-card card">
-        <div class="login-title">⚡ Electro<span style="color:var(--accent)">.</span></div>
-        <div class="login-sub">Buat akun baru</div>
+    <div class="bg-pattern"></div>
 
-        <div class="error-msg" th:if="${error}" th:text="${error}"></div>
+    <div class="auth-wrapper">
+        <div class="auth-card animate-up">
+            <div class="auth-header">
+                <div class="logo">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="logo-icon"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path></svg>
+                    Electro
+                </div>
+                <p class="auth-subtitle">Buat akun anda</p>
+            </div>
 
-        <form th:action="@{/register}" method="post">
-            <div class="field">
-                <label>Username</label>
-                <input type="text" name="username" placeholder="Masukkan username" required />
-            </div>
-            <div class="field">
-                <label>Password</label>
-                <input type="password" name="password" placeholder="Masukkan password" required />
-            </div>
-            <div class="field">
-                <label>Konfirmasi Password</label>
-                <input type="password" name="confirmPassword" placeholder="Masukkan password" required />
-            </div>
-            <button type="submit" class="btn btn-primary btn-login">Daftar</button>
-        </form>
+            <div class="error-msg" th:if="${error}" th:text="${error}"></div>
 
-        <div class="auth-footer">
-            Sudah punya akun?
-            <a href="/login">Masuk di sini</a>
+            <form th:action="@{/register}" method="post" class="auth-form">
+                <div class="field">
+                    <label>Username</label>
+                    <input type="text" name="username" placeholder="Pilih username" required autocomplete="off" />
+                </div>
+                <div class="field">
+                    <label>Password</label>
+                    <input type="password" name="password" placeholder="Buat password" required />
+                </div>
+                <div class="field">
+                    <label>Konfirmasi Password</label>
+                    <input type="password" name="confirmPassword" placeholder="Ulangi password" required />
+                </div>
+                <button type="submit" class="btn btn-primary btn-full">Create Account</button>
+            </form>
+
+            <div class="divider"><span>atau daftar dengan</span></div>
+
+            <a href="/oauth2/authorization/google" class="btn btn-outline btn-full btn-google">
+                <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" width="20" />
+                Google
+            </a>
+
+            <div class="auth-footer">
+                Sudah punya akun? <a href="/login">Masuk di sini</a>
+            </div>
         </div>
     </div>
-</div>
 </body>
 </html>

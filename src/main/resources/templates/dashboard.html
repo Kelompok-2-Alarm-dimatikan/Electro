@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Electro — Device Store</title>
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@500;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/dashboard.css}">
+</head>
+<body>
+
+<div class="bg-pattern"></div>
+
+<header>
+    <div class="brand-wrapper">
+        <div class="logo">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="logo-icon"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path></svg>
+            Electro
+        </div>
+        <span class="logo-badge">Store</span>
+    </div>
+    <div class="nav-actions">
+        <a href="/login" class="btn btn-ghost">Sign In</a>
+        <a href="/register" class="btn btn-primary">Get Started</a>
+    </div>
+</header>
+
+<main class="hero">
+    <div class="hero-content">
+        <div class="hero-badge animate-up">
+            <span class="dot"></span>
+            Welcome Kids
+        </div>
+        <h1 class="animate-up delay-1">
+            Saya akan <br>
+            <span class="highlight"> lawan.</span>
+        </h1>
+        <p class="animate-up delay-2">
+            Tinggalkan cara lama. Electro memberikan visibilitas penuh atas inventaris HP, Laptop, dan Tablet dalam satu dashboard yang cepat, aman, dan real-time.
+        </p>
+        <div class="hero-cta animate-up delay-3">
+            <a href="/register" class="btn btn-primary btn-large">
+                Mulai Gratis 
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+            </a>
+            <a href="/login" class="btn btn-ghost btn-large">
+                Eksplor Fitur
+            </a>
+        </div>
+    </div>
+
+    <div class="bento-grid animate-up delay-4">
+        <div class="bento-card card-wide">
+            <div class="bento-header">
+                <div class="icon-wrap">📱</div>
+                <h3>-</h3>
+            </div>
+            <p>-</p>
+            <div class="card-decoration decoration-1"></div>
+        </div>
+
+        <div class="bento-card">
+            <div class="bento-header">
+                <div class="icon-wrap">⚡</div>
+                <h3>-</h3>
+            </div>
+            <p>-</p>
+        </div>
+
+        <div class="bento-card">
+            <div class="bento-header">
+                <div class="icon-wrap">🔍</div>
+                <h3>-</h3>
+            </div>
+            <p>-</p>
+        </div>
+    </div>
+</main>
+
+</body>
+</html>
