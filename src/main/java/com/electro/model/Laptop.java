@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 
 @Entity
 @DiscriminatorValue("Laptop")
-public class Laptop extends Device {
+public class Laptop extends Electronic {
     public Laptop() {}
     public Laptop(String nama, double harga) { super(nama, harga); }
 

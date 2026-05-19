@@ -72,7 +72,7 @@
         <!-- TAMBAH DEVICE -->
         <div class="card">
             <div class="section-title">➕ Tambah Device</div>
-            <form action="/devices/tambah" method="post">
+            <form action="/electronic/tambah" method="post">
                 <div class="form-row">
                     <select name="kategori">
                         <option>Hp</option>
@@ -89,15 +89,15 @@
         <!-- CARI / URUTKAN -->
         <div class="card">
             <div class="section-title">🔍 Cari / Urutkan</div>
-            <form action="/devices/search" method="get">
+            <form action="/electronic/search" method="get">
                 <div class="form-row">
                     <input type="number" name="harga" placeholder="Masukkan harga..." step="0.01" style="flex:1;" />
                     <button type="submit" class="btn btn-primary">Cari</button>
                 </div>
             </form>
             <div class="search-actions">
-                <a href="/devices/sort" class="btn btn-ghost">↑↓ Urutkan by Harga</a>
-                <a href="/devices" class="btn btn-ghost">↺ Tampilkan Semua</a>
+                <a href="/electronic/sort" class="btn btn-ghost">↑↓ Urutkan by Harga</a>
+                <a href="/electronic" class="btn btn-ghost">↺ Tampilkan Semua</a>
             </div>
         </div>
 
@@ -109,21 +109,21 @@
             <div class="stat-dot" style="background: var(--hp);"></div>
             <div class="stat-info">
                 <div class="stat-label">Total HP</div>
-                <div class="stat-value" th:text="${#lists.size(devices.?[kategori == 'Hp'])}">–</div>
+                <div class="stat-value" th:text="${#lists.size(electronic.?[kategori == 'Hp'])}">–</div>
             </div>
         </div>
         <div class="stat-card">
             <div class="stat-dot" style="background: var(--laptop);"></div>
             <div class="stat-info">
                 <div class="stat-label">Total Laptop</div>
-                <div class="stat-value" th:text="${#lists.size(devices.?[kategori == 'Laptop'])}">–</div>
+                <div class="stat-value" th:text="${#lists.size(electronic.?[kategori == 'Laptop'])}">–</div>
             </div>
         </div>
         <div class="stat-card">
             <div class="stat-dot" style="background: var(--tablet);"></div>
             <div class="stat-info">
                 <div class="stat-label">Total Tablet</div>
-                <div class="stat-value" th:text="${#lists.size(devices.?[kategori == 'Tablet'])}">–</div>
+                <div class="stat-value" th:text="${#lists.size(electronic.?[kategori == 'Tablet'])}">–</div>
             </div>
         </div>
     </div>
@@ -131,7 +131,7 @@
     <!-- TABLE -->
     <div class="table-header">
         <div class="section-title" style="margin:0">📋 List Device</div>
-        <span class="table-count" th:text="${devices.size()} + ' device'">0 device</span>
+        <span class="table-count" th:text="${electronic.size()} + ' electronic'">0 electronic</span>
     </div>
 
     <div class="table-wrap">
@@ -147,16 +147,16 @@
             </thead>
             <tbody>
                 <!-- Empty state -->
-                <tr th:if="${devices.isEmpty()}">
+                <tr th:if="${electronic.isEmpty()}">
                     <td colspan="5">
                         <div class="empty-state">
                             <div class="icon">📭</div>
-                            <p>Belum ada device. Tambahkan yang pertama!</p>
+                            <p>Belum ada electronic. Tambahkan yang pertama!</p>
                         </div>
                     </td>
                 </tr>
 
-                <tr th:each="d, stat : ${devices}">
+                <tr th:each="d, stat : ${electronic}">
                     <td class="td-no" th:text="${stat.count}"></td>
 
                     <td>
@@ -178,14 +178,14 @@
                                     th:onclick="'toggleEdit(' + ${d.id} + ')'">Edit</button>
 
                             <!-- Hapus -->
-                            <a th:href="@{/devices/hapus/{id}(id=${d.id})}"
+                            <a th:href="@{/electronic/hapus/{id}(id=${d.id})}"
                                class="btn btn-danger"
                                onclick="return confirm('Hapus device ini?')">Hapus</a>
                         </div>
 
                         <!-- Form Edit (hidden, muncul saat klik Edit) -->
                         <div class="edit-inputs" th:id="'edit-' + ${d.id}">
-                            <form action="/devices/edit" method="post" style="display:flex;gap:0.4rem;align-items:center;flex-wrap:wrap;">
+                            <form action="/electronic/edit" method="post" style="display:flex;gap:0.4rem;align-items:center;flex-wrap:wrap;">
                                 <input type="hidden" name="id" th:value="${d.id}" />
                                 <input type="text"   name="nama"  th:value="${d.nama}"  required />
                                 <input type="number" name="harga" th:value="${d.harga}" step="0.01" required />

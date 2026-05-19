@@ -1,6 +1,6 @@
 package com.electro.controller;
 
-import com.electro.service.DeviceService;
+import com.electro.service.ElectroService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -11,11 +11,11 @@ import org.springframework.web.bind.annotation.*;
 public class AdminController {
     
     @Autowired
-    private DeviceService deviceService;
+    private ElectroService electroService;
 
     @GetMapping
     public String adminPage(Model model) {
-        model.addAttribute("devices", deviceService.getAllDevices());
+        model.addAttribute("electronic", electroService.getAllElectro());
         return "admin"; // → templates/admin.html
     }
 
@@ -23,7 +23,7 @@ public class AdminController {
     public String tambah(@RequestParam String kategori,
                          @RequestParam String nama,
                          @RequestParam double harga) {
-        deviceService.tambahDevice(kategori, nama, harga);
+        electroService.tambahElectro(kategori, nama, harga);
         return "redirect:/admin";
     }
 
@@ -31,13 +31,13 @@ public class AdminController {
     public String edit(@RequestParam Long id,
                        @RequestParam String nama,
                        @RequestParam double harga) {
-        deviceService.editDevice(id, nama, harga);
+        electroService.editElectro(id, nama, harga);
         return "redirect:/admin";
     }
 
     @GetMapping("/hapus/{id}")
     public String hapus(@PathVariable Long id) {
-        deviceService.hapusDevice(id);
+        electroService.hapusElectro(id);
         return "redirect:/admin";
     }
 }

@@ -40,12 +40,12 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/css/**", "/js/**", "/register").permitAll()
                 .requestMatchers("/admin/**").hasRole("ADMIN")
-                .requestMatchers("/devices/**").authenticated()
+                .requestMatchers("/electronic/**").authenticated()
                 .anyRequest().authenticated()
             )
             .formLogin(form -> form
                 .loginPage("/login")
-                .defaultSuccessUrl("/devices", true)
+                .defaultSuccessUrl("/electronic", true)
                 .permitAll()
             )
             .logout(logout -> logout.permitAll());

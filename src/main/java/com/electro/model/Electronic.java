@@ -3,9 +3,10 @@ package com.electro.model;
 import jakarta.persistence.*;
 
 @Entity
+@Table(name = "electronic")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "kategori", discriminatorType = DiscriminatorType.STRING)
-public abstract class Device {
+public abstract class Electronic {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -13,9 +14,9 @@ public abstract class Device {
     private String nama;
     private double harga;
 
-    public Device() {}
+    public Electronic() {}
 
-    public Device(String nama, double harga) {
+    public Electronic(String nama, double harga) {
         this.nama = nama;
         this.harga = harga;
     }

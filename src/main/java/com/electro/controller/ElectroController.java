@@ -1,40 +1,38 @@
 package com.electro.controller;
 
 import org.springframework.security.core.Authentication;
-import com.electro.model.Device;
-import com.electro.service.DeviceService;
+import com.electro.service.ElectroService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
 @Controller
-@RequestMapping("/devices")
-public class DeviceController {
+@RequestMapping("/electronic")
+public class ElectroController {
 
     @Autowired
-    private DeviceService deviceService;
+    private ElectroService electroService;
 
     @GetMapping
     public String index(Model model, Authentication authentication) {
         if(authentication != null && authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"))) {
             return "redirect:/admin";
         }
-        model.addAttribute("devices", deviceService.getAllDevices());
+        model.addAttribute("electronic", electroService.getAllElectro());
         return "index"; // → templates/index.html
     }
 
     @GetMapping("/search")
     public String search(@RequestParam double harga, Model model) {
-        model.addAttribute("devices", deviceService.searchByHarga(harga));
+        model.addAttribute("electronic", electroService.searchByHarga(harga));
         return "index";
     }
 
     @GetMapping("/sort")
     public String sort(Model model) {
-        model.addAttribute("devices", deviceService.sortByHarga());
+        model.addAttribute("electronic", electroService.sortByHarga());
         return "index";
     }
 
@@ -42,21 +40,21 @@ public class DeviceController {
     public String tambah(@RequestParam String kategori,
                          @RequestParam String nama,
                          @RequestParam double harga) {
-        deviceService.tambahDevice(kategori, nama, harga);
-        return "redirect:/devices";
+        electroService.tambahElectro(kategori, nama, harga);
+        return "redirect:/electronic";
     }
 
     @PostMapping("/edit")
     public String edit(@RequestParam Long id,
                        @RequestParam String nama,
                        @RequestParam double harga) {
-        deviceService.editDevice(id, nama, harga);
-        return "redirect:/devices";
+        electroService.editElectro(id, nama, harga);
+        return "redirect:/electronic";
     }
 
     @GetMapping("/hapus/{id}")
     public String hapus(@PathVariable Long id) {
-        deviceService.hapusDevice(id);
-        return "redirect:/devices";
+        electroService.hapusElectro(id);
+        return "redirect:/electronic";
     }
 }
