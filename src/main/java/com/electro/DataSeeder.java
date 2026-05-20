@@ -18,15 +18,15 @@ public class DataSeeder {
         return args -> {
             // Seed devices
             if (electroRepo.count() == 0) {
-                electroRepo.save(new Hp("Samsung S23 Ultra", 14999000));
-                electroRepo.save(new Hp("Samsung J2 Prime", 1499000));
-                electroRepo.save(new Hp("Xiaomi 13", 8999000));
-                electroRepo.save(new Hp("iPhone 14", 13999000));
-                electroRepo.save(new Laptop("Asus ROG", 25999000));
-                electroRepo.save(new Laptop("Acer Predator", 22999000));
-                electroRepo.save(new Laptop("Lenovo Legion", 19999000));
-                electroRepo.save(new Tablet("iPad Pro", 16999000));
-                electroRepo.save(new Tablet("Samsung Galaxy Tab", 9999000));
+                electroRepo.save(new Hp("Samsung S23 Ultra", 14999000, 10, "Samsung"));
+                electroRepo.save(new Hp("Samsung J2 Prime", 1499000, 10, "Samsung"));
+                electroRepo.save(new Hp("Xiaomi 13", 8999000, 10, "Xiaomi"));
+                electroRepo.save(new Hp("iPhone 14", 13999000, 10, "Apple"));
+                electroRepo.save(new Laptop("Asus ROG", 25999000, 10, "Asus"));
+                electroRepo.save(new Laptop("Acer Predator", 22999000, 10, "Acer"));
+                electroRepo.save(new Laptop("Lenovo Legion", 19999000, 10, "Lenovo"));
+                electroRepo.save(new Tablet("iPad Pro", 16999000, 10, "Apple"));
+                electroRepo.save(new Tablet("Samsung Galaxy Tab", 9999000, 10, "Samsung"));
             }
 
             // Seed user admin
