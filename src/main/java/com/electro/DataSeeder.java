@@ -18,15 +18,15 @@ public class DataSeeder {
         return args -> {
             // Seed devices
             if (deviceRepo.count() == 0) {
-                deviceRepo.save(new Hp("Samsung S23 Ultra", 14999000));
-                deviceRepo.save(new Hp("Samsung J2 Prime", 1499000));
-                deviceRepo.save(new Hp("Xiaomi 13", 8999000));
-                deviceRepo.save(new Hp("iPhone 14", 13999000));
-                deviceRepo.save(new Laptop("Asus ROG", 25999000));
-                deviceRepo.save(new Laptop("Acer Predator", 22999000));
-                deviceRepo.save(new Laptop("Lenovo Legion", 19999000));
-                deviceRepo.save(new Tablet("iPad Pro", 16999000));
-                deviceRepo.save(new Tablet("Samsung Galaxy Tab", 9999000));
+                deviceRepo.save(new Hp("Samsung S23 Ultra", 14999000, 10, "Samsung"));
+                deviceRepo.save(new Hp("Samsung J2 Prime", 1499000, 10, "Samsung"));
+                deviceRepo.save(new Hp("Xiaomi 13", 8999000, 10, "Xiaomi"));
+                deviceRepo.save(new Hp("iPhone 14", 13999000, 10, "Apple"));
+                deviceRepo.save(new Laptop("Asus ROG", 25999000, 10, "Asus"));
+                deviceRepo.save(new Laptop("Acer Predator", 22999000, 10, "Acer"));
+                deviceRepo.save(new Laptop("Lenovo Legion", 19999000, 10, "Lenovo"));
+                deviceRepo.save(new Tablet("iPad Pro", 16999000, 10, "Apple"));
+                deviceRepo.save(new Tablet("Samsung Galaxy Tab", 9999000, 10, "Samsung"));
             }
 
             // Seed user admin

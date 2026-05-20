@@ -25,20 +25,36 @@ public class DeviceService {
         return deviceRepository.findAllByOrderByHargaAsc();
     }
 
-    public void tambahDevice(String kategori, String nama, double harga) {
+        public void tambahStok(Long id, int jumlah) {
+        Device device = deviceRepository.findById(id).orElseThrow();
+        device.setStok(device.getStok() + jumlah);
+        deviceRepository.save(device);
+    }
+
+    public void kurangiStok(Long id, int jumlah) {
+        Device device = deviceRepository.findById(id).orElseThrow();
+        int stokBaru = device.getStok() - jumlah;
+        if (stokBaru < 0) throw new IllegalArgumentException("Stok tidak mencukupi");
+        device.setStok(stokBaru);
+        deviceRepository.save(device);
+    }
+
+    public void tambahDevice(String kategori, String nama, double harga, int stok, String merk) {
         Device device;
         switch (kategori) {
-            case "Hp"     -> device = new Hp(nama, harga);
-            case "Laptop" -> device = new Laptop(nama, harga);
-            default       -> device = new Tablet(nama, harga);
+            case "Hp"     -> device = new Hp(nama, harga, stok, merk);
+            case "Laptop" -> device = new Laptop(nama, harga, stok, merk);
+            default       -> device = new Tablet(nama, harga, stok, merk);
         }
         deviceRepository.save(device);
     }
 
-    public void editDevice(Long id, String nama, double harga) {
+    public void editDevice(Long id, String nama, double harga, int stok, String merk) {
         Device device = deviceRepository.findById(id).orElseThrow();
         device.setNama(nama);
         device.setHarga(harga);
+        device.setStok(stok);
+        device.setMerk(merk);
         deviceRepository.save(device);
     }
 

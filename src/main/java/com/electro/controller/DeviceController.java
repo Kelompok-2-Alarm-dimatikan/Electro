@@ -41,16 +41,20 @@ public class DeviceController {
     @PostMapping("/tambah")
     public String tambah(@RequestParam String kategori,
                          @RequestParam String nama,
-                         @RequestParam double harga) {
-        deviceService.tambahDevice(kategori, nama, harga);
+                         @RequestParam double harga,
+                         @RequestParam int stok,
+                         @RequestParam String merk) {
+        deviceService.tambahDevice(kategori, nama, harga, stok, merk);
         return "redirect:/devices";
     }
 
     @PostMapping("/edit")
     public String edit(@RequestParam Long id,
                        @RequestParam String nama,
-                       @RequestParam double harga) {
-        deviceService.editDevice(id, nama, harga);
+                       @RequestParam double harga,
+                    @RequestParam int stok,
+                       @RequestParam String merk) {
+        deviceService.editDevice(id, nama, harga, stok, merk);
         return "redirect:/devices";
     }
 
