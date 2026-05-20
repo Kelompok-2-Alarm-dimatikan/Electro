@@ -19,6 +19,7 @@ public class RegisterController {
 
     @PostMapping("/register")
     public String doRegister(@RequestParam String username,
+                             @RequestParam String email,
                              @RequestParam String password,
                              @RequestParam String confirmPassword,
                              Model model) {
@@ -27,7 +28,7 @@ public class RegisterController {
             return "register";
         }
         try {
-            userService.register(username, password);
+            userService.register(username, email, password);
             return "redirect:/login?registered";
         } catch (IllegalArgumentException e) {
             model.addAttribute("error", e.getMessage());

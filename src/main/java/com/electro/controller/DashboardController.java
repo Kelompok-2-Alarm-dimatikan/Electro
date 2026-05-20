@@ -10,7 +10,7 @@ public class DashboardController {
     @GetMapping("/")
     public String dashboard(Authentication authentication) {
         if (authentication != null && authentication.isAuthenticated()) {
-            return "redirect:/devices";
+            return "redirect:/electronic";
         }
         return "dashboard"; 
     }

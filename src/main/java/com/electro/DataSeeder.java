@@ -16,7 +16,6 @@ public class DataSeeder {
                                UserRepository userRepo,
                                UserService userService) {
         return args -> {
-            // Seed devices
             if (electroRepo.count() == 0) {
                 electroRepo.save(new Hp("Samsung S23 Ultra", 14999000));
                 electroRepo.save(new Hp("Samsung J2 Prime", 1499000));
@@ -29,10 +28,8 @@ public class DataSeeder {
                 electroRepo.save(new Tablet("Samsung Galaxy Tab", 9999000));
             }
 
-            // Seed user admin
             if (userRepo.count() == 0) {
-                userService.register("admin", "admin123");
-                // Set role admin
+                userService.register("admin", "admin@example.com", "admin123");
                 var admin = userRepo.findByUsername("admin").get();
                 admin.setRole("ROLE_ADMIN");
                 userRepo.save(admin);

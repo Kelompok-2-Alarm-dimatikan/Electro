@@ -16,7 +16,7 @@ public class AdminController {
     @GetMapping
     public String adminPage(Model model) {
         model.addAttribute("electronic", electroService.getAllElectro());
-        return "admin"; // → templates/admin.html
+        return "admin";
     }
 
     @PostMapping("/tambah")

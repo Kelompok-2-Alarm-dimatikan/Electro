@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pengaturan Akun — Electro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@500;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/settings.css}">
+</head>
+<body>
+    <div class="bg-pattern"></div>
+
+    <header>
+        <div class="header-left">
+            <a href="/electronic" class="logo" style="text-decoration: none;">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap=\"round\" stroke-linejoin=\"round\" class="logo-icon"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path></svg>
+                Electro
+            </a>
+            <span class="logo-badge">Pengaturan</span>
+        </div>
+        <nav class="header-nav">
+            <a href="/electronic" class="nav-link">Dashboard</a>
+            <a href="#" class="nav-link active">Akun</a>
+        </nav>
+    </header>
+
+    <div class="settings-wrapper">
+        <div class="settings-card animate-up">
+            <div class="settings-header">
+                <h2>Pengaturan Profil</h2>
+                <p class="settings-subtitle">Kelola informasi keamanan akun Anda</p>
+            </div>
+
+            <div class="success-msg" th:if="${success}" th:text="${success}"></div>
+            <div class="error-msg" th:if="${error}" th:text="${error}"></div>
+
+            <div class="profile-summary">
+                <div class="avatar-large">
+                    <span th:text="${#strings.substring(#authentication.name, 0, 1).toUpperCase()}">U</span>
+                </div>
+                <div class="profile-info">
+                    <h3 th:text="${#authentication.name}">Username</h3>
+                    <p th:text="${#authentication.principal instanceof T(com.electro.security.CustomUserDetails) ? #authentication.principal.email : 'Email tidak tersedia'}">user@mail.com</p>
+                </div>
+            </div>
+
+            <form th:action="@{/settings/update-password}" method="post" class="settings-form">
+                <div class="form-section-title">Ubah Password</div>
+                
+                <div class="field">
+                    <label>Password Saat Ini</label>
+                    <input type="password" name="currentPassword" placeholder="Masukkan password sekarang" required />
+                </div>
+                
+                <div class="field">
+                    <label>Password Baru</label>
+                    <input type="password" name="newPassword" placeholder="Buat password baru" required />
+                </div>
+                
+                <div class="field">
+                    <label>Konfirmasi Password Baru</label>
+                    <input type="password" name="confirmNewPassword" placeholder="Ulangi password baru" required />
+                </div>
+                
+                <div class="actions">
+                    <a href="/electronic" class="btn btn-outline">Batal</a>
+                    <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
