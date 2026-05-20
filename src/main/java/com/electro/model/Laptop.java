@@ -1,5 +1,4 @@
 package com.electro.model;
-
 import jakarta.persistence.*;
 
 @Entity

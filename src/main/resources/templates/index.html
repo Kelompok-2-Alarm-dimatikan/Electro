@@ -3,66 +3,47 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Electro — Device Store</title>
-    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <title>Electro Store — Premium Devices</title>
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@500;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 <body>
     
-<!-- ===== NAVBAR ===== -->
+<div class="bg-pattern"></div>
+
 <header>
     <div class="header-left">
-         <div class="logo">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="logo-icon"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path></svg>
+        <div class="logo">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="logo-icon"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path></svg>
             Electro
         </div>
         <span class="logo-badge">Store</span>
     </div>
     <nav class="header-nav">
         <a href="#" class="nav-link active">Home</a>
-        <a href="#" class="nav-link">Produk</a>
-        <a href="#" class="nav-link">Promo</a>
-    </nav>
+        <a href="#" class="nav-link">Product</a>
+        <a href="#kategori" class="nav-link">Laporan</a> </nav>
 
-    <!-- Profile -->
     <div class="header-right">
         <div class="profile-wrap" id="profileWrap">
             <button class="profile-btn" onclick="toggleProfile()" aria-label="Profile menu">
                 <div class="profile-avatar">
                     <span th:text="${#strings.substring(#authentication.name, 0, 1).toUpperCase()}">U</span>
                 </div>
-                <span class="profile-name" th:text="${#authentication.name}">User</span>
-                <svg class="profile-chevron" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                    <polyline points="6 9 12 15 18 9"/>
-                </svg>
-            </button>
-
-            <!-- Dropdown -->
-            <div class="profile-dropdown" id="profileDropdown">
-                <div class="dropdown-header">
-                    <div class="dropdown-avatar">
-                        <span th:text="${#strings.substring(#authentication.name, 0, 1).toUpperCase()}">U</span>
-                    </div>
-                    <div>
-                        <div class="dropdown-name" th:text="${#authentication.name}">User</div>
-                        <div class="dropdown-role">Member</div>
-                    </div>
+                <div class="profile-info">
+                    <span class="profile-name" th:text="${#authentication.name}">User</span>
+                    <span class="profile-role">User</span>
                 </div>
-                <div class="dropdown-divider"></div>
-                <a href="#" class="dropdown-item">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
-                    Profil Saya
-                </a>
-                <a href="#" class="dropdown-item">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-                    Pengaturan
-                </a>
-                <div class="dropdown-divider"></div>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="chevron"><polyline points="6 9 12 15 18 9"></polyline></svg>
+            </button>
+            <div class="profile-dropdown">
+                <div class="dropdown-header">
+                    <div class="dropdown-name" th:text="${#authentication.name}">User</div>
+                    <div class="dropdown-email" th:text="${#authentication.principal.email}"></div>
+                </div>
+                <a href="/settings" class="dropdown-item">⚙️ Pengaturan Akun</a>
                 <form th:action="@{/logout}" method="post">
-                    <button type="submit" class="dropdown-item dropdown-logout">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
-                        Keluar
-                    </button>
+                    <button type="submit" class="dropdown-item logout-btn">🚪 Keluar</button>
                 </form>
             </div>
         </div>
@@ -70,143 +51,83 @@
 </header>
 
 <main>
-    <div class="top-grid">
-
-        <!-- TAMBAH DEVICE -->
-        <div class="card">
-            <div class="section-title">➕ Tambah Device</div>
-            <form action="/electronic/tambah" method="post">
-                <div class="form-row">
-                    <select name="kategori">
-                        <option>Hp</option>
-                        <option>Laptop</option>
-                        <option>Tablet</option>
-                    </select>
-                    <input type="text" name="nama" placeholder="Nama device" required />
-                    <input type="number" name="harga" placeholder="Harga" step="0.01" required />
-                    <button type="submit" class="btn btn-primary">Tambah</button>
+    <div class="slider-wrapper animate-in">
+        <div class="slider-viewport" id="sliderViewport">
+            <div class="slide slide-1">
+                <div class="slide-content">
+                    <span class="slide-badge">Koleksi Baru</span>
+                    <h2>MacBook Pro M3 Max</h2>
+                    <p>Performa buas dalam balutan desain elegan. Cocok untuk produktivitas ekstrem tanpa batas.</p>
+                    <a href="#" class="btn btn-primary">Lihat Spesifikasi</a>
                 </div>
-            </form>
-        </div>
-
-        <!-- CARI / URUTKAN -->
-        <div class="card">
-            <div class="section-title">🔍 Cari / Urutkan</div>
-            <form action="/electronic/search" method="get">
-                <div class="form-row">
-                    <input type="number" name="harga" placeholder="Masukkan harga..." step="0.01" style="flex:1;" />
-                    <button type="submit" class="btn btn-primary">Cari</button>
+            </div>
+            <div class="slide slide-2">
+                <div class="slide-content">
+                    <span class="slide-badge" style="background: rgba(52,211,153,0.2); color:#6ee7b7;">Eksklusif</span>
+                    <h2>Galaxy S24 Ultra</h2>
+                    <p>Dilengkapi material titanium premium dan kamera revolusioner.</p>
+                    <a href="#" class="btn btn-outline">Eksplor Seri S24</a>
                 </div>
-            </form>
-            <div class="search-actions">
-                <a href="/electronic/sort" class="btn btn-ghost">↑↓ Urutkan by Harga</a>
-                <a href="/electronic" class="btn btn-ghost">↺ Tampilkan Semua</a>
+            </div>
+            <div class="slide slide-3">
+                <div class="slide-content">
+                    <span class="slide-badge">Profesional</span>
+                    <h2>iPad Pro OLED</h2>
+                    <p>Kanvas digital paling tipis dan bertenaga. Dirancang untuk para kreator visual sejati.</p>
+                    <a href="#" class="btn btn-primary">Lihat Detail</a>
+                </div>
             </div>
         </div>
-
-    </div>
-
-        <!-- STATS -->
-    <div class="stats-row">
-        <div class="stat-card">
-            <div class="stat-dot" style="background: var(--hp);"></div>
-            <div class="stat-info">
-                <div class="stat-label">Total HP</div>
-                <div class="stat-value" th:text="${#lists.size(electronic.?[kategori == 'Hp'])}">–</div>
-            </div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-dot" style="background: var(--laptop);"></div>
-            <div class="stat-info">
-                <div class="stat-label">Total Laptop</div>
-                <div class="stat-value" th:text="${#lists.size(electronic.?[kategori == 'Laptop'])}">–</div>
-            </div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-dot" style="background: var(--tablet);"></div>
-            <div class="stat-info">
-                <div class="stat-label">Total Tablet</div>
-                <div class="stat-value" th:text="${#lists.size(electronic.?[kategori == 'Tablet'])}">–</div>
-            </div>
+        
+        <button class="slider-nav prev" onclick="changeSlide(-1)">❮</button>
+        <button class="slider-nav next" onclick="changeSlide(1)">❯</button>
+        <div class="slider-dots">
+            <span class="dot active" onclick="goToSlide(0)"></span>
+            <span class="dot" onclick="goToSlide(1)"></span>
+            <span class="dot" onclick="goToSlide(2)"></span>
         </div>
     </div>
 
-    <!-- TABLE -->
-    <div class="table-header">
-        <div class="section-title" style="margin:0">📋 List Device</div>
-        <span class="table-count" th:text="${electronic.size()} + ' electronic'">0 electronic</span>
-    </div>
-
-    <div class="table-wrap">
-        <table>
-            <thead>
-                <tr>
-                    <th>No</th>
-                    <th>Kategori</th>
-                    <th>Nama</th>
-                    <th>Harga</th>
-                    <th>Aksi</th>
-                </tr>
-            </thead>
-            <tbody>
-                <!-- Empty state -->
-                <tr th:if="${electronic.isEmpty()}">
-                    <td colspan="5">
-                        <div class="empty-state">
-                            <div class="icon">📭</div>
-                            <p>Belum ada electronic. Tambahkan yang pertama!</p>
-                        </div>
-                    </td>
-                </tr>
-
-                <tr th:each="d, stat : ${electronic}">
-                    <td class="td-no" th:text="${stat.count}"></td>
-
-                    <td>
-                        <span class="badge"
-                              th:classappend="${d.kategori == 'Hp'} ? 'badge-hp' : (${d.kategori == 'Laptop'} ? 'badge-laptop' : 'badge-tablet')"
-                              th:text="${d.kategori}"></span>
-                    </td>
-
-                    <td th:text="${d.nama}"></td>
-
-                    <td class="harga-cell">
-                        Rp <span th:text="${#numbers.formatInteger(d.harga, 1, 'COMMA')}"></span>
-                    </td>
-
-                    <td>
-                        <div class="aksi-form" th:id="'row-' + ${d.id}">
-                            <!-- Tombol Edit (toggle) -->
-                            <button type="button" class="btn btn-edit"
-                                    th:onclick="'toggleEdit(' + ${d.id} + ')'">Edit</button>
-
-                            <!-- Hapus -->
-                            <a th:href="@{/electronic/hapus/{id}(id=${d.id})}"
-                               class="btn btn-danger"
-                               onclick="return confirm('Hapus device ini?')">Hapus</a>
-                        </div>
-
-                        <!-- Form Edit (hidden, muncul saat klik Edit) -->
-                        <div class="edit-inputs" th:id="'edit-' + ${d.id}">
-                            <form action="/electronic/edit" method="post" style="display:flex;gap:0.4rem;align-items:center;flex-wrap:wrap;">
-                                <input type="hidden" name="id" th:value="${d.id}" />
-                                <input type="text"   name="nama"  th:value="${d.nama}"  required />
-                                <input type="number" name="harga" th:value="${d.harga}" step="0.01" required />
-                                <button type="submit" class="btn btn-primary" style="padding:0.35rem 0.8rem;font-size:0.8rem;">Simpan</button>
-                                <button type="button" class="btn btn-ghost"
-                                        th:onclick="'toggleEdit(' + ${d.id} + ')'"
-                                        style="padding:0.35rem 0.8rem;font-size:0.8rem;">Batal</button>
-                            </form>
-                        </div>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-
+    <section id="kategori" class="promo-section animate-in delay-2">
+        <div class="section-header">
+            <h3>Eksplorasi Kategori</h3>
+        </div>
+        <div class="promo-grid">
+            <div class="promo-card banner-large category-mac">
+                <div class="banner-content">
+                    <h4 class="banner-title">Laptop Series</h4>
+                    <div class="banner-sub">Workstation portabel dengan efisiensi dan tenaga maksimal untuk para profesional.</div>
+                    <a href="#" class="banner-btn">Jelajahi Laptop →</a>
+                </div>
+            </div>
+            <div class="promo-card banner-small category-phone">
+                <div class="banner-content">
+                    <h4 class="banner-title" style="color: #60a5fa;">Smartphones</h4>
+                    <div class="banner-sub">Canggih dan inovatif, dirancang untuk memberikan pengalaman terbaik.</div>
+                    <a href="#" class="banner-btn" style="border-bottom-color: #60a5fa; color: #60a5fa;">Lihat HP →</a>
+                </div>
+            </div>
+            <div class="promo-card banner-small category-tablet">
+                <div class="banner-content">
+                    <h4 class="banner-title" style="color: #34d399;">Tablet</h4>
+                    <div class="banner-sub">Lengkapi ekosistem digital untuk desain & baca.</div>
+                    <a href="#" class="banner-btn" style="border-bottom-color: #34d399; color: #34d399;">Lihat Tablet →</a>
+                </div>
+            </div>
+        </div>
+    </section>
 </main>
 
-<script th:src="@{/js/app.js}"></script>
+<footer>
+    <div class="footer-content">
+        <div class="footer-logo">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path></svg>
+            Electro Store
+        </div>
+        <p>© 2026 Electro Systems</p>
+    </div>
+</footer>
 
+<script th:src="@{/js/app.js}"></script>
 </body>
 </html>

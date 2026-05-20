@@ -22,7 +22,6 @@ public class AdminController {
     @GetMapping
     public String adminPage(Model model) {
         model.addAttribute("electronic", electroService.getAllElectro());
-        model.addAttribute("user", userRepository.findAll());
         return "admin"; // → templates/admin.html
     }
 
