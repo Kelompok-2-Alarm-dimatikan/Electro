@@ -6,7 +6,7 @@ import jakarta.persistence.*;
 @DiscriminatorValue("Laptop")
 public class Laptop extends Electronic {
     public Laptop() {}
-    public Laptop(String nama, double harga) { super(nama, harga); }
+    public Laptop(String nama, double harga, int stok, String merk) { super(nama, harga, stok, merk); }
 
     @Override
     public String getKategori() { return "Laptop"; }
