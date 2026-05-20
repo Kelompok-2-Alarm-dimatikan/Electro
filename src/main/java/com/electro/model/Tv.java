@@ -5,7 +5,7 @@ import jakarta.persistence.*;
 @DiscriminatorValue("Tv")
 public class Tv extends Electronic {
     public Tv() {}
-    public Tv(String nama, double harga) { super(nama, harga); }
+    public Tv(String nama, double harga, int stok, String merk) { super(nama, harga, stok, merk); }
 
     @Override
     public String getKategori() { return "Tv"; }

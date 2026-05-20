@@ -5,7 +5,7 @@ import jakarta.persistence.*;
 @DiscriminatorValue("Kulkas")
 public class Kulkas extends Electronic {
     public Kulkas() {}
-    public Kulkas(String nama, double harga) { super(nama, harga); }
+    public Kulkas(String nama, double harga, int stok, String merk) { super(nama, harga, stok, merk); }
 
     @Override
     public String getKategori() { return "Kulkas"; }
