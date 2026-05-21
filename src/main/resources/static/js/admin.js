@@ -1,8 +1,3 @@
-<script>
-// ── NAVIGASI ──────────────────────────────────────────────────────────────────
-const navItems    = document.querySelectorAll('.nav-item');
-const pages       = document.querySelectorAll('.page');
-const headerTitle = document.getElementById('header-title');
 const labels = { dashboard:'Dashboard', users:'Users', table:'Tabel Produk' };
 
 navItems.forEach(item => {
@@ -301,4 +296,3 @@ function showToast(msg, color) {
   clearTimeout(toastTimer);
   toastTimer = setTimeout(() => toast.classList.remove('show'), 3000);
 }
-</script>
