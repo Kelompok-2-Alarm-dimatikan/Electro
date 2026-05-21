@@ -14,7 +14,7 @@
     }
 
     body {
-      font-family: 'DM Sans', sans-serif;
+      font-family: 'Plus Jakarta', sans-serif;
       background: var(--bg);
       color: var(--text);
       display: flex;
@@ -53,7 +53,7 @@
       display: grid; place-items: center;
     }
     .logo-icon svg { width: 18px; height: 18px; fill: #fff; }
-    .logo-text { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 18px; letter-spacing: -0.5px; }
+    .logo-text { font-family: 'Plus Jakarta', sans-serif; font-weight: 800; font-size: 18px; letter-spacing: -0.5px; }
     .logo-text span { color: var(--accent); }
 
     nav { padding: 16px 12px; flex: 1; }
@@ -86,7 +86,7 @@
       width: 36px; height: 36px; border-radius: 50%;
       background: linear-gradient(135deg, var(--accent), var(--accent2));
       display: grid; place-items: center;
-      font-family: 'Syne', sans-serif; font-weight: 700; font-size: 14px;
+      font-family: 'Plus Jakarta', sans-serif; font-weight: 700; font-size: 14px;
     }
     .user-info { flex: 1; }
     .user-name { font-size: 13px; font-weight: 600; }
@@ -120,7 +120,7 @@
     #toggle-btn:hover { background: var(--border); }
     #toggle-btn svg { width: 18px; height: 18px; stroke: var(--text); fill: none; stroke-width: 2; stroke-linecap: round; }
 
-    .header-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 16px; flex: 1; }
+    .header-title { font-family: 'Plus Jakarta', sans-serif; font-weight: 700; font-size: 16px; flex: 1; }
     .header-badge {
       background: var(--surface2); border: 1px solid var(--border);
       border-radius: 20px; padding: 5px 14px;
@@ -134,7 +134,7 @@
     @keyframes fadeUp { from { opacity:0; transform: translateY(12px); } to { opacity:1; transform: translateY(0); } }
 
     .page-heading {
-      font-family: 'Syne', sans-serif; font-weight: 800; font-size: 26px;
+      font-family: 'Plus Jakarta', sans-serif; font-weight: 800; font-size: 26px;
       margin-bottom: 4px;
     }
     .page-sub { color: var(--muted); font-size: 14px; margin-bottom: 28px; }
@@ -177,7 +177,7 @@
     .stat-card:nth-child(4) .stat-icon { background: rgba(247,196,79,0.15); color: var(--accent4); }
 
     .stat-label { font-size: 12px; color: var(--muted); font-weight: 500; margin-bottom: 6px; }
-    .stat-value { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 28px; margin-bottom: 6px; }
+    .stat-value { font-family: 'Plus Jakarta', sans-serif; font-weight: 800; font-size: 28px; margin-bottom: 6px; }
     .stat-delta { font-size: 12px; }
     .stat-delta.up { color: var(--accent3); }
     .stat-delta.down { color: var(--accent2); }
@@ -195,7 +195,7 @@
       border-radius: 16px; padding: 22px;
     }
     .card-title {
-      font-family: 'Syne', sans-serif; font-weight: 700; font-size: 15px;
+      font-family: 'Plus Jakarta', sans-serif; font-weight: 700; font-size: 15px;
       margin-bottom: 4px;
     }
     .card-sub { font-size: 12px; color: var(--muted); margin-bottom: 20px; }
@@ -210,7 +210,7 @@
     .stock-name { flex: 1; font-size: 13px; font-weight: 500; }
     .stock-bar-wrap { width: 80px; height: 6px; background: var(--border); border-radius: 99px; overflow: hidden; }
     .stock-bar { height: 100%; border-radius: 99px; transition: width 1s ease; }
-    .stock-num { font-size: 13px; font-weight: 600; width: 42px; text-align: right; font-family: 'Syne', sans-serif; }
+    .stock-num { font-size: 13px; font-weight: 600; width: 42px; text-align: right; font-family: 'Plus Jakarta', sans-serif; }
 
     /* ── TABLE ── */
     .table-controls {
@@ -225,7 +225,7 @@
     .search-box svg { width: 15px; height: 15px; color: var(--muted); }
     .search-box input {
       background: none; border: none; outline: none;
-      color: var(--text); font-size: 13px; font-family: 'DM Sans', sans-serif;
+      color: var(--text); font-size: 13px; font-family: 'Plus Jakarta', sans-serif;
       width: 100%;
     }
     .search-box input::placeholder { color: var(--muted); }
@@ -271,7 +271,7 @@
     .stock-low  { background: rgba(247,196,79,0.12); color: var(--accent4); }
     .stock-out  { background: rgba(247,101,79,0.12); color: var(--accent2); }
 
-    .price-cell { font-family: 'Syne', sans-serif; font-weight: 600; font-size: 13px; }
+    .price-cell { font-family: 'Plus Jakarta', sans-serif; font-weight: 600; font-size: 13px; }
 
     /* ── POPULAR TABLE ── */
     .popular-grid {
@@ -280,7 +280,7 @@
     }
 
     .rank-num {
-      font-family: 'Syne', sans-serif; font-weight: 800; font-size: 16px;
+      font-family: 'Plus Jakarta', sans-serif; font-weight: 800; font-size: 16px;
       color: var(--muted); width: 28px;
     }
     .rank-num.gold   { color: var(--accent4); }
@@ -303,7 +303,7 @@
     .ub-avatar {
       width: 60px; height: 60px; border-radius: 50%; margin: 0 auto 12px;
       display: grid; place-items: center;
-      font-family: 'Syne', sans-serif; font-weight: 700; font-size: 22px;
+      font-family: 'Plus Jakarta', sans-serif; font-weight: 700; font-size: 22px;
     }
     .ub-name { font-weight: 600; font-size: 15px; margin-bottom: 4px; }
     .ub-email { font-size: 12px; color: var(--muted); margin-bottom: 12px; }
