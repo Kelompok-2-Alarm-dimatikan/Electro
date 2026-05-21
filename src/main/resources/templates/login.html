@@ -18,7 +18,7 @@
                 </div>
                 <p class="auth-subtitle">Masuk ke akun Anda</p>
             </div>
-            <!-- <div class="error-msg" th:if="${error}" th:text="${error}"></div> -->
+            <div class="error-msg" th:if="${error}" th:text="${error}"></div>
             <form th:action="@{/login}" method="post" class="auth-form">
                 <div class="field">
                     <label>Username atau Email</label>
