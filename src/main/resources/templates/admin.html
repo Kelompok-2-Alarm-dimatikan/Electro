@@ -8,7 +8,7 @@
   <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
-  <link rel="stylesheet" href="/css/admin.css" />
+  <link rel="stylesheet" th:href="@{/css/admin.css}">
 </head>
 <body>
 
@@ -287,6 +287,6 @@
   </div>
 </div>
 
-<script src="/js/admin.js"></script>
+<script th:src="@{/js/admin.js}"></script>
 </body>
 </html>

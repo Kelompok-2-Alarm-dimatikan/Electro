@@ -1,4 +1,9 @@
+document.addEventListener('DOMContentLoaded', () => {
+
 const labels = { dashboard:'Dashboard', users:'Users', table:'Tabel Produk' };
+const navItems = document.querySelectorAll('.nav-item');
+const pages    = document.querySelectorAll('.page');
+const headerTitle = document.getElementById('headerTitle');
 
 navItems.forEach(item => {
   item.addEventListener('click', () => {
@@ -296,3 +301,4 @@ function showToast(msg, color) {
   clearTimeout(toastTimer);
   toastTimer = setTimeout(() => toast.classList.remove('show'), 3000);
 }
+});
