@@ -22,24 +22,162 @@ document.getElementById('toggle-btn').addEventListener('click', () => {
 });
 
 // ── CHART ─────────────────────────────────────────────────────────────────────
-new Chart(document.getElementById('salesChart').getContext('2d'), {
-  type: 'bar',
+// ── CHART ─────────────────────────────────────────────────────────────────────
+const ctx = document.getElementById('salesChart').getContext('2d');
+
+const myChart = new Chart(ctx, {
+  type: 'line',
   data: {
-    labels: ['Jan','Feb','Mar','Apr','Mei','Jun','Jul'],
+    labels: ['Jan','Feb','Mar','Apr','Mei','Jun','Jul', 'Agt', 'Sep','Okt', 'Nov', 'Des'],
     datasets: [
-      { label:'HP',      data:[12,18,15,22,19,25,28], backgroundColor:'rgba(79,142,247,0.8)',  borderRadius:6 },
-      { label:'Laptop',  data:[8,10,9,12,11,14,16],   backgroundColor:'rgba(247,196,79,0.8)',  borderRadius:6 },
-      { label:'Tablet',  data:[4,5,6,7,5,8,9],        backgroundColor:'rgba(79,199,138,0.8)', borderRadius:6 },
-      { label:'Blender', data:[6,7,5,9,8,10,11],      backgroundColor:'rgba(247,101,79,0.8)', borderRadius:6 },
-      { label:'Kulkas',  data:[3,4,5,4,6,5,7],        backgroundColor:'rgba(160,120,255,0.8)',borderRadius:6 },
+      {
+        label: 'HP',
+        data: [12,18,15,22,19,25,28, 20, 18, 24, 26, 30],
+        borderColor: 'rgba(79,142,247,1)',
+        backgroundColor: 'rgba(79,142,247,0.08)',
+        fill: true,
+        tension: 0.4,
+        borderWidth: 2,
+        pointStyle: 'circle', 
+        pointRadius: 4,      
+        pointHoverRadius: 6,
+        pointBackgroundColor: 'rgba(79,142,247,1)' 
+      },
+      {
+        label: 'Laptop',
+        data: [8,10,9,12,11,14,16, 15, 13, 17, 19, 21],
+        borderColor: 'rgba(247,196,79,1)',
+        backgroundColor: 'rgba(247,196,79,0.08)',
+        fill: true,
+        tension: 0.4,
+        borderWidth: 2,
+        pointStyle: 'circle',
+        pointRadius: 4,
+        pointHoverRadius: 6,
+        pointBackgroundColor: 'rgba(247,196,79,1)'
+      },
+      {
+        label: 'Tablet',
+        data: [4,5,6,7,5,8,9, 8, 6, 10, 12, 14],
+        borderColor: 'rgba(79,199,138,1)',
+        backgroundColor: 'rgba(79,199,138,0.08)',
+        fill: true,
+        tension: 0.4,
+        borderWidth: 2,
+        pointStyle: 'circle',
+        pointRadius: 4,
+        pointHoverRadius: 6,
+        pointBackgroundColor: 'rgba(79,199,138,1)'
+      },
+      {
+        label: 'Blender',
+        data: [6,7,5,9,8,10,11, 10, 8, 12, 14, 16],
+        borderColor: 'rgba(247,101,79,1)',
+        backgroundColor: 'rgba(247,101,79,0.08)',
+        fill: true,
+        tension: 0.4,
+        borderWidth: 2,
+        pointStyle: 'circle',
+        pointRadius: 4,
+        pointHoverRadius: 6,
+        pointBackgroundColor: 'rgba(247,101,79,1)'
+      },
+      {
+        label: 'Kulkas',
+        data: [3,4,5,4,6,5,7, 6, 5, 8, 10, 12],
+        borderColor: 'rgba(160,120,255,1)',
+        backgroundColor: 'rgba(160,120,255,0.08)',
+        fill: true,
+        tension: 0.4,
+        borderWidth: 2,
+        pointStyle: 'circle',
+        pointRadius: 4,
+        pointHoverRadius: 6,
+        pointBackgroundColor: 'rgba(160,120,255,1)'
+      },
+      {
+        label: 'Ac',
+        data: [5,6,7,8,9,10,11, 12, 13, 14, 15, 16],
+        borderColor: 'rgba(79,142,247,1)',
+        backgroundColor: 'rgba(79,142,247,0.08)',
+        fill: true,
+        tension: 0.4,
+        borderWidth: 2,
+        pointStyle: 'circle',
+        pointRadius: 4,
+        pointHoverRadius: 6,
+        pointBackgroundColor: 'rgba(79,142,247,1)'
+      },
+      {
+        label: 'Tv',
+        data: [10,12,14,16,18,20,22, 24, 26, 28, 30, 32],
+        borderColor: 'rgba(247,196,79,1)',
+        backgroundColor: 'rgba(247,196,79,0.08)',
+        fill: true,
+        tension: 0.4,
+        borderWidth: 2,
+        pointStyle: 'circle',
+        pointRadius: 4,
+        pointHoverRadius: 6,
+        pointBackgroundColor: 'rgba(247,196,79,1)'
+      },
     ]
   },
   options: {
     responsive: true,
-    plugins: { legend: { labels: { color:'#7b82a0', font:{ family:'DM Sans', size:12 } } } },
+    interaction: {
+      mode: 'index',
+      intersect: false
+    },
+    plugins: {
+      legend: {
+        labels: {
+          color: '#7b82a0',
+          font: { family: 'DM Sans', size: 12 },
+          usePointStyle: true,
+          pointStyle: 'circle',   
+          generateLabels: function(chart) {
+            const labels = Chart.defaults.plugins.legend.labels.generateLabels(chart);
+            labels.forEach(label => {
+                label.pointStyle = 'circle';
+                label.fillStyle = chart.data.datasets[label.datasetIndex].borderColor;
+                if (label.hidden) {
+                    label.textDecoration = 'line-through';
+                    label.fillStyle = 'rgba(123, 130, 160, 0.3)'; 
+                } else {
+                    label.textDecoration = 'none'; 
+                }
+            });
+            return labels;
+          }
+        },
+        onClick: function(e, legendItem, legend) {
+            const index = legendItem.datasetIndex;
+            const ci = legend.chart;
+            if (ci.isDatasetVisible(index)) {
+                ci.hide(index);
+                legendItem.hidden = true;
+            } else {
+                ci.show(index);
+                legendItem.hidden = false;
+            }
+            ci.update();
+        }
+      }
+    },
     scales: {
-      x: { ticks:{ color:'#7b82a0' }, grid:{ color:'rgba(42,47,69,0.6)' } },
-      y: { ticks:{ color:'#7b82a0', callback: v => 'Rp '+v+'jt' }, grid:{ color:'rgba(42,47,69,0.6)' } }
+      x: {
+        ticks: { color: '#7b82a0' },
+        grid: { color: 'rgba(42,47,69,0.4)', drawBorder: false }
+      },
+      y: {
+        ticks: {
+          color: '#7b82a0',
+          callback: v => 'Rp ' + v + 'jt'
+        },
+        grid: { color: 'rgba(42,47,69,0.4)', drawBorder: false },
+        beginAtZero: true
+      }
     }
   }
 });
@@ -51,6 +189,9 @@ const stockData = [
   { label:'Tablet',  count:104, color:'#4fc78a' },
   { label:'Blender', count:562, color:'#f7654f' },
   { label:'Kulkas',  count:264, color:'#a078ff' },
+  { label:'Ac', count:150, color:'#4f8ef7' },
+  { label:'Tv', count:320, color:'#f7c44f'},
+  { label:'Headphone', count:200, color:'#4fc78a'},
 ];
 const maxStock = Math.max(...stockData.map(s => s.count));
 const stockList = document.getElementById('stockList');
@@ -65,7 +206,6 @@ stockData.forEach(s => {
 });
 
 // ── POPULAR TABLE ─────────────────────────────────────────────────────────────
-// (tetap dari data JS statis karena data terjual belum dari DB)
 const products = [
   { nama:'Philips HR2041', kat:'Blender', terjual:185, harga:350000, stok:210 },
   { nama:'Miyako BL-101 PF', kat:'Blender', terjual:162, harga:165000, stok:185 },
@@ -117,7 +257,7 @@ usersStatic.forEach(u => {
   </div>`;
 });
 
-// ── SEARCH & FILTER (tabel produk, filter di sisi client dari data Thymeleaf) ─
+// ── SEARCH & FILTER 
 document.getElementById('searchInput').addEventListener('input', e => {
   const q = e.target.value.toLowerCase();
   document.querySelectorAll('#productTable tr').forEach(row => {
@@ -272,7 +412,7 @@ function submitForm(action, params, method = 'POST') {
   const form = document.createElement('form');
   form.method = method === 'GET' ? 'GET' : 'POST';
   form.action = action;
-  // CSRF token (wajib karena Spring Security aktif)
+  // CSRF token 
   const csrfMeta  = document.querySelector('meta[name="_csrf"]');
   const csrfHeader = document.querySelector('meta[name="_csrf_header"]');
   if (csrfMeta && method !== 'GET') {
