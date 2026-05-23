@@ -1,5 +1,4 @@
 package com.electro.service;
-
 import com.electro.model.User;
 import com.electro.repository.UserRepository;
 import com.electro.security.CustomUserDetails;
@@ -34,7 +33,7 @@ public class UserService implements UserDetailsService {
         if (userRepository.existsByUsername(username)) {
             throw new IllegalArgumentException("Username already used!");
         }
-        User user = new User(username, email, passwordEncoder.encode(password), "ROLE_USER");
+        User user = new User(username, email, passwordEncoder.encode(password), "USER");
         userRepository.save(user);
     }
 }

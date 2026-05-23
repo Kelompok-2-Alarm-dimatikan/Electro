@@ -1,5 +1,4 @@
 package com.electro;
-
 import com.electro.model.*;
 import com.electro.repository.ElectroRepository;
 import com.electro.repository.UserRepository;
@@ -29,9 +28,9 @@ public class DataSeeder {
             }
 
             if (userRepo.count() == 0) {
-                userService.register("admin", "admin@example.com", "admin123");
+                userService.register("admin", "admin@electro.com", "admin123");
                 var admin = userRepo.findByUsername("admin").get();
-                admin.setRole("ROLE_ADMIN");
+                admin.setRole("ADMIN");
                 userRepo.save(admin);
             }
         };

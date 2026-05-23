@@ -1,5 +1,4 @@
 package com.electro.config;
-
 import com.electro.service.UserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -39,7 +38,7 @@ public class SecurityConfig {
             .authenticationManager(authenticationManager())
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/css/**", "/js/**", "/register", "/login", "/").permitAll()
-                .requestMatchers("/admin/**").hasRole("ADMIN")
+                .requestMatchers("/admin/**").hasAuthority("ADMIN")
                 .requestMatchers("/electronic/**", "/settings/**").authenticated()
                 .anyRequest().authenticated()
             )

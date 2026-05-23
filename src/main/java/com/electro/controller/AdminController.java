@@ -1,5 +1,4 @@
 package com.electro.controller;
-
 import com.electro.repository.UserRepository;
 import com.electro.service.ElectroService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +21,7 @@ public class AdminController {
     @GetMapping
     public String adminPage(Model model) {
         model.addAttribute("electronic", electroService.getAllElectro());
-        return "admin"; // → templates/admin.html
+        return "admin"; 
     }
 
     @PostMapping("/tambahStok")

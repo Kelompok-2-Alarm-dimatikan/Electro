@@ -27,7 +27,7 @@ public class User {
         this.email = email;
         this.password = password;
         this.role = role;
-        this.email = username + "@example.com";
+        // this.email = username + "@example.com";
     }
 
     public Long getId() {

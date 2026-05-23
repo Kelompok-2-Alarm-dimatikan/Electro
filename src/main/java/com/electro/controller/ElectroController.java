@@ -1,5 +1,4 @@
 package com.electro.controller;
-
 import org.springframework.security.core.Authentication;
 import com.electro.service.ElectroService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +16,7 @@ public class ElectroController {
     @GetMapping
     public String index(Model model, Authentication authentication) {
         if (authentication != null && authentication.getAuthorities().stream()
-                .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"))) {
+                .anyMatch(a -> a.getAuthority().equals("ADMIN"))) {
             return "redirect:/admin";
         }
         model.addAttribute("electronic", electroService.getAllElectro());
