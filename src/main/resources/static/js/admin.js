@@ -442,3 +442,73 @@ function showToast(msg, color) {
   toastTimer = setTimeout(() => toast.classList.remove('show'), 3000);
 }
 });
+
+(function () {
+  const wrapper  = document.getElementById('profileWrapper');
+  const btn      = document.getElementById('profileBtn');
+  const panel    = document.getElementById('profilePanel');
+
+  if (!wrapper || !btn || !panel) return;
+
+  // Toggle buka/tutup
+  btn.addEventListener('click', function (e) {
+    e.stopPropagation();
+    const isOpen = wrapper.classList.toggle('open');
+
+    btn.style.transform = isOpen ? 'translateY(-3px)' : '';
+  });
+
+  document.addEventListener('click', function (e) {
+    if (!wrapper.contains(e.target)) {
+      wrapper.classList.remove('open');
+      btn.style.transform = '';
+    }
+  });
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && wrapper.classList.contains('open')) {
+      wrapper.classList.remove('open');
+      btn.style.transform = '';
+    }
+  });
+
+  /* ── Ubah Password ── */
+  const pwOverlay  = document.getElementById('pwModalOverlay');
+  const btnOpenPw  = document.getElementById('btnOpenPw');
+  const btnClose1  = document.getElementById('btnClosePw');
+  const btnClose2  = document.getElementById('btnClosePw2');
+
+  function openPwModal() {
+    wrapper.classList.remove('open');   
+    if (pwOverlay) pwOverlay.classList.add('active');
+  }
+  function closePwModal() {
+    if (pwOverlay) pwOverlay.classList.remove('active');
+  }
+
+  if (btnOpenPw)  btnOpenPw.addEventListener('click',  openPwModal);
+  if (btnClose1)  btnClose1.addEventListener('click',  closePwModal);
+  if (btnClose2)  btnClose2.addEventListener('click',  closePwModal);
+  if (pwOverlay)  pwOverlay.addEventListener('click', function (e) {
+    if (e.target === pwOverlay) closePwModal();
+  });
+
+  const hasFlash = pwOverlay && (
+    pwOverlay.querySelector('.pw-alert-error') ||
+    pwOverlay.querySelector('.pw-alert-success')
+  );
+  if (hasFlash) openPwModal();
+
+  ['notifNewUser', 'notifReport', 'notifStock'].forEach(function (id) {
+    const cb = document.getElementById(id);
+    if (!cb) return;
+
+    // Pulihkan state tersimpan
+    const saved = localStorage.getItem('notif_' + id);
+    if (saved !== null) cb.checked = saved === 'true';
+
+    cb.addEventListener('change', function () {
+      localStorage.setItem('notif_' + id, cb.checked);
+    });
+  });
+})();
