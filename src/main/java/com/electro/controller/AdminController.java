@@ -1,6 +1,4 @@
 package com.electro.controller;
-
-import com.electro.model.User;
 import com.electro.repository.UserRepository;
 import com.electro.service.ElectroService;
 import com.electro.service.UserService;
@@ -12,81 +10,27 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.util.List;
-
 @Controller
 @RequestMapping("/admin")
 public class AdminController {
 
     private final UserRepository userRepository;
 
-    @Autowired
-    private ElectroService electroService;
-
-    @Autowired
-    private UserService userService;
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    @Autowired private ElectroService electroService;
+    @Autowired private UserService    userService;
+    @Autowired private PasswordEncoder passwordEncoder;
 
     AdminController(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
     @GetMapping
-    public String adminPage(Model model, Authentication auth) {
+    public String adminPage(Model model) {
         model.addAttribute("electronic", electroService.getAllElectro());
-
-        // Menampilkan data user di panel profil
-        if (auth != null) {
-            User currentUser = userRepository.findByUsername(auth.getName()).orElse(null);
-            model.addAttribute("currentUser", currentUser);
-        }
-
-        // Notifikasi role user
-        List<User> allUsers = (List<User>) userRepository.findAll();
-        long newUserCount = allUsers.stream()
-                .filter(u -> "USER".equals(u.getRole()))
-                .count();
-        model.addAttribute("newUserCount", newUserCount);
-        model.addAttribute("users", allUsers);
-        model.addAttribute("devices", electroService.getAllElectro());
-
         return "admin";
     }
 
-    // Ganti Password 
-    @PostMapping("/change-password")
-    public String changePassword(@RequestParam String oldPassword,
-                                 @RequestParam String newPassword,
-                                 @RequestParam String confirmPassword,
-                                 Authentication auth,
-                                 RedirectAttributes ra) {
-        if (auth == null) return "redirect:/login";
-
-        User user = userRepository.findByUsername(auth.getName()).orElse(null);
-        if (user == null) return "redirect:/login";
-
-        if (!passwordEncoder.matches(oldPassword, user.getPassword())) {
-            ra.addFlashAttribute("pwError", "Password lama tidak cocok!");
-            return "redirect:/admin";
-        }
-        if (!newPassword.equals(confirmPassword)) {
-            ra.addFlashAttribute("pwError", "Konfirmasi password tidak cocok!");
-            return "redirect:/admin";
-        }
-        if (newPassword.length() < 6) {
-            ra.addFlashAttribute("pwError", "Password minimal 6 karakter!");
-            return "redirect:/admin";
-        }
-
-        user.setPassword(passwordEncoder.encode(newPassword));
-        userRepository.save(user);
-        ra.addFlashAttribute("pwSuccess", "Password berhasil diubah!");
-        return "redirect:/admin";
-    }
-
-    // Stok & Produk 
+    /* STOK */
     @PostMapping("/tambahStok")
     public String tambahStok(@RequestParam Long id, @RequestParam int jumlah) {
         electroService.tambahStok(id, jumlah);
@@ -99,6 +43,7 @@ public class AdminController {
         return "redirect:/admin";
     }
 
+    /* PRODUK */
     @PostMapping("/tambah")
     public String tambah(@RequestParam String kategori,
                          @RequestParam String nama,
@@ -122,6 +67,44 @@ public class AdminController {
     @GetMapping("/hapus/{id}")
     public String hapus(@PathVariable Long id) {
         electroService.hapusElectro(id);
+        return "redirect:/admin";
+    }
+
+    /* UBAH PASSWORD */
+    @PostMapping("/change-password")
+    public String changePassword(@RequestParam String oldPassword,
+                                 @RequestParam String newPassword,
+                                 @RequestParam String confirmPassword,
+                                 Authentication auth,
+                                 RedirectAttributes redirectAttributes) {
+
+        String username = auth.getName();
+        var userOpt = userRepository.findByUsername(username);
+
+        if (userOpt.isEmpty()) {
+            redirectAttributes.addFlashAttribute("pwError", "User tidak ditemukan.");
+            return "redirect:/admin";
+        }
+
+        var user = userOpt.get();
+
+        if (!passwordEncoder.matches(oldPassword, user.getPassword())) {
+            redirectAttributes.addFlashAttribute("pwError", "Password lama tidak sesuai.");
+            return "redirect:/admin";
+        }
+
+        if (!newPassword.equals(confirmPassword)) {
+            redirectAttributes.addFlashAttribute("pwError", "Konfirmasi password tidak cocok.");
+            return "redirect:/admin";
+        }
+
+        if (newPassword.length() < 6) {
+            redirectAttributes.addFlashAttribute("pwError", "Password baru minimal 6 karakter.");
+            return "redirect:/admin";
+        }
+
+        userService.updatePassword(user, newPassword);
+        redirectAttributes.addFlashAttribute("pwSuccess", "Password berhasil diubah.");
         return "redirect:/admin";
     }
 }
