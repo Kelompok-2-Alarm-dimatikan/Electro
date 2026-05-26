@@ -25,7 +25,7 @@
     <nav class="header-nav">
         <a href="/electronic" class="nav-link">Home</a>
         <a href="/product" class="nav-link">Product</a>
-        <a href="/electronic#kategori" class="nav-link">Kategori</a>
+        <a href="#" class="nav-link">Laporan</a>
     </nav>
     <div class="header-right">
         <div class="profile-wrap" id="profileWrap">
@@ -35,7 +35,7 @@
                 </div>
                 <div class="profile-info">
                     <span class="profile-name" th:text="${#authentication.name}">User</span>
-                    <span class="profile-role">Customer</span>
+                    <span class="profile-role">User</span>
                 </div>
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="chevron"><polyline points="6 9 12 15 18 9"></polyline></svg>
             </button>
@@ -111,16 +111,6 @@
                             <div class="pay-details">
                                 <span class="pay-title">E-Wallet</span>
                                 <span class="pay-desc">Gopay, OVO, ShopeePay, DANA</span>
-                            </div>
-                        </div>
-                    </label>
-                    <label class="payment-card">
-                        <input type="radio" name="paymentMethod" value="COD">
-                        <div class="payment-content">
-                            <span class="pay-icon">📦</span>
-                            <div class="pay-details">
-                                <span class="pay-title">Bayar di Tempat (COD)</span>
-                                <span class="pay-desc">Bayar tunai saat kurir tiba</span>
                             </div>
                         </div>
                     </label>

@@ -4,8 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Electro Store — Premium Devices</title>
-    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@500;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/product.css}">
 </head>
 <body>
     
@@ -22,9 +23,14 @@
     <nav class="header-nav">
         <a href="#" class="nav-link active">Home</a>
         <a href="/product" class="nav-link">Product</a>
-        <a href="#kategori" class="nav-link">Laporan</a> </nav>
+        <a href="#kategori" class="nav-link">Laporan</a>
+    </nav>
 
     <div class="header-right">
+        <button class="cart-btn" onclick="toggleCart()" aria-label="Cart">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+            <span class="cart-count" id="cartCount">0</span>
+        </button>
         <div class="profile-wrap" id="profileWrap">
             <button class="profile-btn" onclick="toggleProfile()" aria-label="Profile menu">
                 <div class="profile-avatar">
@@ -41,9 +47,15 @@
                     <div class="dropdown-name" th:text="${#authentication.name}">User</div>
                     <div class="dropdown-email" th:text="${#authentication.principal.email}"></div>
                 </div>
-                <a href="/settings" class="dropdown-item">⚙️ Pengaturan Akun</a>
+                <a href="/settings" class="dropdown-item">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                    Pengaturan Akun
+                </a>
                 <form th:action="@{/logout}" method="post">
-                    <button type="submit" class="dropdown-item logout-btn">🚪 Keluar</button>
+                    <button type="submit" class="dropdown-item logout-btn">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+                        Keluar
+                    </button>
                 </form>
             </div>
         </div>
@@ -58,7 +70,7 @@
                     <span class="slide-badge">Koleksi Baru</span>
                     <h2>MacBook Pro M3 Max</h2>
                     <p>Performa buas dalam balutan desain elegan. Cocok untuk produktivitas ekstrem tanpa batas.</p>
-                    <a href="#" class="btn btn-primary">Lihat Spesifikasi</a>
+                    <a href="/product" class="btn btn-primary">Lihat Produk</a>
                 </div>
             </div>
             <div class="slide slide-2">
@@ -66,7 +78,7 @@
                     <span class="slide-badge" style="background: rgba(52,211,153,0.2); color:#6ee7b7;">Eksklusif</span>
                     <h2>Galaxy S24 Ultra</h2>
                     <p>Dilengkapi material titanium premium dan kamera revolusioner.</p>
-                    <a href="#" class="btn btn-outline">Eksplor Seri S24</a>
+                    <a href="/product" class="btn btn-outline">Eksplor Seri S24</a>
                 </div>
             </div>
             <div class="slide slide-3">
@@ -74,7 +86,7 @@
                     <span class="slide-badge">Profesional</span>
                     <h2>iPad Pro OLED</h2>
                     <p>Kanvas digital paling tipis dan bertenaga. Dirancang untuk para kreator visual sejati.</p>
-                    <a href="#" class="btn btn-primary">Lihat Detail</a>
+                    <a href="/product" class="btn btn-primary">Lihat Detail</a>
                 </div>
             </div>
         </div>
@@ -97,26 +109,49 @@
                 <div class="banner-content">
                     <h4 class="banner-title">Laptop Series</h4>
                     <div class="banner-sub">Workstation portabel dengan efisiensi dan tenaga maksimal untuk para profesional.</div>
-                    <a href="#" class="banner-btn">Jelajahi Laptop →</a>
+                    <a href="/product" class="banner-btn">Jelajahi Laptop →</a>
                 </div>
             </div>
             <div class="promo-card banner-small category-phone">
                 <div class="banner-content">
                     <h4 class="banner-title" style="color: #60a5fa;">Smartphones</h4>
                     <div class="banner-sub">Canggih dan inovatif, dirancang untuk memberikan pengalaman terbaik.</div>
-                    <a href="#" class="banner-btn" style="border-bottom-color: #60a5fa; color: #60a5fa;">Lihat HP →</a>
+                    <a href="/product" class="banner-btn" style="border-bottom-color: #60a5fa; color: #60a5fa;">Lihat HP →</a>
                 </div>
             </div>
             <div class="promo-card banner-small category-tablet">
                 <div class="banner-content">
                     <h4 class="banner-title" style="color: #34d399;">Tablet</h4>
-                    <div class="banner-sub">Lengkapi ekosistem digital untuk desain & baca.</div>
-                    <a href="#" class="banner-btn" style="border-bottom-color: #34d399; color: #34d399;">Lihat Tablet →</a>
+                    <div class="banner-sub">Lengkapi ekosistem digital untuk desain &amp; baca.</div>
+                    <a href="/product" class="banner-btn" style="border-bottom-color: #34d399; color: #34d399;">Lihat Tablet →</a>
                 </div>
             </div>
         </div>
     </section>
 </main>
+
+<!-- Cart Sidebar (sama dengan product.html) -->
+<div class="cart-sidebar" id="cartSidebar">
+    <div class="cart-header">
+        <h3>Keranjang Belanja</h3>
+        <button class="close-cart" onclick="toggleCart()">✕</button>
+    </div>
+    <div class="cart-items" id="cartItems">
+        <div class="cart-empty-state">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="color: #3f3f46; margin-bottom: 1rem;"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+            <p style="color: #52525b; font-size: 0.9rem;">Keranjang masih kosong</p>
+            <a href="/product" style="color: #a1a1aa; font-size: 0.8rem; margin-top: 0.5rem; display: block;">Lihat produk →</a>
+        </div>
+    </div>
+    <div class="cart-footer">
+        <div class="total-row">
+            <span>Total Bayar:</span>
+            <span id="cartTotal">Rp 0</span>
+        </div>
+        <button class="btn-checkout" onclick="checkout()">Checkout Sekarang</button>
+    </div>
+</div>
+<div class="cart-overlay" id="cartOverlay" onclick="toggleCart()"></div>
 
 <footer>
     <div class="footer-content">
@@ -129,5 +164,69 @@
 </footer>
 
 <script th:src="@{/js/app.js}"></script>
+<script>
+// Cart mini functions untuk halaman home (read-only, tidak add to cart dari sini)
+function toggleCart() {
+    const sidebar = document.getElementById('cartSidebar');
+    const overlay = document.getElementById('cartOverlay');
+    sidebar.classList.toggle('open');
+    overlay.classList.toggle('show');
+}
+
+function renderCartHome() {
+    const cart = JSON.parse(localStorage.getItem('electro_cart') || '[]');
+    const count = cart.reduce((sum, item) => sum + item.qty, 0);
+    const countEl = document.getElementById('cartCount');
+    if (countEl) countEl.textContent = count;
+
+    const container = document.getElementById('cartItems');
+    if (!container) return;
+
+    if (cart.length === 0) {
+        container.innerHTML = `
+            <div class="cart-empty-state">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="color: #3f3f46; margin-bottom: 1rem;"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+                <p style="color: #52525b; font-size: 0.9rem;">Keranjang masih kosong</p>
+                <a href="/product" style="color: #a1a1aa; font-size: 0.8rem; margin-top: 0.5rem; display: block;">Lihat produk →</a>
+            </div>`;
+        document.getElementById('cartTotal').textContent = 'Rp 0';
+        return;
+    }
+
+    let total = 0;
+    container.innerHTML = '';
+    cart.forEach((item, index) => {
+        total += item.price * item.qty;
+        container.innerHTML += `
+            <div class="cart-item-row">
+                <div class="cart-item-info">
+                    <div class="cart-item-name">${item.name}</div>
+                    <div class="cart-item-meta">${item.qty} x ${formatRpHome(item.price)}</div>
+                </div>
+                <button class="btn-remove-item" onclick="removeFromCartHome(${index})">Hapus</button>
+            </div>`;
+    });
+    document.getElementById('cartTotal').textContent = formatRpHome(total);
+}
+
+function removeFromCartHome(index) {
+    const cart = JSON.parse(localStorage.getItem('electro_cart') || '[]');
+    cart.splice(index, 1);
+    localStorage.setItem('electro_cart', JSON.stringify(cart));
+    renderCartHome();
+}
+
+function checkout() {
+    const cart = JSON.parse(localStorage.getItem('electro_cart') || '[]');
+    if (cart.length === 0) return;
+    window.location.href = '/checkout';
+}
+
+function formatRpHome(num) {
+    return 'Rp ' + Math.round(num).toLocaleString('id-ID');
+}
+
+document.addEventListener('DOMContentLoaded', renderCartHome);
+</script>
 </body>
 </html>

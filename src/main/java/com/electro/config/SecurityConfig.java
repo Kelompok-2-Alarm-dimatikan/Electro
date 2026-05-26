@@ -39,7 +39,7 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/css/**", "/js/**", "/register", "/login", "/").permitAll()
                 .requestMatchers("/admin/**").hasAuthority("ADMIN")
-                .requestMatchers("/electronic/**", "/product/**", "/settings/**").authenticated()
+                .requestMatchers("/electronic/**", "/product/**", "/settings/**", "/checkout").authenticated()
                 .anyRequest().authenticated()
             )
             .formLogin(form -> form
