@@ -34,7 +34,11 @@
         <div class="profile-wrap" id="profileWrap">
             <button class="profile-btn" onclick="toggleProfile()" aria-label="Profile menu">
                 <div class="profile-avatar">
-                    <span th:text="${#strings.substring(#authentication.name, 0, 1).toUpperCase()}">U</span>
+                    <img th:if="${#authentication.principal instanceof T(com.electro.security.CustomUserDetails) && #authentication.principal.avatar != null && !#authentication.principal.avatar.isEmpty()}" 
+                         th:src="${#authentication.principal.avatar}" 
+                         style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%; display: block;" alt="Avatar"/>
+                    <span th:unless="${#authentication.principal instanceof T(com.electro.security.CustomUserDetails) && #authentication.principal.avatar != null && !#authentication.principal.avatar.isEmpty()}" 
+                          th:text="${#strings.substring(#authentication.name, 0, 1).toUpperCase()}">U</span>
                 </div>
                 <div class="profile-info">
                     <span class="profile-name" th:text="${#authentication.name}">User</span>

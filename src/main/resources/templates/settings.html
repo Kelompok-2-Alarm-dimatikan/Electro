@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pengaturan Akun — Electro</title>
-    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@500;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" th:href="@{/css/settings.css}">
 </head>
 <body>
@@ -13,61 +13,216 @@
     <header>
         <div class="header-left">
             <a href="/electronic" class="logo" style="text-decoration: none;">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap=\"round\" stroke-linejoin=\"round\" class="logo-icon"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path></svg>
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="logo-icon"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path></svg>
                 Electro
             </a>
             <span class="logo-badge">Pengaturan</span>
         </div>
-        <nav class="header-nav">
-            <a href="/electronic" class="nav-link">Dashboard</a>
-            <a href="#" class="nav-link active">Akun</a>
-        </nav>
     </header>
 
     <div class="settings-wrapper">
-        <div class="settings-card animate-up">
-            <div class="settings-header">
-                <h2>Pengaturan Profil</h2>
-                <p class="settings-subtitle">Kelola informasi keamanan akun Anda</p>
+        <div class="settings-container animate-up">
+            
+            <!-- CLOSE BUTTON -->
+            <a href="/electronic" class="settings-close-btn" aria-label="Kembali">✕</a>
+            
+            <!-- SIDEBAR -->
+            <div class="settings-sidebar">
+                <div class="sidebar-header">
+                    <div class="avatar-sidebar">
+                        <img th:if="${#authentication.principal.avatar != null && !#authentication.principal.avatar.isEmpty()}" 
+                             th:src="${#authentication.principal.avatar}" 
+                             class="user-avatar-img" alt="Avatar"/>
+                        <span th:unless="${#authentication.principal.avatar != null && !#authentication.principal.avatar.isEmpty()}" 
+                              th:text="${#strings.substring(#authentication.name, 0, 1).toUpperCase()}">U</span>
+                    </div>
+                    <div class="sidebar-info">
+                        <h3 th:text="${#authentication.name}">Username</h3>
+                        <p class="sidebar-email" th:text="${#authentication.principal.email}">email@mail.com</p>
+                    </div>
+                </div>
+                <ul class="sidebar-menu">
+                    <li class="menu-item active" onclick="switchTab('profile')">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                        <span>Profil</span>
+                    </li>
+                    <li class="menu-item" onclick="switchTab('password')">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                        <span>Ubah Password</span>
+                    </li>
+                    <li class="menu-item danger" onclick="switchTab('account')">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>
+                        <span>Account Setting</span>
+                    </li>
+                </ul>
             </div>
-
-            <div class="success-msg" th:if="${success}" th:text="${success}"></div>
-            <div class="error-msg" th:if="${error}" th:text="${error}"></div>
-
-            <div class="profile-summary">
-                <div class="avatar-large">
-                    <span th:text="${#strings.substring(#authentication.name, 0, 1).toUpperCase()}">U</span>
+            
+            <!-- MAIN CONTENT -->
+            <div class="settings-content-area">
+                
+                <!-- ALERTS -->
+                <div class="success-msg animate-up" th:if="${success}" th:text="${success}"></div>
+                <div class="error-msg animate-up" th:if="${error}" th:text="${error}"></div>
+                
+                <!-- PROFILE -->
+                <div id="tab-profile" class="tab-panel active">
+                    <div class="panel-header">
+                        <h2>Informasi Profil</h2>
+                        <p class="panel-subtitle">Kelola informasi publik dan foto profil akun Anda</p>
+                    </div>
+                    
+                    <form th:action="@{/settings/update-profile}" method="post" class="settings-form">
+                        
+                        <!-- Avatar Upload Box -->
+                        <div class="avatar-upload-container">
+                            <div class="avatar-preview-wrap" onclick="document.getElementById('avatar-file-input').click()">
+                                <img id="avatar-preview" 
+                                     th:src="${#authentication.principal.avatar != null && !#authentication.principal.avatar.isEmpty() ? #authentication.principal.avatar : ''}" 
+                                     th:style="${#authentication.principal.avatar != null && !#authentication.principal.avatar.isEmpty() ? 'display:block' : 'display:none'}" 
+                                     alt="Preview"/>
+                                <div id="avatar-text-fallback" 
+                                     th:text="${#strings.substring(#authentication.name, 0, 1).toUpperCase()}"
+                                     th:style="${#authentication.principal.avatar != null && !#authentication.principal.avatar.isEmpty() ? 'display:none' : 'display:flex'}">
+                                     U
+                                </div>
+                                <div class="avatar-overlay">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+                                </div>
+                            </div>
+                            <div class="avatar-upload-info">
+                                <button type="button" class="btn btn-outline btn-sm" onclick="document.getElementById('avatar-file-input').click()">Unggah Foto Baru</button>
+                                <p class="file-limits">Mendukung format JPG, PNG, atau WEBP. Maksimal ukuran 1MB.</p>
+                                <input type="file" id="avatar-file-input" accept="image/*" style="display:none" onchange="handleAvatarUpload(event)"/>
+                                <input type="hidden" name="avatar" id="avatar-base64-input"/>
+                            </div>
+                        </div>
+                        
+                        <div class="field">
+                            <label>Username</label>
+                            <input type="text" name="username" th:value="${#authentication.name}" required />
+                        </div>
+                        
+                        <div class="field">
+                            <label>Email Address</label>
+                            <input type="email" name="email" th:value="${#authentication.principal.email}" required />
+                        </div>
+                        
+                        <div class="actions">
+                            <button type="submit" class="btn btn-primary">Simpan Profil</button>
+                        </div>
+                    </form>
                 </div>
-                <div class="profile-info">
-                    <h3 th:text="${#authentication.name}">Username</h3>
-                    <p th:text="${#authentication.principal instanceof T(com.electro.security.CustomUserDetails) ? #authentication.principal.email : 'Email tidak tersedia'}">user@mail.com</p>
+                
+                <!-- CHANGE PASSWORD -->
+                <div id="tab-password" class="tab-panel">
+                    <div class="panel-header">
+                        <h2>Ubah Password</h2>
+                        <p class="panel-subtitle">Jaga keamanan akun Anda dengan mengganti password secara berkala</p>
+                    </div>
+                    
+                    <form th:action="@{/settings/update-password}" method="post" class="settings-form">
+                        <div class="field">
+                            <label>Password Saat Ini</label>
+                            <div class="input-icon-wrap">
+                                <input type="password" id="currentPasswordInput" name="currentPassword" placeholder="Masukkan password sekarang" required />
+                                <button type="button" class="toggle-password" onclick="togglePassword('currentPasswordInput', this)" aria-label="Tampilkan password">
+                                    <svg class="eye-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                                        <circle cx="12" cy="12" r="3"/>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="field">
+                            <label>Password Baru</label>
+                            <div class="input-icon-wrap">
+                                <input type="password" id="newPasswordInput" name="newPassword" placeholder="Masukkan password baru" required />
+                                <button type="button" class="toggle-password" onclick="togglePassword('newPasswordInput', this)" aria-label="Tampilkan password">
+                                    <svg class="eye-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                                        <circle cx="12" cy="12" r="3"/>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="field">
+                            <label>Konfirmasi Password Baru</label>
+                            <div class="input-icon-wrap">
+                                <input type="password" id="confirmNewPasswordInput" name="confirmNewPassword" placeholder="Ulangi password baru" required />
+                                <button type="button" class="toggle-password" onclick="togglePassword('confirmNewPasswordInput', this)" aria-label="Tampilkan password">
+                                    <svg class="eye-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                                        <circle cx="12" cy="12" r="3"/>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="actions">
+                            <button type="submit" class="btn btn-primary">Simpan Password</button>
+                        </div>
+                    </form>
                 </div>
+                
+                <!--  ACCOUNT SETTING -->
+                <div id="tab-account" class="tab-panel">
+                    <div class="panel-header">
+                        <h2>Pengaturan Akun</h2>
+                        <p class="panel-subtitle">Kelola keamanan tingkat lanjut dan masa aktif akun Anda</p>
+                    </div>
+                    
+                    <div class="danger-zone animate-up">
+                        <div class="danger-header">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+                            <span class="danger-title">Zona Bahaya: Hapus Akun Permanen</span>
+                        </div>
+                        <p class="danger-desc">
+                            Tindakan ini tidak dapat dibatalkan. Jika Anda menghapus akun Electro Anda, semua data termasuk riwayat belanja, preferensi, dan informasi akun akan dihapus dari sistem kami selamanya.
+                        </p>
+                        <button type="button" class="btn btn-danger" onclick="openDeleteModal()">Hapus Akun Saya</button>
+                    </div>
+                </div>
+                
             </div>
+        </div>
+    </div>
 
-            <form th:action="@{/settings/update-password}" method="post" class="settings-form">
-                <div class="form-section-title">Ubah Password</div>
-                
-                <div class="field">
-                    <label>Password Saat Ini</label>
-                    <input type="password" name="currentPassword" placeholder="Masukkan password sekarang" required />
+    <!-- DELETE CONFIRMATION MODAL -->
+    <div id="delete-modal" class="modal-overlay" style="display: none;">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3>Konfirmasi Penghapusan Akun</h3>
+                <button class="close-modal" onclick="closeDeleteModal()">✕</button>
+            </div>
+            <form th:action="@{/settings/delete}" method="post">
+                <div class="modal-body">
+                    <p class="modal-warning">
+                        Harap masukkan password Anda saat ini untuk mengonfirmasi bahwa Anda adalah pemilik sah akun ini dan ingin menghapusnya secara permanen.
+                    </p>
+                    <div class="field">
+                        <label>Password Saat Ini</label>
+                        <div class="input-icon-wrap">
+                            <input type="password" id="deletePasswordInput" name="password" placeholder="Masukkan password Anda" required />
+                            <button type="button" class="toggle-password" onclick="togglePassword('deletePasswordInput', this)" aria-label="Tampilkan password">
+                                <svg class="eye-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                                    <circle cx="12" cy="12" r="3"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
                 </div>
-                
-                <div class="field">
-                    <label>Password Baru</label>
-                    <input type="password" name="newPassword" placeholder="Buat password baru" required />
-                </div>
-                
-                <div class="field">
-                    <label>Konfirmasi Password Baru</label>
-                    <input type="password" name="confirmNewPassword" placeholder="Ulangi password baru" required />
-                </div>
-                
-                <div class="actions">
-                    <a href="/electronic" class="btn btn-outline">Batal</a>
-                    <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline" onclick="closeDeleteModal()">Batal</button>
+                    <button type="submit" class="btn btn-danger-filled">Hapus Akun Selamanya</button>
                 </div>
             </form>
         </div>
     </div>
+
+    <script th:src="@{/js/settings.js}"></script>
+
 </body>
 </html>

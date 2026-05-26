@@ -108,7 +108,7 @@ header {
 .profile-avatar {
     width: 36px; height: 36px; background: #27272a; border-radius: 50%; display: flex;
     align-items: center; justify-content: center; font-weight: 600; color: var(--text-main);
-    border: 1px solid rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.1); overflow: hidden;
 }
 .profile-info { text-align: left; display: block; }
 .profile-name { display: block; font-size: 0.85rem; font-weight: 600; color: var(--text-main); }

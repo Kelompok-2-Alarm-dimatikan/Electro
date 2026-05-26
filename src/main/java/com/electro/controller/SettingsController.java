@@ -1,10 +1,18 @@
 package com.electro.controller;
 import com.electro.model.User;
 import com.electro.repository.UserRepository;
+import com.electro.security.CustomUserDetails;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
+import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
+import org.springframework.security.web.context.SecurityContextRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -19,13 +27,75 @@ public class SettingsController {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    private final SecurityContextRepository securityContextRepository = new HttpSessionSecurityContextRepository();
+
     @GetMapping
     public String settingsPage() {
         return "settings"; 
     }
 
+    @PostMapping("/update-profile")
+    public String updateProfile(@AuthenticationPrincipal CustomUserDetails currentUser,
+                                 @RequestParam String username,
+                                 @RequestParam String email,
+                                 @RequestParam(required = false) String avatar,
+                                 HttpServletRequest request,
+                                 HttpServletResponse response,
+                                 Model model) {
+        
+        User user = userRepository.findByUsername(currentUser.getUsername())
+                .orElseThrow(() -> new IllegalArgumentException("User tidak ditemukan"));
+
+        // Validasi Username baru jika diubah
+        if (!username.equals(user.getUsername())) {
+            if (userRepository.existsByUsername(username)) {
+                model.addAttribute("error", "Username sudah digunakan!");
+                return "settings";
+            }
+            user.setUsername(username);
+        }
+
+        // Validasi Email baru 
+        if (!email.equals(user.getEmail())) {
+            var existingUser = userRepository.findByUsernameOrEmail(email, email);
+            if (existingUser.isPresent() && !existingUser.get().getId().equals(user.getId())) {
+                model.addAttribute("error", "Email sudah digunakan!");
+                return "settings";
+            }
+            user.setEmail(email);
+        }
+
+        // Simpan avatar baru jika diunggah
+        if (avatar != null && !avatar.trim().isEmpty()) {
+            user.setAvatar(avatar);
+        }
+        userRepository.save(user);
+
+        // Perbarui SecurityContext 
+        CustomUserDetails newPrincipal = new CustomUserDetails(
+                user.getUsername(),
+                user.getPassword(),
+                currentUser.getAuthorities(),
+                user.getEmail(),
+                user.getAvatar()
+        );
+        
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        UsernamePasswordAuthenticationToken newAuth = new UsernamePasswordAuthenticationToken(
+                newPrincipal,
+                auth.getCredentials(),
+                auth.getAuthorities()
+        );
+        
+        SecurityContextHolder.getContext().setAuthentication(newAuth);
+        securityContextRepository.saveContext(SecurityContextHolder.getContext(), request, response);
+
+        model.addAttribute("success", "Profil berhasil diperbarui!");
+        return "settings";
+    }
+
     @PostMapping("/update-password")
-    public String updatePassword(@AuthenticationPrincipal UserDetails currentUser,
+    public String updatePassword(@AuthenticationPrincipal CustomUserDetails currentUser,
                                  @RequestParam String currentPassword,
                                  @RequestParam String newPassword,
                                  @RequestParam String confirmNewPassword,
@@ -49,5 +119,29 @@ public class SettingsController {
 
         model.addAttribute("success", "Password berhasil diperbarui!");
         return "settings";
+    }
+
+    @PostMapping("/delete")
+    public String deleteAccount(@AuthenticationPrincipal CustomUserDetails currentUser,
+                                 @RequestParam String password,
+                                 HttpServletRequest request,
+                                 HttpServletResponse response,
+                                 Model model) {
+        
+        User user = userRepository.findByUsername(currentUser.getUsername())
+                .orElseThrow(() -> new IllegalArgumentException("User tidak ditemukan"));
+
+        if (!passwordEncoder.matches(password, user.getPassword())) {
+            model.addAttribute("error", "Password konfirmasi salah!");
+            return "settings";
+        }
+        userRepository.delete(user);
+
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth != null) {
+            new SecurityContextLogoutHandler().logout(request, response, auth);
+        }
+
+        return "redirect:/login?deleted=true";
     }
 }

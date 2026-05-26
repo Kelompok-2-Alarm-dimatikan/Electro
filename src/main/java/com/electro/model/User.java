@@ -20,6 +20,10 @@ public class User {
     @Column(nullable = false)
     private String role;
 
+    @Lob
+    @Column(columnDefinition = "MEDIUMTEXT")
+    private String avatar;
+
     public User() {}
 
     public User(String username, String email, String password, String role) {
@@ -66,5 +70,11 @@ public class User {
         this.role = role;
     }
 
-   
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
+    }
 }

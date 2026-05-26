@@ -19,6 +19,7 @@
                 <p class="auth-subtitle">Masuk ke akun Anda</p>
             </div>
             <div class="error-msg" th:if="${error}" th:text="${error}"></div>
+            <div class="success-msg" th:if="${param.deleted}" th:text="'Akun Anda berhasil dihapus.'"></div>
             <form th:action="@{/login}" method="post" class="auth-form">
                 <div class="field">
                     <label>Username atau Email</label>
