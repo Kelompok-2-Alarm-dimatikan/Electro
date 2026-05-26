@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout — Electro Store</title>
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/checkout.css}">
+</head>
+<body>
+
+<div class="bg-pattern"></div>
+
+<header>
+    <div class="header-left">
+        <a href="/electronic" class="logo" style="text-decoration: none;">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="logo-icon"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path></svg>
+            Electro
+        </a>
+        <span class="logo-badge">Checkout</span>
+    </div>
+    <nav class="header-nav">
+        <a href="/electronic" class="nav-link">Home</a>
+        <a href="/product" class="nav-link">Product</a>
+        <a href="/electronic#kategori" class="nav-link">Kategori</a>
+    </nav>
+    <div class="header-right">
+        <div class="profile-wrap" id="profileWrap">
+            <button class="profile-btn" onclick="toggleProfile()">
+                <div class="profile-avatar">
+                    <span th:text="${#strings.substring(#authentication.name, 0, 1).toUpperCase()}">U</span>
+                </div>
+                <div class="profile-info">
+                    <span class="profile-name" th:text="${#authentication.name}">User</span>
+                    <span class="profile-role">Customer</span>
+                </div>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="chevron"><polyline points="6 9 12 15 18 9"></polyline></svg>
+            </button>
+            <div class="profile-dropdown">
+                <div class="dropdown-header">
+                    <div class="dropdown-name" th:text="${#authentication.name}">User</div>
+                    <div class="dropdown-email" th:text="${#authentication.principal instanceof T(com.electro.security.CustomUserDetails) ? #authentication.principal.email : 'Email tidak tersedia'}">user@mail.com</div>
+                </div>
+                <a href="/settings" class="dropdown-item">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                    Pengaturan Akun
+                </a>
+                <form th:action="@{/logout}" method="post">
+                    <button type="submit" class="dropdown-item logout-btn">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+                        Keluar
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</header>
+
+<main class="container animate-in">
+    <div class="checkout-layout">
+        <!-- FORM LEFT COLUMN -->
+        <div class="checkout-form-area">
+            <h2 class="section-title">Informasi Pengiriman</h2>
+            <p class="section-subtitle">Lengkapi rincian alamat pengiriman dan metode pembayaran gawai baru Anda.</p>
+            
+            <form id="checkoutForm" onsubmit="event.preventDefault(); submitOrder();">
+                <!-- Info Pelanggan -->
+                <div class="form-group-row">
+                    <div class="form-field">
+                        <label for="fullName">Nama Lengkap</label>
+                        <input type="text" id="fullName" th:value="${#authentication.name}" placeholder="Nama Anda" required readonly>
+                    </div>
+                    <div class="form-field">
+                        <label for="emailAddr">Alamat Email</label>
+                        <input type="email" id="emailAddr" th:value="${#authentication.principal instanceof T(com.electro.security.CustomUserDetails) ? #authentication.principal.email : ''}" placeholder="email@contoh.com" required readonly>
+                    </div>
+                </div>
+
+                <!-- Alamat Detail -->
+                <div class="form-field">
+                    <label for="shippingAddress">Alamat Lengkap Pengiriman</label>
+                    <textarea id="shippingAddress" rows="3" placeholder="Tuliskan nama jalan, nomor rumah, RT/RW, kecamatan, kota, dan kode pos..." required></textarea>
+                </div>
+
+                <!-- Telepon -->
+                <div class="form-field">
+                    <label for="phoneNumber">Nomor Telepon / WhatsApp</label>
+                    <input type="tel" id="phoneNumber" placeholder="Contoh: 081234567890" required>
+                </div>
+
+                <!-- Metode Pembayaran -->
+                <h2 class="section-title" style="margin-top: 2rem;">Metode Pembayaran</h2>
+                <div class="payment-grid">
+                    <label class="payment-card">
+                        <input type="radio" name="paymentMethod" value="BANK_TRANSFER" checked>
+                        <div class="payment-content">
+                            <span class="pay-icon">🏦</span>
+                            <div class="pay-details">
+                                <span class="pay-title">Transfer Bank</span>
+                                <span class="pay-desc">Virtual Account Otomatis</span>
+                            </div>
+                        </div>
+                    </label>
+                    <label class="payment-card">
+                        <input type="radio" name="paymentMethod" value="E_WALLET">
+                        <div class="payment-content">
+                            <span class="pay-icon">📱</span>
+                            <div class="pay-details">
+                                <span class="pay-title">E-Wallet</span>
+                                <span class="pay-desc">Gopay, OVO, ShopeePay, DANA</span>
+                            </div>
+                        </div>
+                    </label>
+                    <label class="payment-card">
+                        <input type="radio" name="paymentMethod" value="COD">
+                        <div class="payment-content">
+                            <span class="pay-icon">📦</span>
+                            <div class="pay-details">
+                                <span class="pay-title">Bayar di Tempat (COD)</span>
+                                <span class="pay-desc">Bayar tunai saat kurir tiba</span>
+                            </div>
+                        </div>
+                    </label>
+                </div>
+            </form>
+        </div>
+
+        <!-- SUMMARY RIGHT COLUMN -->
+        <div class="checkout-summary-area">
+            <div class="summary-card">
+                <h3>Ringkasan Pesanan</h3>
+                <div class="summary-divider"></div>
+                
+                <!-- Items list -->
+                <div class="summary-items" id="summaryItems">
+                    <!-- Diresolve oleh checkout.js -->
+                </div>
+
+                <div class="summary-divider"></div>
+
+                <!-- Cost Details -->
+                <div class="cost-row">
+                    <span>Subtotal Produk</span>
+                    <span id="subtotalCost">Rp 0</span>
+                </div>
+                <div class="cost-row">
+                    <span>Biaya Pengiriman</span>
+                    <span class="shipping-cost free">GRATIS</span>
+                </div>
+                <div class="cost-row">
+                    <span>Biaya Layanan &amp; Pajak</span>
+                    <span id="taxCost">Rp 10.000</span>
+                </div>
+
+                <div class="summary-divider"></div>
+
+                <div class="total-price-row">
+                    <span>Total Pembayaran:</span>
+                    <span id="totalCost">Rp 0</span>
+                </div>
+
+                <button type="submit" form="checkoutForm" class="btn-place-order" id="btnPlaceOrder">
+                    Konfirmasi &amp; Bayar Sekarang
+                </button>
+                
+                <a href="/product" class="back-to-shop-link">← Kembali ke Halaman Produk</a>
+            </div>
+        </div>
+    </div>
+</main>
+
+<!-- SUCCESS MODAL OVERLAY -->
+<div class="modal-overlay" id="successOverlay">
+    <div class="success-modal animate-up">
+        <div class="success-icon-wrap">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+        </div>
+        <h2>Pesanan Berhasil Dibuat!</h2>
+        <p>Terima kasih atas pembelian Anda. Pembayaran Anda telah dikonfirmasi dan tim kami akan segera mempersiapkan pengiriman gawai premium Anda.</p>
+        <div class="success-details">
+            <div class="s-row">
+                <span>Metode Pembayaran:</span>
+                <strong id="successPaymentMethod">-</strong>
+            </div>
+            <div class="s-row">
+                <span>Total Bayar:</span>
+                <strong class="green-text" id="successTotalCost">-</strong>
+            </div>
+        </div>
+        <button class="btn-success-close" onclick="finishCheckout()">Mulai Belanja Lagi</button>
+    </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<footer>
+    <div class="footer-content">
+        <div class="footer-logo">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path></svg>
+            Electro Store
+        </div>
+        <p>© 2026 Electro Systems</p>
+    </div>
+</footer>
+
+<script>
+    function toggleProfile() {
+        const wrap = document.getElementById('profileWrap');
+        if (wrap) wrap.classList.toggle('open');
+    }
+    document.addEventListener('click', (e) => {
+        const wrap = document.getElementById('profileWrap');
+        if (wrap && !wrap.contains(e.target)) {
+            wrap.classList.remove('open');
+        }
+    });
+</script>
+<script th:src="@{/js/checkout.js}"></script>
+</body>
+</html>

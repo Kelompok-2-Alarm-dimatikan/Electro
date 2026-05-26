@@ -14,6 +14,9 @@ public abstract class Electronic {
     private double harga;
     private int stok;
     private String merk;
+    
+    @Column(length = 1000)
+    private String imageUrl;
 
     public Electronic() {}
 
@@ -33,6 +36,8 @@ public abstract class Electronic {
     public void setStok(int stok) { this.stok = stok; }
     public String getMerk() { return merk; }
     public void setMerk(String merk) { this.merk = merk; }
+    public String getImageUrl() { return imageUrl; }
+    public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
 
     public abstract String getKategori();
 }

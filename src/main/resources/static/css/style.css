@@ -15,7 +15,7 @@
 body {
     background: var(--bg);
     color: var(--text-main);
-    font-family: 'Inter', sans-serif;
+    font-family: 'Plus Jakarta Sans', sans-serif;
     min-height: 100vh;
     position: relative;
     padding-top: var(--navbar-h);
@@ -58,7 +58,7 @@ header {
 }
 
 .logo {
-    font-family: 'Syne', sans-serif;
+    font-family: 'Outfit', sans-serif;
     font-weight: 700;
     font-size: 1.25rem;
     color: var(--text-main);
@@ -128,7 +128,7 @@ header {
 .dropdown-name { font-weight: 600; font-size: 0.9rem; }
 .dropdown-email { color: var(--text-muted); font-size: 0.75rem; }
 .dropdown-item {
-    display: block; width: 100%; padding: 0.6rem 0.8rem; color: var(--text-main);
+    display: flex; align-items: center; gap: 0.6rem; width: 100%; padding: 0.6rem 0.8rem; color: var(--text-main);
     text-decoration: none; font-size: 0.85rem; border-radius: 6px; text-align: left;
     background: transparent; border: none; cursor: pointer; transition: 0.2s;
 }
@@ -166,7 +166,7 @@ main { padding: 2rem 4vw; max-width: 1400px; margin: 0 auto; }
     display: inline-block; padding: 0.3rem 0.8rem; border-radius: 99px; background: rgba(255,255,255,0.1);
     font-size: 0.75rem; font-weight: 600; margin-bottom: 1rem;
 }
-.slide-content h2 { font-family: 'Syne', sans-serif; font-size: 2.5rem; line-height: 1.1; margin-bottom: 1rem; }
+.slide-content h2 { font-family: 'Outfit', sans-serif; font-size: 2.5rem; line-height: 1.1; margin-bottom: 1rem; }
 .slide-content p { color: var(--text-muted); font-size: 1rem; margin-bottom: 2rem; line-height: 1.5; }
 
 .btn {
@@ -191,7 +191,7 @@ main { padding: 2rem 4vw; max-width: 1400px; margin: 0 auto; }
 
 /*  BENTO KATEGORI */
 .promo-section { margin-bottom: 2rem; }
-.section-header h3 { font-family: 'Syne', sans-serif; font-size: 1.5rem; margin-bottom: 1.5rem; }
+.section-header h3 { font-family: 'Outfit', sans-serif; font-size: 1.5rem; margin-bottom: 1.5rem; }
 .promo-grid { display: grid; grid-template-columns: 2fr 1fr; grid-template-rows: 1fr 1fr; gap: 1.2rem; min-height: 320px; }
 .promo-card {
     border-radius: 16px; padding: 2rem; position: relative; overflow: hidden;
@@ -207,11 +207,11 @@ main { padding: 2rem 4vw; max-width: 1400px; margin: 0 auto; }
 .category-phone { background: linear-gradient(135deg, rgba(24,24,27,0.95), rgba(39,39,42,0.8)); }
 .category-tablet { background: linear-gradient(135deg, rgba(24,24,27,0.95), rgba(39,39,42,0.8)); }
 
-.banner-title { font-family: 'Syne', sans-serif; font-size: 1.4rem; margin-bottom: 0.5rem; }
+.banner-title { font-family: 'Outfit', sans-serif; font-size: 1.4rem; margin-bottom: 0.5rem; }
 .banner-sub { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.5rem; line-height: 1.5; max-width: 80%; }
 .banner-btn { color: var(--text-main); font-weight: 600; text-decoration: none; font-size: 0.9rem; border-bottom: 1px solid white; padding-bottom: 2px;}
 
 /* FOOTER */
 footer { border-top: 1px solid rgba(255,255,255,0.05); padding: 2rem 4vw; margin-top: 4rem; }
 .footer-content { display: flex; justify-content: space-between; align-items: center; color: var(--text-muted); font-size: 0.85rem; }
-.footer-logo { display: flex; align-items: center; gap: 8px; font-weight: 600
+.footer-logo { display: flex; align-items: center; gap: 8px; font-weight: 600; }
