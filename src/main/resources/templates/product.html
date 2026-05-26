@@ -121,7 +121,7 @@
 
     <div class="product-grid" id="productGrid">
         <div class="product-card" th:each="item : ${electronic}" 
-             th:attr="data-id=${item.id}, data-nama=${item.nama}, data-merk=${item.merk}, data-kategori=${item.kategori}, data-harga=${item.harga}, data-stok=${item.stok}">
+             th:attr="data-id=${item.id}, data-nama=${item.nama}, data-merk=${item.merk}, data-kategori=${item.kategori}, data-harga=${item.harga}, data-stok=${item.stok}, data-image=${item.imageUrl}, data-deskripsi=${item.deskripsi}, data-spesifikasi=${item.spesifikasi}">
             
             <div class="card-badges">
                 <span class="badge-cate" th:text="${item.kategori}">Kategori</span>
@@ -142,7 +142,7 @@
                 
                 <div class="product-specs-chips">
                     <span class="spec-chip">Premium Quality</span>
-                    <span class="spec-chip" th:text="${item.kategori} == 'HP' ? '5G Ready' : (${item.kategori} == 'Laptop' ? 'Fast SSD' : 'Smart Tech')">Tech</span>
+                    <span class="spec-chip" th:text="${item.kategori} == 'Hp' ? '5G Ready' : (${item.kategori} == 'Laptop' ? 'Fast SSD' : (${item.kategori} == 'Tablet' ? 'Portable' : (${item.kategori} == 'Tv' ? '4K Display' : (${item.kategori} == 'Ac' ? 'Inverter' : (${item.kategori} == 'Headphone' ? 'Noise Cancel' : 'Smart Tech')))))">Tech</span>
                     <span class="spec-chip">Garansi Resmi</span>
                 </div>
                 

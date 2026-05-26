@@ -14,9 +14,15 @@ public abstract class Electronic {
     private double harga;
     private int stok;
     private String merk;
-    
+
     @Column(length = 1000)
     private String imageUrl;
+
+    @Column(length = 3000)
+    private String deskripsi;
+
+    @Column(length = 2000)
+    private String spesifikasi;
 
     public Electronic() {}
 
@@ -38,6 +44,10 @@ public abstract class Electronic {
     public void setMerk(String merk) { this.merk = merk; }
     public String getImageUrl() { return imageUrl; }
     public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
+    public String getDeskripsi() { return deskripsi; }
+    public void setDeskripsi(String deskripsi) { this.deskripsi = deskripsi; }
+    public String getSpesifikasi() { return spesifikasi; }
+    public void setSpesifikasi(String spesifikasi) { this.spesifikasi = spesifikasi; }
 
     public abstract String getKategori();
 }
