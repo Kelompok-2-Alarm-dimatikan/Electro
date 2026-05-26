@@ -3,7 +3,6 @@ import com.electro.model.*;
 import com.electro.repository.ElectroRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 
 @Service
@@ -48,6 +47,7 @@ public class ElectroService {
             case "Ac"     -> electro = new Ac(nama, harga, stok, merk);
             case "Blender"-> electro = new Blender(nama, harga, stok, merk);
             case "Kulkas" -> electro = new Kulkas(nama, harga, stok, merk);
+            case "Headphone" -> electro = new Headphone(nama, harga, stok, merk);
             default       -> electro = new Hp(nama, harga, stok, merk);
         }
         electroRepository.save(electro);
