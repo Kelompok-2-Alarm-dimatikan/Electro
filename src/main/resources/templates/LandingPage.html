@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Electro — Store</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;1,600;1,700&family=Space+Grotesk:wght@500;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/LandingPage.css}">
+</head>
+<body>
+
+<div class="bg-pattern"></div>
+
+<header>
+    <div class="brand-wrapper">
+        <div class="logo">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="logo-icon"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path></svg>
+            Electro
+        </div>
+        <span class="logo-badge">Store</span>
+    </div>
+    <div class="nav-actions">
+        <a href="/login" class="btn btn-ghost">Sign In</a>
+        <a href="/register" class="btn btn-primary">Get Started</a>
+    </div>
+</header>
+
+<main class="hero">
+    <div class="hero-content">
+        <div class="hero-badge animate-up">
+            <span class="dot"></span>
+            Welcome Kids
+        </div>
+        <h1 class="animate-up delay-1 artistic-title">
+            <span class="title-word">Kelompok</span>
+            <span class="highlight wireframe-outline">2</span>
+        </h1>
+        
+        <div class="team-badges-container animate-up delay-2">
+            <div class="team-badge stagger-badge" style="--stagger-delay: 1">
+                <span class="badge-name">Muhammad Syafiq As Shidiq</span>
+                <span class="badge-nim">25051204397</span>
+            </div>
+            <div class="team-badge stagger-badge" style="--stagger-delay: 2">
+                <span class="badge-name">Prawira Habib Dewangga</span>
+                <span class="badge-nim">25051204394</span>
+            </div>
+            <div class="team-badge stagger-badge" style="--stagger-delay: 3">
+                <span class="badge-name">Irfan Feby Mabrur</span>
+                <span class="badge-nim">25051204403</span>
+            </div>
+            <div class="team-badge stagger-badge" style="--stagger-delay: 4">
+                <span class="badge-name">Akmal Priyatama F. R.</span>
+                <span class="badge-nim">25051204410</span>
+            </div>
+            <div class="team-badge stagger-badge" style="--stagger-delay: 5">
+                <span class="badge-name">Revaliza Aura Nabila</span>
+                <span class="badge-nim">25051204409</span>
+            </div>
+            <div class="team-badge stagger-badge" style="--stagger-delay: 6">
+                <span class="badge-name">Anaqita Nazila R. C.</span>
+                <span class="badge-nim">25051204399</span>
+            </div>
+            <div class="team-badge stagger-badge" style="--stagger-delay: 7">
+                <span class="badge-name">Shelomita Dewi M.</span>
+                <span class="badge-nim">25051204392</span>
+            </div>
+        </div>
+        <div class="hero-cta animate-up delay-3">
+            <a href="/register" class="btn btn-primary btn-large btn-animated-gradient">
+                Get Started 
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="btn-arrow"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+            </a>
+            <a href="/login" class="btn btn-ghost btn-large">
+                Login
+            </a>
+        </div>
+    </div>
+</main>
+<script th:src="@{/js/LandingPage.js}"></script>
+</body>
+</html>

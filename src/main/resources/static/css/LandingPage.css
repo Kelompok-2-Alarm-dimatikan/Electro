@@ -175,12 +175,21 @@ header {
 }
 
 .hero h1 {
-    font-family: 'Syne', sans-serif;
-    font-size: clamp(3rem, 7vw, 5rem);
+    font-size: clamp(4rem, 10vw, 7rem);
     font-weight: 800;
-    line-height: 1.05;
+    line-height: 1.1;
     letter-spacing: -0.04em;
     margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 35px;
+    animation: fadeUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards, floatTitle 6s 0.8s infinite ease-in-out alternate;
+}
+
+@keyframes floatTitle {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(-8px); }
 }
 
 .hero h1 .highlight {
@@ -298,6 +307,247 @@ header {
     to {
         opacity: 1;
         transform: translateY(0);
+    }
+}
+
+
+/* Artistic Typography */
+.artistic-title .title-word {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-weight: 700;
+    font-size: 1.1em;
+    color: #ffffff;
+    text-shadow: 0 4px 20px rgba(255,255,255,0.25);
+}
+
+.wireframe-outline {
+    font-family: 'Space Grotesk', sans-serif;
+    color: transparent;
+    -webkit-text-stroke: 2px rgba(255, 255, 255, 0.15);
+    position: relative;
+    display: inline-block;
+    white-space: nowrap;
+}
+
+.wireframe-outline::before {
+    content: "2";
+    position: absolute;
+    left: 0;
+    top: 0;
+    color: transparent;
+    -webkit-text-stroke: 2px #ffffff;
+    width: 0%;
+    overflow: hidden;
+    animation: drawOutline 4s cubic-bezier(0.75, 0, 0.25, 1) infinite alternate;
+    filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.6));
+    border-right: 2px solid transparent;
+}
+
+@keyframes drawOutline {
+    0% { width: 0%; border-right-color: rgba(255,255,255,0.8); }
+    10% { width: 0%; border-right-color: rgba(255,255,255,0.8); }
+    90% { width: 100%; border-right-color: rgba(255,255,255,0); }
+    100% { width: 100%; border-right-color: transparent; }
+}
+
+/* Glowing Badges */
+.team-badges-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+    max-width: 850px;
+    margin: 0 auto 3rem;
+}
+
+.team-badge {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    padding: 10px 18px;
+    border-radius: 100px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    cursor: default;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.team-badge:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(216, 180, 254, 0.4);
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3), 0 0 15px rgba(216, 180, 254, 0.2);
+}
+
+.badge-name {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #f8fafc;
+}
+
+.badge-nim {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.75rem;
+    color: #a1a1aa;
+    background: rgba(0,0,0,0.3);
+    padding: 3px 8px;
+    border-radius: 99px;
+}
+
+.stagger-badge {
+    opacity: 0;
+    transform: translateY(15px);
+    animation: fadeUpStagger 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    animation-delay: calc(0.2s + (var(--stagger-delay) * 0.1s));
+}
+
+@keyframes fadeUpStagger {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Animated Gradient Button */
+.btn-animated-gradient {
+    position: relative;
+    overflow: hidden;
+    background: #111 !important;
+    color: #fff !important;
+    z-index: 1;
+    border: 1px solid rgba(255,255,255,0.2) !important;
+}
+
+.btn-animated-gradient::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: conic-gradient(transparent, transparent, transparent, #ffffff);
+    animation: rotateGradient 4s linear infinite;
+    z-index: -1;
+}
+
+.btn-animated-gradient::after {
+    content: '';
+    position: absolute;
+    inset: 2px;
+    background: #09090b;
+    border-radius: 6px;
+    z-index: -1;
+    transition: background 0.3s ease;
+}
+
+.btn-animated-gradient:hover::after {
+    background: #18181b;
+}
+
+.btn-arrow {
+    transition: transform 0.3s ease;
+}
+.btn-animated-gradient:hover .btn-arrow {
+    transform: translateX(4px);
+}
+
+@keyframes rotateGradient {
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+/* Floating Stardust (Background) */
+.stars-container {
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 1;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+.dot-star {
+    position: absolute;
+    background: #ffffff;
+    border-radius: 50%;
+    pointer-events: none;
+    transform: translateY(0);
+    animation-name: twinkleStar, driftUp;
+}
+
+.sparkle-star-wrap {
+    position: absolute;
+    pointer-events: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation-name: shimmerStar, driftUp;
+}
+
+@keyframes twinkleStar {
+    0%, 100% {
+        opacity: 0.1;
+        transform: scale(0.8);
+    }
+    50% {
+        opacity: 0.8;
+        transform: scale(1.5);
+    }
+}
+
+@keyframes shimmerStar {
+    0%, 100% {
+        opacity: 0.15;
+        transform: scale(0.5) rotate(0deg);
+    }
+    50% {
+        opacity: 1;
+        transform: scale(1.2) rotate(180deg);
+    }
+}
+
+@keyframes driftUp {
+    0% {
+        transform: translateY(0) translateX(0);
+    }
+    100% {
+        transform: translateY(-100vh) translateX(calc(var(--drift-x, 0) * 1px));
+    }
+}
+
+.shooting-star {
+    position: absolute;
+    width: 100px;
+    height: 2px;
+    background: linear-gradient(90deg, rgba(255,255,255,1), transparent);
+    border-radius: 50%;
+    pointer-events: none;
+    animation: shoot 3s infinite linear;
+    transform-origin: left;
+    opacity: 0;
+}
+
+@keyframes shoot {
+    0% {
+        transform: translateX(0) translateY(0) rotate(var(--angle, 45deg)) scaleX(0);
+        opacity: 0;
+    }
+    10% {
+        opacity: 1;
+        transform: translateX(5vw) translateY(5vh) rotate(var(--angle, 45deg)) scaleX(1);
+    }
+    50% {
+        transform: translateX(50vw) translateY(50vh) rotate(var(--angle, 45deg)) scaleX(0);
+        opacity: 0;
+    }
+    100% {
+        opacity: 0;
     }
 }
 

@@ -5,13 +5,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
-public class DashboardController {
+public class LandingPageController {
 
     @GetMapping("/")
-    public String dashboard(Authentication authentication) {
+    public String landingPage(Authentication authentication) {
         if (authentication != null && authentication.isAuthenticated()) {
             return "redirect:/electronic";
         }
-        return "dashboard"; 
+        return "LandingPage"; 
     }
 }

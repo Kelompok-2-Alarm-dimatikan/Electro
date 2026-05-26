@@ -17,7 +17,7 @@
 body {
     background: var(--bg);
     color: var(--text);
-    font-family: 'Inter', sans-serif;
+    font-family: 'Plus Jakarta Sans', sans-serif;
     min-height: 100vh;
     padding-top: 80px; /* Jarak dari navbar gantung */
 }
@@ -235,7 +235,7 @@ header {
     padding-bottom: 1rem;
 }
 .panel-header h2 {
-    font-family: 'Syne', sans-serif;
+    font-family: 'Outfit', sans-serif;
     font-size: 1.5rem;
     font-weight: 700;
     margin-bottom: 0.3rem;
@@ -424,7 +424,7 @@ header {
 .danger-title {
     font-weight: 700;
     font-size: 1.05rem;
-    font-family: 'Syne', sans-serif;
+    font-family: 'Outfit', sans-serif;
 }
 .danger-desc {
     font-size: 0.85rem;
@@ -495,7 +495,7 @@ header {
     border-bottom: 1px solid var(--border);
 }
 .modal-header h3 {
-    font-family: 'Syne', sans-serif;
+    font-family: 'Outfit', sans-serif;
     font-size: 1.25rem;
     font-weight: 700;
 }
