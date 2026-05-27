@@ -18,6 +18,7 @@ const CHART_DATA = {
     { label:'Kulkas',  data:[3,4,5,4,6,5,7,6,5,8,10,12],            borderColor:'rgba(160,120,255,1)', backgroundColor:'rgba(160,120,255,0.08)',fill:true, tension:0.4, borderWidth:2, pointRadius:4, pointHoverRadius:6, pointBackgroundColor:'rgba(160,120,255,1)' },
     { label:'AC',      data:[5,6,7,8,9,10,11,12,13,14,15,16],       borderColor:'rgba(79,220,220,1)',  backgroundColor:'rgba(79,220,220,0.08)', fill:true, tension:0.4, borderWidth:2, pointRadius:4, pointHoverRadius:6, pointBackgroundColor:'rgba(79,220,220,1)' },
     { label:'TV',      data:[10,12,14,16,18,20,22,24,26,28,30,32],  borderColor:'rgba(247,160,79,1)',  backgroundColor:'rgba(247,160,79,0.08)', fill:true, tension:0.4, borderWidth:2, pointRadius:4, pointHoverRadius:6, pointBackgroundColor:'rgba(247,160,79,1)' },
+    { label:'Headphone', data:[7,8,9,10,11,12,13,14,15,16,17,18], borderColor:'rgba(79,199,138,1)',  backgroundColor:'rgba(79,199,138,0.08)', fill:true, tension:0.4, borderWidth:2, pointRadius:4, pointHoverRadius:6, pointBackgroundColor:'rgba(79,199,138,1)' }
   ]
 };
 
@@ -490,4 +491,16 @@ function showToast(msg, color='#4fc78a') {
 
   const hasFlash = pwOverlay && (pwOverlay.querySelector('.pw-alert-error') || pwOverlay.querySelector('.pw-alert-success'));
   if (hasFlash) openPwModal();
+
+    // SEARCH PENGIRIMAN
+  const orderSearchInput = document.getElementById('orderSearchInput');
+  if (orderSearchInput) {
+    orderSearchInput.addEventListener('input', function () {
+      const q = this.value.toLowerCase();
+      document.querySelectorAll('#ordersTable tbody tr').forEach(row => {
+        row.style.display = row.textContent.toLowerCase().includes(q) ? '' : 'none';
+      });
+    });
+  }
+
 })();
