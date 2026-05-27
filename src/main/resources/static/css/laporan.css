@@ -1,0 +1,307 @@
+.laporan-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.5fr;
+    gap: 2.5rem;
+    margin-top: 2rem;
+}
+
+@media (max-width: 992px) {
+    .laporan-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Glassmorphic Panel Card */
+.glass-panel {
+    background: var(--surface-glass);
+    border: 1px solid var(--border-glass);
+    border-radius: 24px;
+    padding: 2.5rem;
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+}
+
+.panel-title {
+    font-family: var(--font-heading);
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: var(--text-primary);
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.01em;
+}
+
+.panel-subtitle {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    margin-bottom: 2rem;
+    line-height: 1.5;
+}
+
+/* Form Styles */
+.laporan-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.form-group label {
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-secondary);
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid var(--border-glass);
+    border-radius: 12px;
+    padding: 0.9rem 1.2rem;
+    color: var(--text-primary);
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+    outline: none;
+}
+
+.form-group select option {
+    background: #0f1324;
+    color: var(--text-primary);
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    border-color: var(--neon-blue);
+    box-shadow: 0 0 15px rgba(59, 130, 246, 0.25);
+    background: rgba(0, 0, 0, 0.4);
+}
+
+/* Submit button with Cyberpunk glow */
+.btn-submit-complaint {
+    background: linear-gradient(135deg, var(--neon-blue) 0%, var(--neon-purple) 100%);
+    color: #ffffff;
+    border: none;
+    border-radius: 14px;
+    padding: 1.1rem;
+    font-weight: 700;
+    font-size: 1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    box-shadow: 0 8px 20px rgba(99, 102, 241, 0.25);
+    font-family: var(--font-body);
+}
+
+.btn-submit-complaint:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 25px rgba(99, 102, 241, 0.4);
+    filter: brightness(1.1);
+}
+
+/* Alert styles */
+.alert-success {
+    background: rgba(16, 185, 129, 0.1);
+    border: 1px solid rgba(16, 185, 129, 0.2);
+    color: #34d399;
+    border-radius: 12px;
+    padding: 1rem 1.20rem;
+    font-size: 0.95rem;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Complaints History Styles */
+.history-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+    max-height: 700px;
+    overflow-y: auto;
+    padding-right: 0.5rem;
+}
+
+.complaint-card {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--border-glass);
+    border-radius: 16px;
+    padding: 1.5rem;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.complaint-card:hover {
+    border-color: rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.03);
+    transform: translateX(4px);
+}
+
+.complaint-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1rem;
+    margin-bottom: 0.8rem;
+}
+
+.complaint-meta {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+}
+
+.complaint-meta span {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.complaint-title {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 0.6rem;
+}
+
+.complaint-desc {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    margin-bottom: 1rem;
+}
+
+.complaint-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid rgba(255, 255, 255, 0.03);
+    padding-top: 0.8rem;
+    font-size: 0.82rem;
+}
+
+.complaint-product {
+    color: var(--neon-blue);
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+/* Custom badges for statuses */
+.status-badge {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 0.3rem 0.75rem;
+    border-radius: 8px;
+    backdrop-filter: blur(8px);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+
+.status-badge.pending {
+    background: rgba(249, 115, 22, 0.1);
+    color: var(--neon-orange);
+    border: 1px solid rgba(249, 115, 22, 0.25);
+    animation: statusPulse 2s infinite;
+}
+
+.status-badge.diproses {
+    background: rgba(59, 130, 246, 0.1);
+    color: var(--neon-blue);
+    border: 1px solid rgba(59, 130, 246, 0.25);
+}
+
+.status-badge.selesai {
+    background: rgba(16, 185, 129, 0.1);
+    color: var(--neon-green);
+    border: 1px solid rgba(16, 185, 129, 0.25);
+}
+
+@keyframes statusPulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(249, 115, 22, 0.3);
+    }
+
+    70% {
+        box-shadow: 0 0 0 6px rgba(249, 115, 22, 0);
+    }
+
+    100% {
+        box-shadow: 0 0 0 0 rgba(249, 115, 22, 0);
+    }
+}
+
+.empty-history {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 4rem 2rem;
+    text-align: center;
+    border: 1px dashed var(--border-glass);
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.01);
+}
+
+.empty-history p {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    margin-top: 1rem;
+}
+
+.autocomplete-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: rgba(15, 19, 36, 0.95);
+    border: 1px solid var(--neon-blue);
+    border-radius: 8px;
+    margin-top: 4px;
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 100;
+    display: none;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(12px);
+}
+
+.autocomplete-dropdown.show {
+    display: block;
+}
+
+.autocomplete-item {
+    padding: 0.8rem 1.2rem;
+    color: var(--text-primary);
+    cursor: pointer;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    font-size: 0.9rem;
+}
+
+.autocomplete-item:hover {
+    background: rgba(59, 130, 246, 0.2);
+}
+
+.autocomplete-item:last-child {
+    border-bottom: none;
+}

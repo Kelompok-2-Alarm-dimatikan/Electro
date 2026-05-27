@@ -1,6 +1,7 @@
 package com.electro.controller;
 import com.electro.model.User;
 import com.electro.repository.UserRepository;
+import com.electro.repository.ComplaintRepository;
 import com.electro.service.ElectroService;
 import com.electro.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,7 @@ public class AdminController {
     @Autowired private ElectroService    electroService;
     @Autowired private UserService       userService;
     @Autowired private PasswordEncoder   passwordEncoder;
+    @Autowired private ComplaintRepository complaintRepository;
 
     AdminController(UserRepository userRepository) {
         this.userRepository = userRepository;
@@ -35,6 +37,7 @@ public class AdminController {
         long newUserCount = userRepository.findAll().stream()
                 .filter(u -> !"ADMIN".equals(u.getRole())).count();
         model.addAttribute("newUserCount", newUserCount);
+        model.addAttribute("complaints",   complaintRepository.findAllByOrderByTanggalDesc());
         return "admin";
     }
 
@@ -148,6 +151,24 @@ public class AdminController {
         if (newPassword.length() < 6) { ra.addFlashAttribute("pwError", "Password baru minimal 6 karakter."); return "redirect:/admin"; }
         userService.updatePassword(user, newPassword);
         ra.addFlashAttribute("pwSuccess", "Password berhasil diubah.");
+        return "redirect:/admin";
+    }
+
+    // PENGADUAN ACTIONS
+    @PostMapping("/complaints/update-status")
+    public String updateComplaintStatus(@RequestParam Long id, @RequestParam String status, RedirectAttributes ra) {
+        complaintRepository.findById(id).ifPresent(c -> {
+            c.setStatus(status);
+            complaintRepository.save(c);
+            ra.addFlashAttribute("userSuccess", "Status pengaduan berhasil diperbarui.");
+        });
+        return "redirect:/admin";
+    }
+
+    @GetMapping("/complaints/delete/{id}")
+    public String deleteComplaint(@PathVariable Long id, RedirectAttributes ra) {
+        complaintRepository.deleteById(id);
+        ra.addFlashAttribute("userSuccess", "Pengaduan berhasil dihapus.");
         return "redirect:/admin";
     }
 }

@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
 
 // NAVIGASI SIDEBAR + HEADER TITLE
-const labels = { dashboard:'Dashboard', users:'Manajemen User', table:'Tabel Produk' };
+const labels = { dashboard:'Dashboard', users:'Manajemen User', table:'Tabel Produk', complaints:'Manajemen Pengaduan' };
 const navItems    = document.querySelectorAll('.nav-item');
 const pages       = document.querySelectorAll('.page');
 const headerTitle = document.getElementById('header-title');
@@ -178,6 +178,20 @@ if (userSearchInput) {
       const username = row.querySelectorAll('td')[1]?.textContent.toLowerCase() || '';
       const email    = row.querySelectorAll('td')[2]?.textContent.toLowerCase() || '';
       row.style.display = (q === '' || username.includes(q) || email.includes(q)) ? '' : 'none';
+    });
+  });
+}
+
+// SEARCH COMPLAINTS
+const complaintSearchInput = document.getElementById('complaintSearchInput');
+if (complaintSearchInput) {
+  complaintSearchInput.addEventListener('input', e => {
+    const q = e.target.value.toLowerCase().trim();
+    document.querySelectorAll('#complaintsTable tbody tr').forEach(row => {
+      const pelapor  = row.querySelectorAll('td')[1]?.textContent.toLowerCase() || '';
+      const kategori = row.querySelectorAll('td')[2]?.textContent.toLowerCase() || '';
+      const detail   = row.querySelectorAll('td')[4]?.textContent.toLowerCase() || '';
+      row.style.display = (q === '' || pelapor.includes(q) || kategori.includes(q) || detail.includes(q)) ? '' : 'none';
     });
   });
 }

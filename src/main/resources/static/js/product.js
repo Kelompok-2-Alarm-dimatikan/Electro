@@ -7,13 +7,13 @@ function updateCartStates() {
     cards.forEach(card => {
         const id = card.dataset.id;
         const cartItem = cart.find(item => item.id === id);
-        
+
         const badgesContainer = card.querySelector('.card-badges');
         if (!badgesContainer) return;
-        
+
         let inCartBadge = badgesContainer.querySelector('.badge-in-cart');
         const btnAdd = card.querySelector('.btn-add-cart');
-        
+
         if (cartItem) {
             if (!inCartBadge) {
                 inCartBadge = document.createElement('span');
@@ -21,7 +21,7 @@ function updateCartStates() {
                 badgesContainer.appendChild(inCartBadge);
             }
             inCartBadge.innerHTML = `🛒 ${cartItem.qty} di Keranjang`;
-            
+
             if (btnAdd) {
                 btnAdd.innerHTML = `
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
@@ -36,7 +36,7 @@ function updateCartStates() {
             }
         } else {
             if (inCartBadge) inCartBadge.remove();
-            
+
             if (btnAdd) {
                 btnAdd.innerHTML = `
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y1="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
@@ -58,7 +58,7 @@ function updateModalBtnState() {
     if (!currentModal) return;
     const btnAddModal = document.getElementById('btnAddModal');
     if (!btnAddModal) return;
-    
+
     const cartItem = cart.find(item => item.id === currentModal.id);
     if (cartItem) {
         btnAddModal.textContent = "Checkout";
@@ -121,8 +121,13 @@ function setupSearchAndFilters() {
             const nama = (card.dataset.nama || '').toLowerCase();
             const merk = (card.dataset.merk || '').toLowerCase();
             const kategori = (card.dataset.kategori || '');
+            const kategoriLower = kategori.toLowerCase();
 
-            const matchesSearch = !query || nama.includes(query) || merk.includes(query);
+            let extraKeywords = '';
+            if (kategoriLower === 'hp') extraKeywords = 'smartphone handphone hp';
+
+            const searchString = `${nama} ${merk} ${kategoriLower} ${extraKeywords}`;
+            const matchesSearch = !query || query.split(' ').every(word => searchString.includes(word));
             const matchesCategory = (category === 'all') || (kategori === category);
 
             if (matchesSearch && matchesCategory) {
@@ -202,12 +207,12 @@ function buildModalDesc(deskripsi, spesifikasi) {
 }
 
 function showDetail(cardElement) {
-    const id        = cardElement.dataset.id;
-    const nama      = cardElement.dataset.nama;
-    const merk      = cardElement.dataset.merk;
-    const kategori  = cardElement.dataset.kategori;
-    const harga     = parseFloat(cardElement.dataset.harga);
-    const stok      = parseInt(cardElement.dataset.stok);
+    const id = cardElement.dataset.id;
+    const nama = cardElement.dataset.nama;
+    const merk = cardElement.dataset.merk;
+    const kategori = cardElement.dataset.kategori;
+    const harga = parseFloat(cardElement.dataset.harga);
+    const stok = parseInt(cardElement.dataset.stok);
     const deskripsi = cardElement.dataset.deskripsi || '';
     const spesifikasi = cardElement.dataset.spesifikasi || '';
 
@@ -256,7 +261,7 @@ function toggleCart() {
 }
 
 function addToCartDirect(cardElement) {
-    const id   = cardElement.dataset.id;
+    const id = cardElement.dataset.id;
     const nama = cardElement.dataset.nama;
     const harga = parseFloat(cardElement.dataset.harga);
     pushToCart(id, nama, harga, 1);
@@ -293,7 +298,7 @@ function renderCart() {
     const container = document.getElementById('cartItems');
     if (!container) return;
     container.innerHTML = '';
-    
+
     let total = 0;
     cart.forEach((item, index) => {
         total += item.price * item.qty;

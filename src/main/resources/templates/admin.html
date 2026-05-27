@@ -36,6 +36,10 @@
       <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 3H5a2 2 0 0 0-2 2v4m6-6h10a2 2 0 0 1 2 2v4M9 3v18m0 0h10a2 2 0 0 0 2-2V9M9 21H5a2 2 0 0 1-2-2V9m0 0h18"/></svg>
       Tabel Produk
     </div>
+    <div class="nav-item" data-page="complaints">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+      Pengaduan
+    </div>
   </nav>
 
   <div class="sidebar-footer">
@@ -370,6 +374,70 @@
 
     <div id="toast"><div class="t-dot" id="tDot"></div><span id="tMsg"></span></div>
 
+  </div>
+
+  <!-- COMPLAINTS PAGE -->
+  <div class="page" id="page-complaints">
+    <div class="page-heading">Manajemen Pengaduan</div>
+    <div class="page-sub">Kelola dan selesaikan pengaduan atau keluhan dari pelanggan</div>
+
+    <div class="card" style="margin-bottom:1.5rem;padding:1rem 1.25rem;">
+      <div class="search-box">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" id="complaintSearchInput" placeholder="Cari pelapor, kategori, atau judul..." />
+      </div>
+    </div>
+
+    <div class="user-table-wrapper">
+      <table class="user-table" id="complaintsTable">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Pelapor</th>
+            <th>Kategori</th>
+            <th>Perangkat</th>
+            <th>Detail Masalah</th>
+            <th>Tanggal</th>
+            <th>Status</th>
+            <th style="text-align:center">Aksi</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr th:each="c : ${complaints}">
+            <td style="color:var(--muted);font-size:12px" th:text="'#' + ${c.id}"></td>
+            <td>
+              <strong th:text="${c.user.username}"></strong>
+              <div style="font-size:11px;color:var(--muted)" th:text="${c.user.email}"></div>
+            </td>
+            <td>
+              <span class="badge" th:classappend="${c.kategori == 'Kualitas Produk' ? 'badge-hp' : (c.kategori == 'Kesalahan Pengiriman' ? 'badge-laptop' : (c.kategori == 'Kendala Transaksi' ? 'badge-tablet' : (c.kategori == 'Layanan Pelanggan' ? 'badge-blender' : 'badge-kulkas')))}" th:text="${c.kategori}"></span>
+            </td>
+            <td>
+              <span th:if="${c.electronic != null}" th:text="${c.electronic.merk} + ' ' + ${c.electronic.nama}"></span>
+              <span th:unless="${c.electronic != null}" style="color:var(--muted)">—</span>
+            </td>
+            <td style="max-width:300px">
+              <strong th:text="${c.judul}"></strong>
+              <div style="font-size:12px;color:var(--text-muted);margin-top:4px;word-break:break-word;" th:text="${c.deskripsi}"></div>
+            </td>
+            <td style="font-size:12px" th:text="${#temporals.format(c.tanggal, 'dd/MM/yyyy HH:mm')}"></td>
+            <td>
+              <form th:action="@{/admin/complaints/update-status}" method="post" style="margin:0">
+                <input type="hidden" name="id" th:value="${c.id}"/>
+                <select name="status" onchange="this.form.submit()" style="background:rgba(0,0,0,0.3);color:white;border:1px solid var(--border-glass);padding:4px 8px;border-radius:6px;font-size:12px;cursor:pointer;">
+                  <option value="PENDING" th:selected="${c.status == 'PENDING'}">PENDING</option>
+                  <option value="DIPROSES" th:selected="${c.status == 'DIPROSES'}">DIPROSES</option>
+                  <option value="SELESAI" th:selected="${c.status == 'SELESAI'}">SELESAI</option>
+                </select>
+              </form>
+            </td>
+            <td style="text-align:center">
+              <a th:href="@{'/admin/complaints/delete/' + ${c.id}}" class="ubtn ubtn-del" onclick="return confirm('Hapus pengaduan ini?')">Hapus</a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 </div>
 
