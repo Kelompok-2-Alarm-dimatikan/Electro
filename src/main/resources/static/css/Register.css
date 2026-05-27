@@ -243,3 +243,25 @@ body {
         transform: translateY(0);
     }
 }
+
+/* Toggle Password */
+.input-icon-wrap {
+    position: relative;
+}
+.toggle-password {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    opacity: 0.5;
+    transition: opacity 0.2s;
+    display: flex;
+    align-items: center;
+}
+.toggle-password:hover {
+    opacity: 1;
+}
