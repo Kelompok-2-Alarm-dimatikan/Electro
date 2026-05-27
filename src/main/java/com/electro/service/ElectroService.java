@@ -53,6 +53,40 @@ public class ElectroService {
         electroRepository.save(electro);
     }
 
+     public void tambahElectroFull(String kategori, String nama, double harga, int stok, String merk,
+                                   String imageUrl, String deskripsi, String spesifikasi) {
+        Electronic electro;
+        switch (kategori) {
+            case "Hp"        -> electro = new Hp(nama, harga, stok, merk);
+            case "Laptop"    -> electro = new Laptop(nama, harga, stok, merk);
+            case "Tablet"    -> electro = new Tablet(nama, harga, stok, merk);
+            case "Tv"        -> electro = new Tv(nama, harga, stok, merk);
+            case "Ac"        -> electro = new Ac(nama, harga, stok, merk);
+            case "Blender"   -> electro = new Blender(nama, harga, stok, merk);
+            case "Kulkas"    -> electro = new Kulkas(nama, harga, stok, merk);
+            case "Headphone" -> electro = new Headphone(nama, harga, stok, merk);
+            default          -> electro = new Hp(nama, harga, stok, merk);
+        }
+        if (imageUrl   != null && !imageUrl.isBlank())   electro.setImageUrl(imageUrl);
+        if (deskripsi  != null && !deskripsi.isBlank())  electro.setDeskripsi(deskripsi);
+        if (spesifikasi!= null && !spesifikasi.isBlank())electro.setSpesifikasi(spesifikasi);
+        electroRepository.save(electro);
+    }
+    
+    //electro full edit
+    public void editElectroFull(Long id, String nama, double harga, int stok, String merk,
+                                 String imageUrl, String deskripsi, String spesifikasi) {
+        Electronic electro = electroRepository.findById(id).orElseThrow();
+        electro.setNama(nama);
+        electro.setHarga(harga);
+        electro.setStok(stok);
+        electro.setMerk(merk);
+        if (imageUrl   != null && !imageUrl.isBlank())   electro.setImageUrl(imageUrl);
+        if (deskripsi  != null && !deskripsi.isBlank())  electro.setDeskripsi(deskripsi);
+        if (spesifikasi!= null && !spesifikasi.isBlank())electro.setSpesifikasi(spesifikasi);
+        electroRepository.save(electro);
+    }
+
     public void editElectro(Long id, String nama, double harga, int stok, String merk) {
         Electronic electro = electroRepository.findById(id).orElseThrow();
         electro.setNama(nama);
@@ -66,3 +100,4 @@ public class ElectroService {
         electroRepository.deleteById(id);
     }
 }
+

@@ -134,7 +134,7 @@
     </section>
 </main>
 
-<!-- Cart Sidebar (sama dengan product.html) -->
+<!-- Cart Sidebar -->
 <div class="cart-sidebar" id="cartSidebar">
     <div class="cart-header">
         <h3>Keranjang Belanja</h3>
@@ -168,69 +168,6 @@
 </footer>
 
 <script th:src="@{/js/app.js}"></script>
-<script>
-// Cart mini functions untuk halaman home (read-only, tidak add to cart dari sini)
-function toggleCart() {
-    const sidebar = document.getElementById('cartSidebar');
-    const overlay = document.getElementById('cartOverlay');
-    sidebar.classList.toggle('open');
-    overlay.classList.toggle('show');
-}
 
-function renderCartHome() {
-    const cart = JSON.parse(localStorage.getItem('electro_cart') || '[]');
-    const count = cart.reduce((sum, item) => sum + item.qty, 0);
-    const countEl = document.getElementById('cartCount');
-    if (countEl) countEl.textContent = count;
-
-    const container = document.getElementById('cartItems');
-    if (!container) return;
-
-    if (cart.length === 0) {
-        container.innerHTML = `
-            <div class="cart-empty-state">
-                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="color: #3f3f46; margin-bottom: 1rem;"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
-                <p style="color: #52525b; font-size: 0.9rem;">Keranjang masih kosong</p>
-                <a href="/product" style="color: #a1a1aa; font-size: 0.8rem; margin-top: 0.5rem; display: block;">Lihat produk →</a>
-            </div>`;
-        document.getElementById('cartTotal').textContent = 'Rp 0';
-        return;
-    }
-
-    let total = 0;
-    container.innerHTML = '';
-    cart.forEach((item, index) => {
-        total += item.price * item.qty;
-        container.innerHTML += `
-            <div class="cart-item-row">
-                <div class="cart-item-info">
-                    <div class="cart-item-name">${item.name}</div>
-                    <div class="cart-item-meta">${item.qty} x ${formatRpHome(item.price)}</div>
-                </div>
-                <button class="btn-remove-item" onclick="removeFromCartHome(${index})">Hapus</button>
-            </div>`;
-    });
-    document.getElementById('cartTotal').textContent = formatRpHome(total);
-}
-
-function removeFromCartHome(index) {
-    const cart = JSON.parse(localStorage.getItem('electro_cart') || '[]');
-    cart.splice(index, 1);
-    localStorage.setItem('electro_cart', JSON.stringify(cart));
-    renderCartHome();
-}
-
-function checkout() {
-    const cart = JSON.parse(localStorage.getItem('electro_cart') || '[]');
-    if (cart.length === 0) return;
-    window.location.href = '/checkout';
-}
-
-function formatRpHome(num) {
-    return 'Rp ' + Math.round(num).toLocaleString('id-ID');
-}
-
-document.addEventListener('DOMContentLoaded', renderCartHome);
-</script>
 </body>
 </html>

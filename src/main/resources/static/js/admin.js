@@ -1,284 +1,204 @@
 document.addEventListener('DOMContentLoaded', () => {
 
-const labels = { dashboard:'Dashboard', users:'Users', table:'Tabel Produk' };
-const navItems = document.querySelectorAll('.nav-item');
-const pages    = document.querySelectorAll('.page');
-const headerTitle = document.getElementById('headerTitle');
+// NAVIGASI SIDEBAR + HEADER TITLE
+const labels = { dashboard:'Dashboard', users:'Manajemen User', table:'Tabel Produk' };
+const navItems    = document.querySelectorAll('.nav-item');
+const pages       = document.querySelectorAll('.page');
+const headerTitle = document.getElementById('header-title');
+
+let salesChartInstance = null;
+
+const CHART_DATA = {
+  labels: ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agt','Sep','Okt','Nov','Des'],
+  datasets: [
+    { label:'HP',      data:[12,18,15,22,19,25,28,20,18,24,26,30], borderColor:'rgba(79,142,247,1)',  backgroundColor:'rgba(79,142,247,0.08)',  fill:true, tension:0.4, borderWidth:2, pointRadius:4, pointHoverRadius:6, pointBackgroundColor:'rgba(79,142,247,1)' },
+    { label:'Laptop',  data:[8,10,9,12,11,14,16,15,13,17,19,21],   borderColor:'rgba(247,196,79,1)',  backgroundColor:'rgba(247,196,79,0.08)',  fill:true, tension:0.4, borderWidth:2, pointRadius:4, pointHoverRadius:6, pointBackgroundColor:'rgba(247,196,79,1)' },
+    { label:'Tablet',  data:[4,5,6,7,5,8,9,8,6,10,12,14],          borderColor:'rgba(79,199,138,1)',  backgroundColor:'rgba(79,199,138,0.08)', fill:true, tension:0.4, borderWidth:2, pointRadius:4, pointHoverRadius:6, pointBackgroundColor:'rgba(79,199,138,1)' },
+    { label:'Blender', data:[6,7,5,9,8,10,11,10,8,12,14,16],        borderColor:'rgba(247,101,79,1)',  backgroundColor:'rgba(247,101,79,0.08)', fill:true, tension:0.4, borderWidth:2, pointRadius:4, pointHoverRadius:6, pointBackgroundColor:'rgba(247,101,79,1)' },
+    { label:'Kulkas',  data:[3,4,5,4,6,5,7,6,5,8,10,12],            borderColor:'rgba(160,120,255,1)', backgroundColor:'rgba(160,120,255,0.08)',fill:true, tension:0.4, borderWidth:2, pointRadius:4, pointHoverRadius:6, pointBackgroundColor:'rgba(160,120,255,1)' },
+    { label:'AC',      data:[5,6,7,8,9,10,11,12,13,14,15,16],       borderColor:'rgba(79,220,220,1)',  backgroundColor:'rgba(79,220,220,0.08)', fill:true, tension:0.4, borderWidth:2, pointRadius:4, pointHoverRadius:6, pointBackgroundColor:'rgba(79,220,220,1)' },
+    { label:'TV',      data:[10,12,14,16,18,20,22,24,26,28,30,32],  borderColor:'rgba(247,160,79,1)',  backgroundColor:'rgba(247,160,79,0.08)', fill:true, tension:0.4, borderWidth:2, pointRadius:4, pointHoverRadius:6, pointBackgroundColor:'rgba(247,160,79,1)' },
+  ]
+};
+
+const CHART_OPTIONS = {
+  responsive: true,
+  maintainAspectRatio: false,
+  interaction:{ mode:'index', intersect:false },
+  plugins:{
+    legend:{
+      labels:{ color:'#7b82a0', font:{family:'DM Sans',size:12}, usePointStyle:true, pointStyle:'circle' }
+    }
+  },
+  scales:{
+    x:{ ticks:{color:'#7b82a0'}, grid:{color:'rgba(42,47,69,0.4)'} },
+    y:{ ticks:{color:'#7b82a0', callback: v => 'Rp '+v+'jt'}, grid:{color:'rgba(42,47,69,0.4)'}, beginAtZero:true }
+  }
+};
+
+function buildChart() {
+  const canvas = document.getElementById('salesChart');
+  if (!canvas) return;
+  if (salesChartInstance) {
+    salesChartInstance.resize();
+    return;
+  }
+  
+  const wrap = canvas.parentElement;
+  if (!wrap || wrap.offsetWidth === 0) return;
+  canvas.width  = wrap.offsetWidth;
+  canvas.height = 260;
+  salesChartInstance = new Chart(canvas.getContext('2d'), {
+    type: 'line',
+    data: CHART_DATA,
+    options: CHART_OPTIONS
+  });
+}
+
+// Pakai ResizeObserver pada chart-wrap 
+const chartWrap = document.querySelector('.chart-wrap');
+if (chartWrap && typeof ResizeObserver !== 'undefined') {
+  const ro = new ResizeObserver(entries => {
+    for (const entry of entries) {
+      if (entry.contentRect.width > 0) {
+        buildChart();
+        if (salesChartInstance) ro.disconnect();
+      }
+    }
+  });
+  ro.observe(chartWrap);
+}
+
+function switchPage(pg) {
+  navItems.forEach(i => i.classList.remove('active'));
+  pages.forEach(p => p.classList.remove('active'));
+  const targetNav = document.querySelector(`.nav-item[data-page="${pg}"]`);
+  const targetPage = document.getElementById('page-' + pg);
+  if (targetNav) targetNav.classList.add('active');
+  if (targetPage) targetPage.classList.add('active');
+  if (headerTitle) headerTitle.textContent = labels[pg] || pg;
+  closeDropdown();
+
+  if (pg === 'dashboard') {
+    // rAF memastikan DOM sudah paint sebelum kita ukur
+    requestAnimationFrame(() => requestAnimationFrame(buildChart));
+  }
+}
 
 navItems.forEach(item => {
   item.addEventListener('click', () => {
-    const pg = item.dataset.page;
-    navItems.forEach(i => i.classList.remove('active'));
-    pages.forEach(p => p.classList.remove('active'));
-    item.classList.add('active');
-    document.getElementById('page-' + pg).classList.add('active');
-    headerTitle.textContent = labels[pg];
-    closeDropdown();
+    switchPage(item.dataset.page);
   });
 });
 
 document.getElementById('toggle-btn').addEventListener('click', () => {
   document.body.classList.toggle('sidebar-closed');
-});
-
-// ── CHART ─────────────────────────────────────────────────────────────────────
-// ── CHART ─────────────────────────────────────────────────────────────────────
-const ctx = document.getElementById('salesChart').getContext('2d');
-
-const myChart = new Chart(ctx, {
-  type: 'line',
-  data: {
-    labels: ['Jan','Feb','Mar','Apr','Mei','Jun','Jul', 'Agt', 'Sep','Okt', 'Nov', 'Des'],
-    datasets: [
-      {
-        label: 'HP',
-        data: [12,18,15,22,19,25,28, 20, 18, 24, 26, 30],
-        borderColor: 'rgba(79,142,247,1)',
-        backgroundColor: 'rgba(79,142,247,0.08)',
-        fill: true,
-        tension: 0.4,
-        borderWidth: 2,
-        pointStyle: 'circle', 
-        pointRadius: 4,      
-        pointHoverRadius: 6,
-        pointBackgroundColor: 'rgba(79,142,247,1)' 
-      },
-      {
-        label: 'Laptop',
-        data: [8,10,9,12,11,14,16, 15, 13, 17, 19, 21],
-        borderColor: 'rgba(247,196,79,1)',
-        backgroundColor: 'rgba(247,196,79,0.08)',
-        fill: true,
-        tension: 0.4,
-        borderWidth: 2,
-        pointStyle: 'circle',
-        pointRadius: 4,
-        pointHoverRadius: 6,
-        pointBackgroundColor: 'rgba(247,196,79,1)'
-      },
-      {
-        label: 'Tablet',
-        data: [4,5,6,7,5,8,9, 8, 6, 10, 12, 14],
-        borderColor: 'rgba(79,199,138,1)',
-        backgroundColor: 'rgba(79,199,138,0.08)',
-        fill: true,
-        tension: 0.4,
-        borderWidth: 2,
-        pointStyle: 'circle',
-        pointRadius: 4,
-        pointHoverRadius: 6,
-        pointBackgroundColor: 'rgba(79,199,138,1)'
-      },
-      {
-        label: 'Blender',
-        data: [6,7,5,9,8,10,11, 10, 8, 12, 14, 16],
-        borderColor: 'rgba(247,101,79,1)',
-        backgroundColor: 'rgba(247,101,79,0.08)',
-        fill: true,
-        tension: 0.4,
-        borderWidth: 2,
-        pointStyle: 'circle',
-        pointRadius: 4,
-        pointHoverRadius: 6,
-        pointBackgroundColor: 'rgba(247,101,79,1)'
-      },
-      {
-        label: 'Kulkas',
-        data: [3,4,5,4,6,5,7, 6, 5, 8, 10, 12],
-        borderColor: 'rgba(160,120,255,1)',
-        backgroundColor: 'rgba(160,120,255,0.08)',
-        fill: true,
-        tension: 0.4,
-        borderWidth: 2,
-        pointStyle: 'circle',
-        pointRadius: 4,
-        pointHoverRadius: 6,
-        pointBackgroundColor: 'rgba(160,120,255,1)'
-      },
-      {
-        label: 'Ac',
-        data: [5,6,7,8,9,10,11, 12, 13, 14, 15, 16],
-        borderColor: 'rgba(79,142,247,1)',
-        backgroundColor: 'rgba(79,142,247,0.08)',
-        fill: true,
-        tension: 0.4,
-        borderWidth: 2,
-        pointStyle: 'circle',
-        pointRadius: 4,
-        pointHoverRadius: 6,
-        pointBackgroundColor: 'rgba(79,142,247,1)'
-      },
-      {
-        label: 'Tv',
-        data: [10,12,14,16,18,20,22, 24, 26, 28, 30, 32],
-        borderColor: 'rgba(247,196,79,1)',
-        backgroundColor: 'rgba(247,196,79,0.08)',
-        fill: true,
-        tension: 0.4,
-        borderWidth: 2,
-        pointStyle: 'circle',
-        pointRadius: 4,
-        pointHoverRadius: 6,
-        pointBackgroundColor: 'rgba(247,196,79,1)'
-      },
-    ]
-  },
-  options: {
-    responsive: true,
-    interaction: {
-      mode: 'index',
-      intersect: false
-    },
-    plugins: {
-      legend: {
-        labels: {
-          color: '#7b82a0',
-          font: { family: 'DM Sans', size: 12 },
-          usePointStyle: true,
-          pointStyle: 'circle',   
-          generateLabels: function(chart) {
-            const labels = Chart.defaults.plugins.legend.labels.generateLabels(chart);
-            labels.forEach(label => {
-                label.pointStyle = 'circle';
-                label.fillStyle = chart.data.datasets[label.datasetIndex].borderColor;
-                if (label.hidden) {
-                    label.textDecoration = 'line-through';
-                    label.fillStyle = 'rgba(123, 130, 160, 0.3)'; 
-                } else {
-                    label.textDecoration = 'none'; 
-                }
-            });
-            return labels;
-          }
-        },
-        onClick: function(e, legendItem, legend) {
-            const index = legendItem.datasetIndex;
-            const ci = legend.chart;
-            if (ci.isDatasetVisible(index)) {
-                ci.hide(index);
-                legendItem.hidden = true;
-            } else {
-                ci.show(index);
-                legendItem.hidden = false;
-            }
-            ci.update();
-        }
-      }
-    },
-    scales: {
-      x: {
-        ticks: { color: '#7b82a0' },
-        grid: { color: 'rgba(42,47,69,0.4)', drawBorder: false }
-      },
-      y: {
-        ticks: {
-          color: '#7b82a0',
-          callback: v => 'Rp ' + v + 'jt'
-        },
-        grid: { color: 'rgba(42,47,69,0.4)', drawBorder: false },
-        beginAtZero: true
-      }
-    }
+  if (salesChartInstance) {
+    setTimeout(() => salesChartInstance.resize(), 350);
   }
 });
 
-// ── STOCK LIST ────────────────────────────────────────────────────────────────
+// Inisialisasi saat halaman pertama load dengan double rAF
+requestAnimationFrame(() => requestAnimationFrame(buildChart));
+
+// STOCK LIST 
 const stockData = [
-  { label:'HP',      count:451, color:'#4f8ef7' },
-  { label:'Laptop',  count:84,  color:'#f7c44f' },
-  { label:'Tablet',  count:104, color:'#4fc78a' },
-  { label:'Blender', count:562, color:'#f7654f' },
-  { label:'Kulkas',  count:264, color:'#a078ff' },
-  { label:'Ac', count:150, color:'#4f8ef7' },
-  { label:'Tv', count:320, color:'#f7c44f'},
-  { label:'Headphone', count:200, color:'#4fc78a'},
+  {label:'HP',count:451,color:'#4f8ef7'},{label:'Laptop',count:84,color:'#f7c44f'},
+  {label:'Tablet',count:104,color:'#4fc78a'},{label:'Blender',count:562,color:'#f7654f'},
+  {label:'Kulkas',count:264,color:'#a078ff'},{label:'AC',count:150,color:'#4fdcdc'},
+  {label:'TV',count:320,color:'#f7a04f'},{label:'Headphone',count:200,color:'#4fc78a'},
 ];
 const maxStock = Math.max(...stockData.map(s => s.count));
-const stockList = document.getElementById('stockList');
-stockData.forEach(s => {
-  const pct = Math.round(s.count / maxStock * 100);
-  stockList.innerHTML += `<div class="stock-item">
-    <div class="stock-dot" style="background:${s.color}"></div>
-    <div class="stock-name">${s.label}</div>
-    <div class="stock-bar-wrap"><div class="stock-bar" style="width:${pct}%;background:${s.color}"></div></div>
-    <div class="stock-num">${s.count}</div>
-  </div>`;
-});
+const stockListEl = document.getElementById('stockList');
+if (stockListEl) {
+  stockData.forEach(s => {
+    const pct = Math.round(s.count / maxStock * 100);
+    stockListEl.innerHTML += `<div class="stock-item">
+      <div class="stock-dot" style="background:${s.color}"></div>
+      <div class="stock-name">${s.label}</div>
+      <div class="stock-bar-wrap"><div class="stock-bar" style="width:${pct}%;background:${s.color}"></div></div>
+      <div class="stock-num">${s.count}</div>
+    </div>`;
+  });
+}
 
-// ── POPULAR TABLE ─────────────────────────────────────────────────────────────
+// POPULAR TABLE 
 const products = [
-  { nama:'Philips HR2041', kat:'Blender', terjual:185, harga:350000, stok:210 },
-  { nama:'Miyako BL-101 PF', kat:'Blender', terjual:162, harga:165000, stok:185 },
-  { nama:'Samsung Galaxy A55', kat:'HP', terjual:143, harga:4299000, stok:87 },
-  { nama:'Xiaomi Redmi Note 13', kat:'HP', terjual:98, harga:2499000, stok:112 },
-  { nama:'Realme C67', kat:'HP', terjual:89, harga:1899000, stok:130 },
-  { nama:'Panasonic MX-GM1011', kat:'Blender', terjual:78, harga:450000, stok:95 },
-  { nama:'Oppo A98 5G', kat:'HP', terjual:76, harga:3299000, stok:54 },
-  { nama:'Tefal BL2A0166', kat:'Blender', terjual:54, harga:620000, stok:60 },
+  {nama:'Philips Pro Blender',kat:'Blender',terjual:185,harga:1299000,stok:210},
+  {nama:'Miyako Turbo Blender',kat:'Blender',terjual:162,harga:499000,stok:185},
+  {nama:'Samsung S23 Ultra',kat:'Hp',terjual:143,harga:14999000,stok:10},
+  {nama:'Xiaomi 13',kat:'Hp',terjual:98,harga:8999000,stok:10},
+  {nama:'iPhone 14',kat:'Hp',terjual:89,harga:13999000,stok:10},
 ];
 function katBadge(k) {
-  const m = { HP:'badge-hp', Laptop:'badge-laptop', Tablet:'badge-tablet', Blender:'badge-blender', Kulkas:'badge-kulkas' };
-  return `<span class="badge ${m[k]||''}">${k}</span>`;
+  const m={Hp:'badge-hp',Laptop:'badge-laptop',Tablet:'badge-tablet',Blender:'badge-blender',Kulkas:'badge-kulkas',Tv:'badge-tv',Ac:'badge-ac'};
+  return `<span class="badge ${m[k]||'badge-hp'}">${k}</span>`;
 }
 function stokBadge(s) {
-  if (s === 0) return `<span class="stock-badge stock-out">● Habis</span>`;
-  if (s < 20)  return `<span class="stock-badge stock-low">● Rendah</span>`;
+  if(s===0) return `<span class="stock-badge stock-out">● Habis</span>`;
+  if(s<10)  return `<span class="stock-badge stock-low">● Rendah</span>`;
   return `<span class="stock-badge stock-ok">● Tersedia</span>`;
 }
 const popTbody = document.getElementById('popularTable');
-products.forEach((p, i) => {
-  const rc = i===0?'gold':i===1?'silver':i===2?'bronze':'';
-  popTbody.innerHTML += `<tr>
-    <td><span class="rank-num ${rc}">${i+1}</span></td>
-    <td><strong>${p.nama}</strong></td>
-    <td>${katBadge(p.kat)}</td>
-    <td><strong>${p.terjual}</strong> unit</td>
-    <td class="price-cell">Rp ${(p.terjual * p.harga / 1e6).toFixed(1)}jt</td>
-    <td>${stokBadge(p.stok)} <span style="color:var(--muted);font-size:12px;margin-left:4px">${p.stok}</span></td>
-  </tr>`;
-});
-
-// ── USER GRID ─────────────────────────────────────────────────────────────────
-const usersStatic = [
-  { name:'Admin Utama',   email:'admin@electro.id',  role:'admin', initial:'A', color:'#4f8ef7' },
-  { name:'Budi Santoso',  email:'budi@electro.id',   role:'staff', initial:'B', color:'#4fc78a' },
-  { name:'Citra Dewi',    email:'citra@electro.id',  role:'staff', initial:'C', color:'#f7654f' },
-  { name:'Deni Hermawan', email:'deni@electro.id',   role:'staff', initial:'D', color:'#f7c44f' },
-  { name:'Eka Putri',     email:'eka@electro.id',    role:'staff', initial:'E', color:'#a078ff' },
-  { name:'Fajar Rizki',   email:'fajar@electro.id',  role:'staff', initial:'F', color:'#4fc78a' },
-];
-const ugEl = document.getElementById('userGrid');
-usersStatic.forEach(u => {
-  ugEl.innerHTML += `<div class="user-card-big">
-    <div class="ub-avatar" style="background:${u.color}22;color:${u.color}">${u.initial}</div>
-    <div class="ub-name">${u.name}</div>
-    <div class="ub-email">${u.email}</div>
-    <span class="ub-role ${u.role==='admin'?'admin':''}">${u.role}</span>
-  </div>`;
-});
-
-// ── SEARCH & FILTER 
-document.getElementById('searchInput').addEventListener('input', e => {
-  const q = e.target.value.toLowerCase();
-  document.querySelectorAll('#productTable tr').forEach(row => {
-    const text = row.textContent.toLowerCase();
-    row.style.display = text.includes(q) ? '' : 'none';
+if (popTbody) {
+  products.forEach((p,i) => {
+    const rc = i===0?'gold':i===1?'silver':i===2?'bronze':'';
+    popTbody.innerHTML += `<tr>
+      <td><span class="rank-num ${rc}">${i+1}</span></td>
+      <td><strong>${p.nama}</strong></td>
+      <td>${katBadge(p.kat)}</td>
+      <td><strong>${p.terjual}</strong> unit</td>
+      <td class="price-cell">Rp ${(p.terjual * p.harga / 1e6).toFixed(1)}jt</td>
+      <td>${stokBadge(p.stok)} <span style="color:var(--muted);font-size:12px;margin-left:4px">${p.stok}</span></td>
+    </tr>`;
   });
-});
-document.getElementById('filterGroup').addEventListener('click', e => {
-  const btn = e.target.closest('.filter-btn');
-  if (!btn) return;
-  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  const cat = btn.dataset.cat;
-  document.querySelectorAll('#productTable tr').forEach(row => {
-    row.style.display = (cat === 'all' || row.textContent.includes(cat)) ? '' : 'none';
-  });
-});
+}
 
-// ── DROPDOWN ──────────────────────────────────────────────────────────────────
+// SEARCH & FILTER PRODUK — hanya cocokkan kolom Nama Produk (td ke-3, index 2)
+const searchInput = document.getElementById('searchInput');
+if (searchInput) {
+  searchInput.addEventListener('input', e => {
+    const q = e.target.value.toLowerCase().trim();
+    document.querySelectorAll('#productTable tr').forEach(row => {
+      // td index 2 = kolom Nama Produk
+      const namaCell = row.querySelectorAll('td')[2];
+      const nama = namaCell ? namaCell.textContent.toLowerCase() : '';
+      row.style.display = (q === '' || nama.includes(q)) ? '' : 'none';
+    });
+  });
+}
+
+// SEARCH USER — Staff/Admin table dan Customer table
+const userSearchInput = document.getElementById('userSearchInput');
+if (userSearchInput) {
+  userSearchInput.addEventListener('input', e => {
+    const q = e.target.value.toLowerCase().trim();
+    // Cari di semua user-table tbody tr
+    document.querySelectorAll('.user-table tbody tr').forEach(row => {
+      const username = row.querySelectorAll('td')[1]?.textContent.toLowerCase() || '';
+      const email    = row.querySelectorAll('td')[2]?.textContent.toLowerCase() || '';
+      row.style.display = (q === '' || username.includes(q) || email.includes(q)) ? '' : 'none';
+    });
+  });
+}
+
+const filterGroup = document.getElementById('filterGroup');
+if (filterGroup) {
+  filterGroup.addEventListener('click', e => {
+    const btn = e.target.closest('.filter-btn');
+    if (!btn) return;
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const cat = btn.dataset.cat;
+    document.querySelectorAll('#productTable tr').forEach(row => {
+      const rowCat = row.dataset.kategori || '';
+      row.style.display = (cat === 'all' || rowCat === cat) ? '' : 'none';
+    });
+  });
+}
+
+// DROPDOWN AKSI PRODUK
 let openDropId = null;
-
 function closeDropdown() {
   if (openDropId !== null) {
     document.getElementById('drop-' + openDropId)?.classList.remove('show');
@@ -287,32 +207,40 @@ function closeDropdown() {
   }
 }
 
-document.getElementById('productTable').addEventListener('click', e => {
-  const btn = e.target.closest('.action-btn');
-  if (btn) {
-    e.stopPropagation();
-    const pid  = btn.dataset.pid;
-    const drop = document.getElementById('drop-' + pid);
-    if (openDropId === pid) { closeDropdown(); return; }
-    closeDropdown();
-    const rect = btn.getBoundingClientRect();
-    if (window.innerHeight - rect.bottom < 180) drop.classList.add('drop-up');
-    else drop.classList.remove('drop-up');
-    drop.classList.add('show');
-    btn.classList.add('is-open');
-    openDropId = pid;
-    return;
-  }
-  const item = e.target.closest('.drop-item');
-  if (item) {
-    e.stopPropagation();
-    closeDropdown();
-    openModal(item.dataset.action, item.dataset.pid, item.dataset.nama, parseInt(item.dataset.stok));
-  }
-});
+const productTable = document.getElementById('productTable');
+if (productTable) {
+  productTable.addEventListener('click', e => {
+    const btn = e.target.closest('.action-btn');
+    if (btn) {
+      e.stopPropagation();
+      const pid  = btn.dataset.pid;
+      const drop = document.getElementById('drop-' + pid);
+      if (openDropId === pid) { closeDropdown(); return; }
+      closeDropdown();
+      const rect = btn.getBoundingClientRect();
+      if (window.innerHeight - rect.bottom < 200) drop.classList.add('drop-up');
+      else drop.classList.remove('drop-up');
+      drop.classList.add('show');
+      btn.classList.add('is-open');
+      openDropId = pid;
+      return;
+    }
+    const item = e.target.closest('.drop-item');
+    if (item) {
+      e.stopPropagation();
+      closeDropdown();
+      const action = item.dataset.action;
+      if (action === 'edit') {
+        openEditProduk(item);
+      } else {
+        openModal(action, item.dataset.pid, item.dataset.nama, parseInt(item.dataset.stok));
+      }
+    }
+  });
+}
 document.addEventListener('click', closeDropdown);
 
-// ── MODAL ─────────────────────────────────────────────────────────────────────
+// MODAL STOK / HAPUS
 const overlay     = document.getElementById('modalOverlay');
 const mIconWrap   = document.getElementById('mIconWrap');
 const mIconSvg    = document.getElementById('mIconSvg');
@@ -326,8 +254,7 @@ const mQtySection = document.getElementById('mQtySection');
 const mQtyLabel   = document.getElementById('mQtyLabel');
 const qtyInput    = document.getElementById('qtyInput');
 const mBtnOk      = document.getElementById('mBtnOk');
-
-let activePid = null, activeAction = null, activeStok = 0, activeNama = '';
+let activePid=null, activeAction=null, activeStok=0, activeNama='';
 
 const ICON_PATHS = {
   add:    '<line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>',
@@ -336,179 +263,217 @@ const ICON_PATHS = {
 };
 
 function updateAfterPreview() {
-  if (activeAction === 'delete') return;
-  const qty = Math.max(1, parseInt(qtyInput.value) || 1);
-  const after = activeAction === 'add' ? activeStok + qty : Math.max(0, activeStok - qty);
+  if (activeAction==='delete') return;
+  const qty = Math.max(1, parseInt(qtyInput.value)||1);
+  const after = activeAction==='add' ? activeStok+qty : Math.max(0, activeStok-qty);
   mStokAfter.textContent = after;
-  mStokAfter.className = 'msb-val ' + (after === 0 ? 'red' : after < 20 ? 'yellow' : 'green');
+  mStokAfter.className = 'msb-val '+(after===0?'red':after<10?'yellow':'green');
 }
 
 function openModal(action, pid, nama, stok) {
-  activePid = pid; activeAction = action; activeStok = stok; activeNama = nama;
-  mIconWrap.className = 'modal-icon-wrap icon-' + action;
+  activePid=pid; activeAction=action; activeStok=stok; activeNama=nama;
+  mIconWrap.className = 'modal-icon-wrap icon-'+action;
   mIconSvg.innerHTML  = ICON_PATHS[action];
   mProduct.textContent = nama;
-  if (action === 'add') {
-    mTitle.textContent    = 'Tambah Stok';
-    mSubtitle.textContent = 'Masukkan jumlah unit yang ingin ditambahkan.';
-    mQtyLabel.textContent = 'JUMLAH TAMBAHAN';
-    mBtnOk.className = 'btn-ok add'; mBtnOk.textContent = 'Tambah Stok';
-    mStokRow.style.display = mQtySection.style.display = '';
-    mStokNow.textContent = stok; mStokNow.className = 'msb-val';
-    qtyInput.value = 1; updateAfterPreview();
-  } else if (action === 'reduce') {
-    mTitle.textContent    = 'Kurangi Stok';
-    mSubtitle.textContent = 'Masukkan jumlah unit yang ingin dikurangi.';
-    mQtyLabel.textContent = 'JUMLAH PENGURANGAN';
-    mBtnOk.className = 'btn-ok reduce'; mBtnOk.textContent = 'Kurangi Stok';
-    mStokRow.style.display = mQtySection.style.display = '';
-    mStokNow.textContent = stok; mStokNow.className = 'msb-val';
-    qtyInput.value = 1; updateAfterPreview();
+  if (action==='add') {
+    mTitle.textContent='Tambah Stok'; mSubtitle.textContent='Masukkan jumlah unit yang ingin ditambahkan.';
+    mQtyLabel.textContent='JUMLAH TAMBAHAN'; mBtnOk.className='btn-ok add'; mBtnOk.textContent='Tambah Stok';
+    mStokRow.style.display=mQtySection.style.display='';
+    mStokNow.textContent=stok; mStokNow.className='msb-val'; qtyInput.value=1; updateAfterPreview();
+  } else if (action==='reduce') {
+    mTitle.textContent='Kurangi Stok'; mSubtitle.textContent='Masukkan jumlah unit yang ingin dikurangi.';
+    mQtyLabel.textContent='JUMLAH PENGURANGAN'; mBtnOk.className='btn-ok reduce'; mBtnOk.textContent='Kurangi Stok';
+    mStokRow.style.display=mQtySection.style.display='';
+    mStokNow.textContent=stok; mStokNow.className='msb-val'; qtyInput.value=1; updateAfterPreview();
   } else {
-    mTitle.textContent    = 'Hapus Produk?';
-    mSubtitle.textContent = 'Produk akan dihapus permanen. Tidak bisa dibatalkan.';
-    mBtnOk.className = 'btn-ok delete'; mBtnOk.textContent = 'Ya, Hapus Produk';
-    mStokRow.style.display = mQtySection.style.display = 'none';
+    mTitle.textContent='Hapus Produk?'; mSubtitle.textContent='Produk akan dihapus permanen. Tidak bisa dibatalkan.';
+    mBtnOk.className='btn-ok delete'; mBtnOk.textContent='Ya, Hapus Produk';
+    mStokRow.style.display=mQtySection.style.display='none';
   }
   overlay.classList.add('show');
 }
 
-function closeModal() {
-  overlay.classList.remove('show');
-  activePid = activeAction = null;
-}
+function closeModal() { overlay.classList.remove('show'); activePid=activeAction=null; }
 
-document.getElementById('qtyMinus').addEventListener('click', () => {
-  qtyInput.value = Math.max(1, parseInt(qtyInput.value) - 1);
-  updateAfterPreview();
-});
+document.getElementById('qtyMinus').addEventListener('click', () => { qtyInput.value=Math.max(1,parseInt(qtyInput.value)-1); updateAfterPreview(); });
 document.getElementById('qtyPlus').addEventListener('click', () => {
-  const max = activeAction === 'reduce' ? activeStok : 9999;
-  qtyInput.value = Math.min(max, parseInt(qtyInput.value) + 1);
-  updateAfterPreview();
+  const max = activeAction==='reduce' ? activeStok : 9999;
+  qtyInput.value=Math.min(max,parseInt(qtyInput.value)+1); updateAfterPreview();
 });
 qtyInput.addEventListener('input', updateAfterPreview);
 document.getElementById('mBtnCancel').addEventListener('click', closeModal);
-overlay.addEventListener('click', e => { if (e.target === overlay) closeModal(); });
+overlay.addEventListener('click', e => { if(e.target===overlay) closeModal(); });
 
-// Konfirmasi — kirim form ke Spring Boot backend
 mBtnOk.addEventListener('click', () => {
   if (!activePid) return;
-  const qty = Math.max(1, parseInt(qtyInput.value) || 1);
-
-  if (activeAction === 'add') {
-    submitForm('/admin/tambahStok', { id: activePid, jumlah: qty });
-  } else if (activeAction === 'reduce') {
-    if (qty > activeStok) { showToast('Stok tidak mencukupi!', '#f7654f'); closeModal(); return; }
-    submitForm('/admin/kurangiStok', { id: activePid, jumlah: qty });
+  const qty = Math.max(1, parseInt(qtyInput.value)||1);
+  if (activeAction==='add') {
+    submitForm('/admin/tambahStok', {id:activePid, jumlah:qty});
+  } else if (activeAction==='reduce') {
+    if (qty>activeStok) { showToast('Stok tidak mencukupi!','#f7654f'); closeModal(); return; }
+    submitForm('/admin/kurangiStok', {id:activePid, jumlah:qty});
   } else {
-    submitForm('/admin/hapus/' + activePid, {}, 'GET');
+    submitForm('/admin/hapus/'+activePid, {}, 'GET');
   }
   closeModal();
 });
 
-// Helper: kirim form ke backend
-function submitForm(action, params, method = 'POST') {
+// MODAL TAMBAH / EDIT PRODUK
+const produkOverlay   = document.getElementById('produkModalOverlay');
+const produkForm      = document.getElementById('produkForm');
+const produkTitle     = document.getElementById('produkModalTitle');
+const produkFormId    = document.getElementById('produkFormId');
+
+const btnTambahProduk = document.getElementById('btnTambahProduk');
+if (btnTambahProduk) {
+  btnTambahProduk.addEventListener('click', () => {
+    produkTitle.textContent = 'Tambah Produk';
+    produkForm.action = '/admin/tambah';
+    produkFormId.value = '';
+    produkForm.reset();
+    produkOverlay.classList.add('show');
+  });
+}
+
+function openEditProduk(item) {
+  produkTitle.textContent = 'Edit Produk';
+  produkForm.action = '/admin/edit';
+  produkFormId.value = item.dataset.pid;
+
+  document.getElementById('pNama').value        = item.dataset.nama       || '';
+  document.getElementById('pMerk').value        = item.dataset.merk       || '';
+  document.getElementById('pHarga').value       = item.dataset.harga      || '';
+  document.getElementById('pStok').value        = item.dataset.stok       || '0';
+  document.getElementById('pImageUrl').value    = item.dataset.imageurl   || '';
+  document.getElementById('pDeskripsi').value   = item.dataset.deskripsi  || '';
+  document.getElementById('pSpesifikasi').value = item.dataset.spesifikasi|| '';
+
+  const sel = document.getElementById('pKategori');
+  for (let opt of sel.options) {
+    if (opt.value === item.dataset.kategori) { opt.selected=true; break; }
+  }
+  produkOverlay.classList.add('show');
+}
+
+function closeProdukModal() { produkOverlay.classList.remove('show'); }
+document.getElementById('closeProdukModal').addEventListener('click', closeProdukModal);
+document.getElementById('closeProdukModal2').addEventListener('click', closeProdukModal);
+produkOverlay.addEventListener('click', e => { if(e.target===produkOverlay) closeProdukModal(); });
+
+// PASSWORD TOGGLE - User Modal
+const toggleUserPw = document.getElementById('toggleUserPw');
+if (toggleUserPw) {
+  toggleUserPw.addEventListener('click', () => {
+    const input   = document.getElementById('uPassword');
+    const eyeOn   = document.getElementById('eyeIcon');
+    const eyeOff  = document.getElementById('eyeOffIcon');
+    const isHidden = input.type === 'password';
+    input.type = isHidden ? 'text' : 'password';
+    eyeOn.style.display  = isHidden ? 'none'  : '';
+    eyeOff.style.display = isHidden ? ''      : 'none';
+  });
+}
+
+// MODAL TAMBAH / EDIT USER
+const userOverlay = document.getElementById('userModalOverlay');
+const userForm    = document.getElementById('userForm');
+const userTitle   = document.getElementById('userModalTitle');
+const userFormId  = document.getElementById('userFormId');
+
+const btnTambahUser = document.getElementById('btnTambahUser');
+if (btnTambahUser) {
+  btnTambahUser.addEventListener('click', () => {
+    userTitle.textContent = 'Tambah User';
+    userForm.action = '/admin/user/tambah';
+    userFormId.value = '';
+    userForm.reset();
+    document.getElementById('uPasswordField').style.display = '';
+    document.getElementById('uPassword').required = true;
+    userOverlay.classList.add('show');
+  });
+}
+
+window.openEditUser = function(btn) {
+  userTitle.textContent = 'Edit User';
+  userForm.action = '/admin/user/edit';
+  userFormId.value              = btn.dataset.id;
+  document.getElementById('uUsername').value = btn.dataset.username || '';
+  document.getElementById('uEmail').value    = btn.dataset.email    || '';
+  document.getElementById('uRole').value     = btn.dataset.role     || 'USER';
+  // sembunyikan field password saat edit
+  document.getElementById('uPasswordField').style.display = 'none';
+  document.getElementById('uPassword').required = false;
+  userOverlay.classList.add('show');
+};
+
+function closeUserModal() { userOverlay.classList.remove('show'); }
+document.getElementById('closeUserModal').addEventListener('click', closeUserModal);
+document.getElementById('closeUserModal2').addEventListener('click', closeUserModal);
+userOverlay.addEventListener('click', e => { if(e.target===userOverlay) closeUserModal(); });
+
+// HELPER SUBMIT FORM
+function submitForm(action, params, method='POST') {
   const form = document.createElement('form');
-  form.method = method === 'GET' ? 'GET' : 'POST';
+  form.method = method==='GET' ? 'GET' : 'POST';
   form.action = action;
-  // CSRF token 
-  const csrfMeta  = document.querySelector('meta[name="_csrf"]');
-  const csrfHeader = document.querySelector('meta[name="_csrf_header"]');
-  if (csrfMeta && method !== 'GET') {
+  const csrfMeta = document.querySelector('meta[name="_csrf"]');
+  if (csrfMeta && method!=='GET') {
     const csrf = document.createElement('input');
-    csrf.type  = 'hidden';
-    csrf.name  = '_csrf';
-    csrf.value = csrfMeta.content;
+    csrf.type='hidden'; csrf.name='_csrf'; csrf.value=csrfMeta.content;
     form.appendChild(csrf);
   }
-  Object.entries(params).forEach(([k, v]) => {
+  Object.entries(params).forEach(([k,v]) => {
     const inp = document.createElement('input');
-    inp.type = 'hidden'; inp.name = k; inp.value = v;
+    inp.type='hidden'; inp.name=k; inp.value=v;
     form.appendChild(inp);
   });
   document.body.appendChild(form);
   form.submit();
 }
 
-// ── TOAST ─────────────────────────────────────────────────────────────────────
-let toastTimer = null;
-function showToast(msg, color) {
+// TOAST
+let toastTimer=null;
+function showToast(msg, color='#4fc78a') {
   const toast = document.getElementById('toast');
   document.getElementById('tDot').style.background = color;
   document.getElementById('tMsg').textContent = msg;
   toast.classList.add('show');
   clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => toast.classList.remove('show'), 3000);
+  toastTimer = setTimeout(()=>toast.classList.remove('show'), 3000);
 }
-});
 
-(function () {
-  const wrapper  = document.getElementById('profileWrapper');
-  const btn      = document.getElementById('profileBtn');
-  const panel    = document.getElementById('profilePanel');
+}); // end DOMContentLoaded
 
-  if (!wrapper || !btn || !panel) return;
+// PROFILE PANEL 
+(function() {
+  const wrapper = document.getElementById('profileWrapper');
+  const btn     = document.getElementById('profileBtn');
+  if (!wrapper || !btn) return;
 
-  // Toggle buka/tutup
-  btn.addEventListener('click', function (e) {
+  btn.addEventListener('click', e => {
     e.stopPropagation();
-    const isOpen = wrapper.classList.toggle('open');
-
-    btn.style.transform = isOpen ? 'translateY(-3px)' : '';
+    wrapper.classList.toggle('open');
+  });
+  document.addEventListener('click', e => {
+    if (!wrapper.contains(e.target)) wrapper.classList.remove('open');
+  });
+  document.addEventListener('keydown', e => {
+    if (e.key==='Escape') wrapper.classList.remove('open');
   });
 
-  document.addEventListener('click', function (e) {
-    if (!wrapper.contains(e.target)) {
-      wrapper.classList.remove('open');
-      btn.style.transform = '';
-    }
-  });
+  const pwOverlay = document.getElementById('pwModalOverlay');
+  const btnOpenPw = document.getElementById('btnOpenPw');
+  const btnClose1 = document.getElementById('btnClosePw');
+  const btnClose2 = document.getElementById('btnClosePw2');
 
-  document.addEventListener('keydown', function (e) {
-    if (e.key === 'Escape' && wrapper.classList.contains('open')) {
-      wrapper.classList.remove('open');
-      btn.style.transform = '';
-    }
-  });
+  function openPwModal()  { wrapper.classList.remove('open'); if(pwOverlay) pwOverlay.classList.add('active'); }
+  function closePwModal() { if(pwOverlay) pwOverlay.classList.remove('active'); }
 
-  /* ── Ubah Password ── */
-  const pwOverlay  = document.getElementById('pwModalOverlay');
-  const btnOpenPw  = document.getElementById('btnOpenPw');
-  const btnClose1  = document.getElementById('btnClosePw');
-  const btnClose2  = document.getElementById('btnClosePw2');
+  if (btnOpenPw) btnOpenPw.addEventListener('click', openPwModal);
+  if (btnClose1) btnClose1.addEventListener('click', closePwModal);
+  if (btnClose2) btnClose2.addEventListener('click', closePwModal);
+  if (pwOverlay) pwOverlay.addEventListener('click', e => { if(e.target===pwOverlay) closePwModal(); });
 
-  function openPwModal() {
-    wrapper.classList.remove('open');   
-    if (pwOverlay) pwOverlay.classList.add('active');
-  }
-  function closePwModal() {
-    if (pwOverlay) pwOverlay.classList.remove('active');
-  }
-
-  if (btnOpenPw)  btnOpenPw.addEventListener('click',  openPwModal);
-  if (btnClose1)  btnClose1.addEventListener('click',  closePwModal);
-  if (btnClose2)  btnClose2.addEventListener('click',  closePwModal);
-  if (pwOverlay)  pwOverlay.addEventListener('click', function (e) {
-    if (e.target === pwOverlay) closePwModal();
-  });
-
-  const hasFlash = pwOverlay && (
-    pwOverlay.querySelector('.pw-alert-error') ||
-    pwOverlay.querySelector('.pw-alert-success')
-  );
+  const hasFlash = pwOverlay && (pwOverlay.querySelector('.pw-alert-error') || pwOverlay.querySelector('.pw-alert-success'));
   if (hasFlash) openPwModal();
-
-  ['notifNewUser', 'notifReport', 'notifStock'].forEach(function (id) {
-    const cb = document.getElementById(id);
-    if (!cb) return;
-
-    // Pulihkan state tersimpan
-    const saved = localStorage.getItem('notif_' + id);
-    if (saved !== null) cb.checked = saved === 'true';
-
-    cb.addEventListener('change', function () {
-      localStorage.setItem('notif_' + id, cb.checked);
-    });
-  });
 })();

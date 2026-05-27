@@ -335,3 +335,13 @@ function showToast(msg) {
     el.classList.add('show');
     setTimeout(() => el.classList.remove('show'), 2500);
 }
+
+// AUTO-APPLY FILTER
+document.addEventListener('DOMContentLoaded', () => {
+    const cat = sessionStorage.getItem('filterCat');
+    if (cat) {
+        sessionStorage.removeItem('filterCat');
+        const chip = document.querySelector(`.chip[data-category="${cat}"]`);
+        if (chip) chip.click();
+    }
+});

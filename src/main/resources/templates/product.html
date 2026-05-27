@@ -130,9 +130,10 @@
             </div>
 
             <div class="card-image-area">
-                <img th:src="${item.imageUrl != null ? item.imageUrl : 'https://images.unsplash.com/photo-1546868871-7041f2a55e12?q=80&w=400&auto=format&fit=crop'}" 
+                <img th:src="${item.imageUrl != null and !#strings.isEmpty(item.imageUrl) ? item.imageUrl : 'https://images.unsplash.com/photo-1546868871-7041f2a55e12?q=80&w=400&auto=format&fit=crop'}" 
                      alt="Product Image" 
-                     onerror="this.src='https://images.unsplash.com/photo-1546868871-7041f2a55e12?q=80&w=400&auto=format&fit=crop'">
+                     th:attr="data-kategori=${item.kategori}"
+                     onerror="this.onerror=null; const k=this.dataset.kategori||''; const map={Hp:'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?q=80&w=400',Laptop:'https://images.unsplash.com/photo-1603302576837-37561b2e2302?q=80&w=400',Tablet:'https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?q=80&w=400',Tv:'https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?q=80&w=400',Ac:'https://images.unsplash.com/photo-1621905251189-08b45d6a269e?q=80&w=400',Blender:'https://images.unsplash.com/photo-1585515320310-259814833e62?q=80&w=400',Kulkas:'https://images.unsplash.com/photo-1584568694244-14fbdf83bd30?q=80&w=400',Headphone:'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=400'}; this.src=map[k]||'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?q=80&w=400';">
                 <div class="image-overlay-glow"></div>
             </div>
 
@@ -238,5 +239,6 @@
 
 <script th:src="@{/js/app.js}"></script>
 <script th:src="@{/js/product.js}"></script>
+
 </body>
 </html>
