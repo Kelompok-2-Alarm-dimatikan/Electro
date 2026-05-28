@@ -1,7 +1,9 @@
 package com.electro.controller;
 
-import com.electro.service.ElectroService;
+import com.electro.model.Order;
+import com.electro.repository.OrderRepository;
 import com.electro.repository.UserRepository;
+import com.electro.service.ElectroService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -22,6 +24,9 @@ public class CheckoutController {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private OrderRepository orderRepository;
+
     @GetMapping
     public String checkoutPage(Model model, Authentication auth) {
         if (auth != null) {
@@ -34,13 +39,30 @@ public class CheckoutController {
 
     @PostMapping("/submit")
     @ResponseBody
-    public ResponseEntity<?> submitCheckout(@RequestBody CheckoutRequest request) {
+    public ResponseEntity<?> submitCheckout(@RequestBody CheckoutRequest request, Authentication auth) { 
         try {
-            // Validasi stok terlebih dahulu sebelum mengurangi agar konsisten
+            // Validasi & kurangi stok
             for (CheckoutRequest.Item item : request.getItems()) {
-                // Sederhana: kurangiStok sendiri memvalidasi stok < 0 dan melempar IllegalArgumentException
                 electroService.kurangiStok(item.getId(), item.getQty());
             }
+
+            // SIMPAN ORDER BARU
+            Order order = new Order();
+            order.setNamaUser(request.getFullName());
+            order.setEmailUser(request.getEmail());
+            order.setNomerUser(request.getPhone());
+            order.setAlamatUser(request.getAddress());
+            order.setViaPembayaran(request.getPaymentMethod());
+
+            // Link ke user jika login
+            if (auth != null) {
+                userRepository.findByUsername(auth.getName())
+                    .ifPresent(order::setUser);
+            }
+
+            orderRepository.save(order);
+            // ← END SIMPAN ORDER
+
             return ResponseEntity.ok(Map.of("success", true, "message", "Checkout berhasil!"));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(Map.of("success", false, "message", e.getMessage()));
@@ -54,6 +76,9 @@ class CheckoutRequest {
     private List<Item> items;
     private String address;
     private String paymentMethod;
+    private String fullName;   
+    private String email;      
+    private String phone;      
 
     public List<Item> getItems() { return items; }
     public void setItems(List<Item> items) { this.items = items; }
@@ -61,11 +86,16 @@ class CheckoutRequest {
     public void setAddress(String address) { this.address = address; }
     public String getPaymentMethod() { return paymentMethod; }
     public void setPaymentMethod(String paymentMethod) { this.paymentMethod = paymentMethod; }
+    public String getFullName() { return fullName; }
+    public void setFullName(String fullName) { this.fullName = fullName; }
+    public String getEmail() { return email; }
+    public void setEmail(String email) { this.email = email; }
+    public String getPhone() { return phone; }
+    public void setPhone(String phone) { this.phone = phone; }
 
     public static class Item {
         private Long id;
         private int qty;
-
         public Long getId() { return id; }
         public void setId(Long id) { this.id = id; }
         public int getQty() { return qty; }

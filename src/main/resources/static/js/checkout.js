@@ -98,9 +98,12 @@ async function submitOrder() {
 
     // Prepare payload
     const payload = {
-        items: cart.map(item => ({ id: parseInt(item.id), qty: parseInt(item.qty) })),
-        address: `${address} (Telp: ${phone})`,
-        paymentMethod: paymentMethod
+    items: cart,
+    address: document.getElementById('shippingAddress').value,
+    paymentMethod: document.querySelector('input[name="paymentMethod"]:checked').value,
+    fullName: document.getElementById('fullName').value,       
+    email:    document.getElementById('emailAddr').value,      
+    phone:    document.getElementById('phoneNumber').value     
     };
 
     // UI Loading State
