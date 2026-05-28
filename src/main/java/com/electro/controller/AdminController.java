@@ -42,6 +42,12 @@ public class AdminController {
         model.addAttribute("newUserCount", newUserCount);
         model.addAttribute("complaints",   complaintRepository.findAllByOrderByTanggalDesc());
         model.addAttribute("orders",      orderRepository.findAllByOrderByTanggalDesc());
+        long pendingOrderCount = orderRepository.findAllByOrderByTanggalDesc().stream()
+                .filter(o -> "Menunggu".equals(o.getStatus())).count();
+        model.addAttribute("pendingOrderCount", pendingOrderCount);
+        long pendingComplaintCount = complaintRepository.findAllByOrderByTanggalDesc().stream()
+                .filter(c -> "PENDING".equals(c.getStatus())).count();
+        model.addAttribute("pendingComplaintCount", pendingComplaintCount);
         return "admin";
     }
 
