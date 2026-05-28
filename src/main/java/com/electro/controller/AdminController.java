@@ -12,6 +12,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.util.Optional;
+import com.electro.model.Order;
+import com.electro.repository.OrderRepository;
 
 @Controller
 @RequestMapping("/admin")
@@ -23,7 +25,8 @@ public class AdminController {
     @Autowired private UserService       userService;
     @Autowired private PasswordEncoder   passwordEncoder;
     @Autowired private ComplaintRepository complaintRepository;
-
+    @Autowired private OrderRepository   orderRepository;
+    
     AdminController(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
@@ -38,6 +41,7 @@ public class AdminController {
                 .filter(u -> !"ADMIN".equals(u.getRole())).count();
         model.addAttribute("newUserCount", newUserCount);
         model.addAttribute("complaints",   complaintRepository.findAllByOrderByTanggalDesc());
+        model.addAttribute("orders",      orderRepository.findAllByOrderByTanggalDesc());
         return "admin";
     }
 
@@ -169,6 +173,25 @@ public class AdminController {
     public String deleteComplaint(@PathVariable Long id, RedirectAttributes ra) {
         complaintRepository.deleteById(id);
         ra.addFlashAttribute("userSuccess", "Pengaduan berhasil dihapus.");
+        return "redirect:/admin";
+    }
+
+    @PostMapping("/orders/update-status")
+    public String updateOrderStatus(@RequestParam Long id,
+                                    @RequestParam String status,
+                                    RedirectAttributes ra) {
+        orderRepository.findById(id).ifPresent(o -> {
+            o.setStatus(status);
+            orderRepository.save(o);
+            ra.addFlashAttribute("userSuccess", "Status pengiriman berhasil diperbarui.");
+        });
+        return "redirect:/admin";
+    }
+
+    @GetMapping("/orders/delete/{id}")
+    public String deleteOrder(@PathVariable Long id, RedirectAttributes ra) {
+        orderRepository.deleteById(id);
+        ra.addFlashAttribute("userSuccess", "Data pesanan berhasil dihapus.");
         return "redirect:/admin";
     }
 }
