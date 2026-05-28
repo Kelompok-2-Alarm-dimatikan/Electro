@@ -26,7 +26,8 @@ public class UserService implements UserDetailsService {
             user.getPassword(),
             List.of(new SimpleGrantedAuthority(user.getRole())),
             user.getEmail(),
-            user.getAvatar()
+            user.getAvatar(),
+            user.getProvider()
         );
     }
 

@@ -57,6 +57,10 @@ public class SettingsController {
 
         // Validasi Email baru 
         if (!email.equals(user.getEmail())) {
+            if ("GOOGLE".equals(user.getProvider())) {
+                model.addAttribute("error", "Email tidak dapat diubah untuk akun Google!");
+                return "settings";
+            }
             var existingUser = userRepository.findByUsernameOrEmail(email, email);
             if (existingUser.isPresent() && !existingUser.get().getId().equals(user.getId())) {
                 model.addAttribute("error", "Email sudah digunakan!");
@@ -77,7 +81,8 @@ public class SettingsController {
                 user.getPassword(),
                 currentUser.getAuthorities(),
                 user.getEmail(),
-                user.getAvatar()
+                user.getAvatar(),
+                user.getProvider()
         );
         
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -104,6 +109,11 @@ public class SettingsController {
         User user = userRepository.findByUsername(currentUser.getUsername())
                 .orElseThrow(() -> new IllegalArgumentException("User tidak ditemukan"));
 
+        if ("GOOGLE".equals(user.getProvider())) {
+            model.addAttribute("error", "Password tidak dapat diubah untuk akun Google!");
+            return "settings";
+        }
+
         if (!passwordEncoder.matches(currentPassword, user.getPassword())) {
             model.addAttribute("error", "Password saat ini tidak sesuai!");
             return "settings";
@@ -123,7 +133,7 @@ public class SettingsController {
 
     @PostMapping("/delete")
     public String deleteAccount(@AuthenticationPrincipal CustomUserDetails currentUser,
-                                 @RequestParam String password,
+                                 @RequestParam(required = false) String password,
                                  HttpServletRequest request,
                                  HttpServletResponse response,
                                  Model model) {
@@ -131,7 +141,7 @@ public class SettingsController {
         User user = userRepository.findByUsername(currentUser.getUsername())
                 .orElseThrow(() -> new IllegalArgumentException("User tidak ditemukan"));
 
-        if (!passwordEncoder.matches(password, user.getPassword())) {
+        if (!"GOOGLE".equals(user.getProvider()) && !passwordEncoder.matches(password, user.getPassword())) {
             model.addAttribute("error", "Password konfirmasi salah!");
             return "settings";
         }

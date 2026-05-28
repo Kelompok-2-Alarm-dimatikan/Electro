@@ -24,6 +24,9 @@ public class User {
     @Column(columnDefinition = "MEDIUMTEXT")
     private String avatar;
 
+    @Column(nullable = false)
+    private String provider = "LOCAL"; // LOCAL atau GOOGLE
+
     public User() {}
 
     public User(String username, String email, String password, String role) {
@@ -76,5 +79,13 @@ public class User {
 
     public void setAvatar(String avatar) {
         this.avatar = avatar;
+    }
+
+    public String getProvider() {
+        return provider;
+    }
+
+    public void setProvider(String provider) {
+        this.provider = provider;
     }
 }

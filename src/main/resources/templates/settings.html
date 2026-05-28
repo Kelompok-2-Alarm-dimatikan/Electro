@@ -104,7 +104,15 @@
                         
                         <div class="field">
                             <label>Email Address</label>
-                            <input type="email" name="email" th:value="${#authentication.principal.email}" required />
+                            <!-- Hidden input to submit the email value since disabled input won't submit -->
+                            <input type="hidden" name="email" th:value="${#authentication.principal.email}" th:if="${#authentication.principal.provider == 'GOOGLE'}" />
+                            <input type="email" th:name="${#authentication.principal.provider != 'GOOGLE' ? 'email' : ''}" 
+                                   th:value="${#authentication.principal.email}" 
+                                   th:disabled="${#authentication.principal.provider == 'GOOGLE'}" 
+                                   th:style="${#authentication.principal.provider == 'GOOGLE' ? 'opacity: 0.5; cursor: not-allowed;' : ''}" required />
+                            <small th:if="${#authentication.principal.provider == 'GOOGLE'}" class="form-text text-muted" style="color: #6b7280; font-size: 0.85rem; margin-top: 0.25rem; display: block;">
+                                Anda masuk menggunakan akun Google. Email tidak dapat diubah.
+                            </small>
                         </div>
                         
                         <div class="actions">
@@ -120,12 +128,16 @@
                         <p class="panel-subtitle">Jaga keamanan akun Anda dengan mengganti password secara berkala</p>
                     </div>
                     
+                    <div th:if="${#authentication.principal.provider == 'GOOGLE'}" class="info-msg animate-up" style="background-color: #e0f2fe; color: #0369a1; padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem; border: 1px solid #bae6fd;">
+                        <strong>Info:</strong> Password tidak dapat diubah karena Anda masuk menggunakan akun Google.
+                    </div>
+                    
                     <form th:action="@{/settings/update-password}" method="post" class="settings-form">
                         <div class="field">
                             <label>Password Saat Ini</label>
                             <div class="input-icon-wrap">
-                                <input type="password" id="currentPasswordInput" name="currentPassword" placeholder="Masukkan password sekarang" required />
-                                <button type="button" class="toggle-password" onclick="togglePassword('currentPasswordInput', this)" aria-label="Tampilkan password">
+                                <input type="password" id="currentPasswordInput" name="currentPassword" placeholder="Masukkan password sekarang" th:disabled="${#authentication.principal.provider == 'GOOGLE'}" required />
+                                <button type="button" class="toggle-password" onclick="togglePassword('currentPasswordInput', this)" aria-label="Tampilkan password" th:disabled="${#authentication.principal.provider == 'GOOGLE'}">
                                     <svg class="eye-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                         <path d="M2 8c4 4 16 4 20 0" /><path d="M12 11v4" /><path d="M8 9.5l-2 3" /><path d="M16 9.5l2 3" />
                                     </svg>
@@ -136,8 +148,8 @@
                         <div class="field">
                             <label>Password Baru</label>
                             <div class="input-icon-wrap">
-                                <input type="password" id="newPasswordInput" name="newPassword" placeholder="Masukkan password baru" required />
-                                <button type="button" class="toggle-password" onclick="togglePassword('newPasswordInput', this)" aria-label="Tampilkan password">
+                                <input type="password" id="newPasswordInput" name="newPassword" placeholder="Masukkan password baru" th:disabled="${#authentication.principal.provider == 'GOOGLE'}" required />
+                                <button type="button" class="toggle-password" onclick="togglePassword('newPasswordInput', this)" aria-label="Tampilkan password" th:disabled="${#authentication.principal.provider == 'GOOGLE'}">
                                     <svg class="eye-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                         <path d="M2 8c4 4 16 4 20 0" /><path d="M12 11v4" /><path d="M8 9.5l-2 3" /><path d="M16 9.5l2 3" />
                                     </svg>
@@ -148,8 +160,8 @@
                         <div class="field">
                             <label>Konfirmasi Password Baru</label>
                             <div class="input-icon-wrap">
-                                <input type="password" id="confirmNewPasswordInput" name="confirmNewPassword" placeholder="Ulangi password baru" required />
-                                <button type="button" class="toggle-password" onclick="togglePassword('confirmNewPasswordInput', this)" aria-label="Tampilkan password">
+                                <input type="password" id="confirmNewPasswordInput" name="confirmNewPassword" placeholder="Ulangi password baru" th:disabled="${#authentication.principal.provider == 'GOOGLE'}" required />
+                                <button type="button" class="toggle-password" onclick="togglePassword('confirmNewPasswordInput', this)" aria-label="Tampilkan password" th:disabled="${#authentication.principal.provider == 'GOOGLE'}">
                                     <svg class="eye-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                         <path d="M2 8c4 4 16 4 20 0" /><path d="M12 11v4" /><path d="M8 9.5l-2 3" /><path d="M16 9.5l2 3" />
                                     </svg>
@@ -158,7 +170,7 @@
                         </div>
                         
                         <div class="actions">
-                            <button type="submit" class="btn btn-primary">Simpan Password</button>
+                            <button type="submit" class="btn btn-primary" th:disabled="${#authentication.principal.provider == 'GOOGLE'}">Simpan Password</button>
                         </div>
                     </form>
                 </div>
@@ -195,10 +207,13 @@
             </div>
             <form th:action="@{/settings/delete}" method="post">
                 <div class="modal-body">
-                    <p class="modal-warning">
+                    <p class="modal-warning" th:if="${#authentication.principal.provider != 'GOOGLE'}">
                         Harap masukkan password Anda saat ini untuk mengonfirmasi bahwa Anda adalah pemilik sah akun ini dan ingin menghapusnya secara permanen.
                     </p>
-                    <div class="field">
+                    <p class="modal-warning" th:if="${#authentication.principal.provider == 'GOOGLE'}">
+                        Apakah Anda yakin ingin menghapus akun ini secara permanen?
+                    </p>
+                    <div class="field" th:if="${#authentication.principal.provider != 'GOOGLE'}">
                         <label>Password Saat Ini</label>
                         <div class="input-icon-wrap">
                             <input type="password" id="deletePasswordInput" name="password" placeholder="Masukkan password Anda" required />

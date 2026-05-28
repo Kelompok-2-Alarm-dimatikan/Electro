@@ -1,5 +1,4 @@
 package com.electro.repository;
-
 import com.electro.model.Order;
 import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;

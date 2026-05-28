@@ -1,5 +1,4 @@
 package com.electro.repository;
-
 import com.electro.model.Complaint;
 import com.electro.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
