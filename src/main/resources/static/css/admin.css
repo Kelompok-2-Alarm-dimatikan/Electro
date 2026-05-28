@@ -1123,3 +1123,27 @@ body::before {
   padding-top: 16px;
   border-top: 1px solid rgba(91,141,238,0.12);
 }
+/* ── NAV ITEM NOTIFICATION BADGES ── */
+.nav-item {
+  position: relative;
+}
+.nav-notif-badge {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+  background: #ef4444;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  min-width: 18px;
+  height: 18px;
+  border-radius: 9px;
+  display: grid;
+  place-items: center;
+  padding: 0 4px;
+  border: 2px solid var(--sidebar, #1a1a2e);
+  animation: badgePop 0.4s cubic-bezier(.34,1.56,.64,1);
+  pointer-events: none;
+  line-height: 1;
+}
