@@ -17,14 +17,16 @@ public class CustomUserDetails extends User implements OAuth2User, OidcUser {
     private OidcIdToken idToken;
     private OidcUserInfo userInfo;
 
-    public CustomUserDetails(String username, String password, Collection<? extends GrantedAuthority> authorities, String email, String avatar, String provider) {
+    public CustomUserDetails(String username, String password, Collection<? extends GrantedAuthority> authorities,
+            String email, String avatar, String provider) {
         super(username, password, authorities);
         this.email = email;
         this.avatar = avatar;
         this.provider = provider;
     }
 
-    public CustomUserDetails(String username, String password, Collection<? extends GrantedAuthority> authorities, String email, String avatar, String provider, Map<String, Object> attributes) {
+    public CustomUserDetails(String username, String password, Collection<? extends GrantedAuthority> authorities,
+            String email, String avatar, String provider, Map<String, Object> attributes) {
         super(username, password, authorities);
         this.email = email;
         this.avatar = avatar;
@@ -32,7 +34,9 @@ public class CustomUserDetails extends User implements OAuth2User, OidcUser {
         this.attributes = attributes;
     }
 
-    public CustomUserDetails(String username, String password, Collection<? extends GrantedAuthority> authorities, String email, String avatar, String provider, Map<String, Object> attributes, OidcIdToken idToken, OidcUserInfo userInfo) {
+    public CustomUserDetails(String username, String password, Collection<? extends GrantedAuthority> authorities,
+            String email, String avatar, String provider, Map<String, Object> attributes, OidcIdToken idToken,
+            OidcUserInfo userInfo) {
         super(username, password, authorities);
         this.email = email;
         this.avatar = avatar;

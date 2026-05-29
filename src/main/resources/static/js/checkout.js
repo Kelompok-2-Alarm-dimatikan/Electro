@@ -1,5 +1,3 @@
-// CHECKOUT PAGE LOGIC
-
 let cart = [];
 const SERVICE_FEE = 10000;
 

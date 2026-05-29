@@ -9,4 +9,5 @@ import java.util.List;
 public interface ComplaintRepository extends JpaRepository<Complaint, Long> {
     List<Complaint> findByUserOrderByTanggalDesc(User user);
     List<Complaint> findAllByOrderByTanggalDesc();
+    void deleteByUser(User user);
 }

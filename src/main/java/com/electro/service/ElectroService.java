@@ -15,6 +15,10 @@ public class ElectroService {
         return electroRepository.findAll();
     }
 
+    public java.util.Optional<Electronic> getElectroById(Long id) {
+        return electroRepository.findById(id);
+    }
+
     public List<Electronic> searchByHarga(double harga) {
         return electroRepository.findByHarga(harga);
     }
@@ -34,6 +38,7 @@ public class ElectroService {
         int stokBaru = electro.getStok() - jumlah;
         if (stokBaru < 0) throw new IllegalArgumentException("Stok tidak mencukupi");
         electro.setStok(stokBaru);
+        electro.setTerjual(electro.getTerjual() + jumlah);
         electroRepository.save(electro);
     }
 
@@ -81,9 +86,10 @@ public class ElectroService {
         electro.setHarga(harga);
         electro.setStok(stok);
         electro.setMerk(merk);
-        if (imageUrl   != null && !imageUrl.isBlank())   electro.setImageUrl(imageUrl);
-        if (deskripsi  != null && !deskripsi.isBlank())  electro.setDeskripsi(deskripsi);
-        if (spesifikasi!= null && !spesifikasi.isBlank())electro.setSpesifikasi(spesifikasi);
+        // Always update these fields (including clearing them when blank)
+        electro.setImageUrl(imageUrl != null && !imageUrl.isBlank() ? imageUrl : null);
+        electro.setDeskripsi(deskripsi != null && !deskripsi.isBlank() ? deskripsi : null);
+        electro.setSpesifikasi(spesifikasi != null && !spesifikasi.isBlank() ? spesifikasi : null);
         electroRepository.save(electro);
     }
 

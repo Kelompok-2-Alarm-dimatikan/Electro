@@ -13,6 +13,7 @@ public abstract class Electronic {
     private String nama;
     private double harga;
     private int stok;
+    private int terjual = 0;
     private String merk;
 
     @Column(length = 1000)
@@ -40,6 +41,8 @@ public abstract class Electronic {
     public void setHarga(double harga) { this.harga = harga; }
     public int getStok() { return stok; }
     public void setStok(int stok) { this.stok = stok; }
+    public int getTerjual() { return terjual; }
+    public void setTerjual(int terjual) { this.terjual = terjual; }
     public String getMerk() { return merk; }
     public void setMerk(String merk) { this.merk = merk; }
     public String getImageUrl() { return imageUrl; }

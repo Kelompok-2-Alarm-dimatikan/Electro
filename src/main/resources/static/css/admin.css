@@ -1083,6 +1083,25 @@ body::before {
   width: 100%;
   padding-right: 44px !important;
 }
+
+.bm-field .pw-input-wrap {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.10);
+  border-radius: 10px;
+  padding: 0;
+  transition: border-color .2s, box-shadow .2s, background .2s;
+}
+.bm-field .pw-input-wrap input {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 11px 44px 11px 14px !important;
+}
+.bm-field .pw-input-wrap:focus-within {
+  border-color: rgba(91,141,238,0.75);
+  background: rgba(91,141,238,0.07);
+  box-shadow: 0 0 0 3px rgba(91,141,238,0.14), 0 0 20px rgba(91,141,238,0.10);
+}
 .pw-toggle-btn {
   position: absolute;
   right: 10px;

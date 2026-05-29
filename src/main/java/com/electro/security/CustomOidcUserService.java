@@ -1,5 +1,4 @@
 package com.electro.security;
-
 import com.electro.model.User;
 import com.electro.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +28,7 @@ public class CustomOidcUserService extends OidcUserService {
     @Override
     public OidcUser loadUser(OidcUserRequest userRequest) throws OAuth2AuthenticationException {
         OidcUser oidcUser = super.loadUser(userRequest);
-        
+
         String email = oidcUser.getEmail();
         String picture = oidcUser.getPicture();
 
@@ -42,7 +41,7 @@ public class CustomOidcUserService extends OidcUserService {
 
         if (userOptional.isPresent()) {
             user = userOptional.get();
-            // Update avatar 
+            // Update avatar
             if (user.getAvatar() == null || user.getAvatar().trim().isEmpty()) {
                 if (picture != null && !picture.isEmpty()) {
                     user.setAvatar(picture);
@@ -77,7 +76,6 @@ public class CustomOidcUserService extends OidcUserService {
                 user.getProvider(),
                 oidcUser.getAttributes(),
                 oidcUser.getIdToken(),
-                oidcUser.getUserInfo()
-        );
+                oidcUser.getUserInfo());
     }
 }

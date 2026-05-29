@@ -1,646 +1,804 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Electro Admin Panel</title>
-  <meta name="_csrf"        th:content="${_csrf.token}"/>
-  <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+
+  <meta name="_csrf" th:content="${_csrf.token}" />
+  <meta name="_csrf_header" th:content="${_csrf.headerName}" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap"
+    rel="stylesheet" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
   <link rel="stylesheet" th:href="@{/css/admin.css}">
 </head>
+
 <body>
+  <input type="hidden" id="flashPageTarget"
+    th:value="${userError != null or userSuccess != null} ? 'users' : ''" />
+  <script id="serverData" type="application/json"
+    th:attr="data-stock=${stockDataJson}, data-popular=${popularProductsJson}, data-chart=${monthlyChartJson}"></script>
 
-<!-- SIDEBAR -->
-<aside id="sidebar">
-  <div class="sidebar-logo">
-    <div class="logo">
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path></svg>
-      Electro
+  <!-- SIDEBAR -->
+  <aside id="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round">
+          <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path>
+        </svg>
+        Electro
+      </div>
+      <span class="logo-badge">Store</span>
     </div>
-    <span class="logo-badge">Store</span>
-  </div>
 
-  <nav>
-    <div class="nav-label">Menu</div>
-    <div class="nav-item active" data-page="dashboard">
-      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
-      Dashboard
-    </div>
-    <div class="nav-item" data-page="users" style="position:relative">
-      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-      Users
-      <span class="nav-notif-badge" th:if="${newUserCount != null and newUserCount > 0}" th:text="${newUserCount}"></span>
-    </div>
-    <div class="nav-item" data-page="table">
-      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 3H5a2 2 0 0 0-2 2v4m6-6h10a2 2 0 0 1 2 2v4M9 3v18m0 0h10a2 2 0 0 0 2-2V9M9 21H5a2 2 0 0 1-2-2V9m0 0h18"/></svg>
-      Tabel Produk
-    </div>
-    <div class="nav-item" data-page="Pengiriman" style="position:relative">
-      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-        <rect x="1" y="3" width="15" height="13" rx="1"/>
-        <path d="M16 8h4l3 5v3h-7V8z"/>
-        <circle cx="5.5" cy="18.5" r="2.5"/>
-        <circle cx="18.5" cy="18.5" r="2.5"/>
-      </svg>
-      Pengiriman
-      <span class="nav-notif-badge" th:if="${pendingOrderCount != null and pendingOrderCount > 0}" th:text="${pendingOrderCount}"></span>
-    </div>
-    <div class="nav-item" data-page="complaints" style="position:relative">
-      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
-      Pengaduan
-      <span class="nav-notif-badge" th:if="${pendingComplaintCount != null and pendingComplaintCount > 0}" th:text="${pendingComplaintCount}"></span>
-    </div>
-  </nav>
+    <nav>
+      <div class="nav-label">Menu</div>
+      <div class="nav-item active" data-page="dashboard">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <rect x="3" y="3" width="7" height="7" rx="1" />
+          <rect x="14" y="3" width="7" height="7" rx="1" />
+          <rect x="3" y="14" width="7" height="7" rx="1" />
+          <rect x="14" y="14" width="7" height="7" rx="1" />
+        </svg>
+        Dashboard
+      </div>
+      <div class="nav-item" data-page="users" style="position:relative">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+          <circle cx="9" cy="7" r="4" />
+          <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+          <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+        </svg>
+        Users
+        <span class="nav-notif-badge" th:if="${newUserCount != null and newUserCount > 0}"
+          th:text="${newUserCount}"></span>
+      </div>
+      <div class="nav-item" data-page="table">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path
+            d="M9 3H5a2 2 0 0 0-2 2v4m6-6h10a2 2 0 0 1 2 2v4M9 3v18m0 0h10a2 2 0 0 0 2-2V9M9 21H5a2 2 0 0 1-2-2V9m0 0h18" />
+        </svg>
+        Tabel Produk
+      </div>
+      <div class="nav-item" data-page="Pengiriman" style="position:relative">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <rect x="1" y="3" width="15" height="13" rx="1" />
+          <path d="M16 8h4l3 5v3h-7V8z" />
+          <circle cx="5.5" cy="18.5" r="2.5" />
+          <circle cx="18.5" cy="18.5" r="2.5" />
+        </svg>
+        Pengiriman
+        <span class="nav-notif-badge" th:if="${pendingOrderCount != null and pendingOrderCount > 0}"
+          th:text="${pendingOrderCount}"></span>
+      </div>
+      <div class="nav-item" data-page="complaints" style="position:relative">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+          <polyline points="14 2 14 8 20 8" />
+          <line x1="16" y1="13" x2="8" y2="13" />
+          <line x1="16" y1="17" x2="8" y2="17" />
+          <polyline points="10 9 9 9 8 9" />
+        </svg>
+        Pengaduan
+        <span class="nav-notif-badge" th:if="${pendingComplaintCount != null and pendingComplaintCount > 0}"
+          th:text="${pendingComplaintCount}"></span>
+      </div>
+    </nav>
 
-  <div class="sidebar-footer">
-    <div class="profile-wrapper" id="profileWrapper">
-      <button class="user-card profile-btn" id="profileBtn" title="Profil Admin">
-        <div class="avatar-wrap" style="position:relative">
-          <div class="avatar" th:text="${currentUser != null ? #strings.substring(currentUser.username,0,1).toUpperCase() : 'A'}">A</div>
+    <div class="sidebar-footer">
+      <div class="profile-wrapper" id="profileWrapper">
+        <button class="user-card profile-btn" id="profileBtn" title="Profil Admin">
+          <div class="avatar-wrap" style="position:relative">
+            <div class="avatar"
+              th:text="${currentUser != null ? #strings.substring(currentUser.username,0,1).toUpperCase() : 'A'}">A
+            </div>
+          </div>
+          <div class="user-info">
+            <div class="user-name" th:text="${currentUser != null ? currentUser.username : 'Admin'}">Admin</div>
+            <div class="user-role" th:text="${currentUser != null ? currentUser.role : 'Administrator'}">Administrator
+            </div>
+          </div>
+          <svg class="profile-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="6 9 12 15 18 9" />
+          </svg>
+        </button>
+
+        <div class="profile-panel" id="profilePanel">
+          <div class="pp-header">
+            <div class="pp-avatar"
+              th:text="${currentUser != null ? #strings.substring(currentUser.username,0,1).toUpperCase() : 'A'}">A
+            </div>
+            <div class="pp-info">
+              <div class="pp-name" th:text="${currentUser != null ? currentUser.username : 'Admin'}">Admin</div>
+              <div class="pp-email" th:text="${currentUser != null ? currentUser.email : 'admin@electro.com'}">
+                admin@electro.com</div>
+            </div>
+          </div>
+          <div class="pp-section">
+            <div class="pp-section-label">Role &amp; Akses</div>
+            <div class="pp-role-badge">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+              </svg>
+              <span th:text="${currentUser != null ? currentUser.role : 'ADMIN'}">ADMIN</span>
+            </div>
+          </div>
+          <div class="pp-section">
+            <div class="pp-section-label">Keamanan</div>
+            <button class="pp-action-btn" id="btnOpenPw">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="11" width="18" height="11" rx="2" />
+                <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+              </svg>
+              Ubah Password
+            </button>
+          </div>
+          <div class="pp-divider"></div>
+          <form th:action="@{/logout}" method="post" style="margin:0">
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+            <button type="submit" class="pp-logout-btn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                <polyline points="16 17 21 12 16 7" />
+                <line x1="21" y1="12" x2="9" y2="12" />
+              </svg>
+              Log Out
+            </button>
+          </form>
         </div>
-        <div class="user-info">
-          <div class="user-name" th:text="${currentUser != null ? currentUser.username : 'Admin'}">Admin</div>
-          <div class="user-role" th:text="${currentUser != null ? currentUser.role : 'Administrator'}">Administrator</div>
-        </div>
-        <svg class="profile-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <div id="main">
+    <header>
+      <button id="toggle-btn" title="Toggle Sidebar">
+        <svg viewBox="0 0 24 24">
+          <line x1="3" y1="6" x2="21" y2="6" />
+          <line x1="3" y1="12" x2="21" y2="12" />
+          <line x1="3" y1="18" x2="21" y2="18" />
+        </svg>
       </button>
+      <div class="header-title" id="header-title">Dashboard</div>
+      <div class="header-badge">Status: <span>Online</span></div>
+    </header>
 
-      <div class="profile-panel" id="profilePanel">
-        <div class="pp-header">
-          <div class="pp-avatar" th:text="${currentUser != null ? #strings.substring(currentUser.username,0,1).toUpperCase() : 'A'}">A</div>
-          <div class="pp-info">
-            <div class="pp-name" th:text="${currentUser != null ? currentUser.username : 'Admin'}">Admin</div>
-            <div class="pp-email" th:text="${currentUser != null ? currentUser.email : 'admin@electro.com'}">admin@electro.com</div>
+    <!-- MODAL UBAH PASSWORD -->
+    <div class="pw-modal-overlay" id="pwModalOverlay">
+      <div class="pw-modal">
+        <div class="pw-modal-header">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="11" width="18" height="11" rx="2" />
+            <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+          </svg>
+          <span>Ubah Password</span>
+          <button class="pw-modal-close" id="btnClosePw">&times;</button>
+        </div>
+        <div class="pw-alert pw-alert-error" th:if="${pwError}" th:text="${pwError}"></div>
+        <div class="pw-alert pw-alert-success" th:if="${pwSuccess}" th:text="${pwSuccess}"></div>
+        <form th:action="@{/admin/change-password}" method="post" class="pw-form">
+          <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+          <div class="pw-field">
+            <label>Password Lama</label>
+            <div class="pw-input-wrap">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="11" width="18" height="11" rx="2" />
+                <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+              </svg>
+              <input type="password" id="oldPassword" name="oldPassword" placeholder="Masukkan password lama"
+                required />
+              <button type="button" class="pw-toggle-btn toggle-pw-btn" data-target="oldPassword" tabindex="-1"
+                title="Tampilkan/Sembunyikan password">
+                <svg class="eye-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                  stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M2 8c4 4 16 4 20 0" /><path d="M12 11v4" /><path d="M8 9.5l-2 3" /><path d="M16 9.5l2 3" />
+                </svg>
+              </button>
+            </div>
           </div>
-        </div>
-        <div class="pp-section">
-          <div class="pp-section-label">Role &amp; Akses</div>
-          <div class="pp-role-badge">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-            <span th:text="${currentUser != null ? currentUser.role : 'ADMIN'}">ADMIN</span>
+          <div class="pw-field">
+            <label>Password Baru</label>
+            <div class="pw-input-wrap">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+              </svg>
+              <input type="password" id="newPassword" name="newPassword" placeholder="Minimal 6 karakter" required
+                minlength="6" />
+              <button type="button" class="pw-toggle-btn toggle-pw-btn" data-target="newPassword" tabindex="-1"
+                title="Tampilkan/Sembunyikan password">
+                <svg class="eye-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                  stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M2 8c4 4 16 4 20 0" /><path d="M12 11v4" /><path d="M8 9.5l-2 3" /><path d="M16 9.5l2 3" />
+                </svg>
+              </button>
+            </div>
           </div>
-        </div>
-        <div class="pp-section">
-          <div class="pp-section-label">Keamanan</div>
-          <button class="pp-action-btn" id="btnOpenPw">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-            Ubah Password
-          </button>
-        </div>
-        <div class="pp-divider"></div>
-        <form th:action="@{/logout}" method="post" style="margin:0">
-          <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
-          <button type="submit" class="pp-logout-btn">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
-            Log Out
-          </button>
+          <div class="pw-field">
+            <label>Konfirmasi Password Baru</label>
+            <div class="pw-input-wrap">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+              </svg>
+              <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Ulangi password baru"
+                required />
+              <button type="button" class="pw-toggle-btn toggle-pw-btn" data-target="confirmPassword" tabindex="-1"
+                title="Tampilkan/Sembunyikan password">
+                <svg class="eye-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                  stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M2 8c4 4 16 4 20 0" /><path d="M12 11v4" /><path d="M8 9.5l-2 3" /><path d="M16 9.5l2 3" />
+                </svg>
+              </button>
+            </div>
+          </div>
+          <div class="pw-modal-actions">
+            <button type="button" class="pw-btn-cancel" id="btnClosePw2">Batal</button>
+            <button type="submit" class="pw-btn-save">Simpan Password</button>
+          </div>
         </form>
       </div>
     </div>
-  </div>
-</aside>
 
-<!-- MAIN -->
-<div id="main">
-  <header>
-    <button id="toggle-btn" title="Toggle Sidebar">
-      <svg viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
-    </button>
-    <div class="header-title" id="header-title">Dashboard</div>
-    <div class="header-badge">Status: <span>Online</span></div>
-  </header>
-
-  <!-- MODAL UBAH PASSWORD -->
-  <div class="pw-modal-overlay" id="pwModalOverlay">
-    <div class="pw-modal">
-      <div class="pw-modal-header">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-        <span>Ubah Password</span>
-        <button class="pw-modal-close" id="btnClosePw">&times;</button>
+    <!-- DASHBOARD PAGE -->
+    <div class="page active" id="page-dashboard">
+      <div class="page-heading">Dashboard</div>
+      <div class="page-sub">Ringkasan performa toko elektronik hari ini</div>
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+            </svg></div>
+          <div class="stat-label">Total Penjualan</div>
+          <div class="stat-value" th:text="'Rp ' + ${#numbers.formatDecimal(totalPenjualan, 0, 'POINT', 0, 'NONE')}">Rp
+            84,2jt</div>
+          <div class="stat-delta up">↑ Total pendapatan</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
+              <line x1="3" y1="6" x2="21" y2="6" />
+              <path d="M16 10a4 4 0 0 1-8 0" />
+            </svg></div>
+          <div class="stat-label">Total Order</div>
+          <div class="stat-value" th:text="${totalOrder}">1.247</div>
+          <div class="stat-delta up">↑ Total pesanan masuk</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <rect x="1" y="3" width="15" height="13" rx="1" />
+              <path d="m16 8 5 5-5 5" />
+            </svg></div>
+          <div class="stat-label">Produk Terjual</div>
+          <div class="stat-value" th:text="${produkTerjual}">342</div>
+          <div class="stat-delta up">↑ Total unit terjual</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z" />
+              <line x1="7" y1="7" x2="7.01" y2="7" />
+            </svg></div>
+          <div class="stat-label">Stok Tersisa</div>
+          <div class="stat-value" th:text="${stokTersisa}">1.893</div>
+          <div class="stat-delta up">↑ Sisa stok di gudang</div>
+        </div>
       </div>
-      <div class="pw-alert pw-alert-error"   th:if="${pwError}"   th:text="${pwError}"></div>
-      <div class="pw-alert pw-alert-success" th:if="${pwSuccess}" th:text="${pwSuccess}"></div>
-      <form th:action="@{/admin/change-password}" method="post" class="pw-form">
-        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
-        <div class="pw-field">
-          <label>Password Lama</label>
-          <div class="pw-input-wrap">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-            <input type="password" name="oldPassword" placeholder="Masukkan password lama" required/>
+      <div class="chart-grid">
+        <div class="card">
+          <div class="card-title">Grafik Penjualan Bulanan</div>
+          <div class="card-sub">Total pendapatan per kategori produk (Jan–Des)</div>
+          <div class="chart-wrap"><canvas id="salesChart"></canvas></div>
+        </div>
+        <div class="card">
+          <div class="card-title">Stok Per Kategori</div>
+          <div class="card-sub">Sisa stok unit saat ini</div>
+          <div class="stock-list" id="stockList"></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">Produk Paling Populer</div>
+        <div class="card-sub">Berdasarkan jumlah unit terjual bulan ini</div>
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Nama Produk</th>
+              <th>Kategori</th>
+              <th>Terjual</th>
+              <th>Pendapatan</th>
+              <th>Stok</th>
+            </tr>
+          </thead>
+          <tbody id="popularTable"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- USERS PAGE -->
+    <div class="page" id="page-users">
+      <div class="page-heading">Manajemen User</div>
+      <div class="page-sub">Kelola semua pengguna sistem Electro</div>
+
+      <!-- Flash messages -->
+      <div th:if="${userError}" class="pw-alert pw-alert-error" th:text="${userError}" style="margin-bottom:1rem;border-radius:10px;padding:0.75rem 1rem;"></div>
+      <div th:if="${userSuccess}" class="pw-alert pw-alert-success" th:text="${userSuccess}" style="margin-bottom:1rem;border-radius:10px;padding:0.75rem 1rem;"></div>
+
+      <!-- CUSTOMER SECTION dan SEARCH USER -->
+      <div class="card" style="margin-bottom:1.5rem;padding:1rem 1.25rem;display:flex;align-items:center;gap:1rem">
+        <div class="search-box" style="flex:1">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <circle cx="11" cy="11" r="8" />
+            <line x1="21" y1="21" x2="16.65" y2="16.65" />
+          </svg>
+          <input type="text" id="userSearchInput" placeholder="Cari username atau email..." />
+        </div>
+        <button class="btn-add-primary" id="btnTambahUser">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="12" y1="5" x2="12" y2="19" />
+            <line x1="5" y1="12" x2="19" y2="12" />
+          </svg>
+          Tambah User
+        </button>
+      </div>
+
+      <div class="user-table-wrapper">
+        <table class="user-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Username</th>
+              <th>Email</th>
+              <th>Role</th>
+              <th style="text-align:center">Aksi</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr th:each="user : ${users}" th:if="${user.role != 'ADMIN'}">
+              <td style="color:var(--muted);font-size:12px" th:text="'#' + ${user.id}"></td>
+              <td><strong th:text="${user.username}"></strong></td>
+              <td th:text="${user.email}"></td>
+              <td><span class="ub-role" th:text="${user.role}"></span></td>
+              <td style="text-align:center">
+                <div class="user-action-btns">
+                  <button class="ubtn ubtn-edit" th:data-id="${user.id}" th:data-username="${user.username}"
+                    th:data-email="${user.email}" th:data-role="${user.role}" onclick="openEditUser(this)">Edit</button>
+                  <form th:action="@{'/admin/user/hapus/' + ${user.id}}" method="get" style="display:inline">
+                    <button type="submit" class="ubtn ubtn-del"
+                      onclick="return confirm('Hapus user ini?')">Hapus</button>
+                  </form>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- TABLE PAGE -->
+    <div class="page" id="page-table">
+      <div class="page-heading">Database Produk</div>
+      <div class="page-sub">Semua produk elektronik yang tersedia di toko</div>
+
+      <div class="card">
+        <div class="table-controls">
+          <div class="search-box">
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <circle cx="11" cy="11" r="8" />
+              <line x1="21" y1="21" x2="16.65" y2="16.65" />
+            </svg>
+            <input type="text" id="searchInput" placeholder="Cari produk..." />
+          </div>
+          <div style="display:flex;gap:8px;align-items:center">
+            <div class="filter-group" id="filterGroup">
+              <button class="filter-btn active" data-cat="all">Semua</button>
+              <button class="filter-btn" data-cat="Hp">HP</button>
+              <button class="filter-btn" data-cat="Laptop">Laptop</button>
+              <button class="filter-btn" data-cat="Tablet">Tablet</button>
+              <button class="filter-btn" data-cat="Tv">TV</button>
+              <button class="filter-btn" data-cat="Ac">AC</button>
+              <button class="filter-btn" data-cat="Blender">Blender</button>
+              <button class="filter-btn" data-cat="Kulkas">Kulkas</button>
+              <button class="filter-btn" data-cat="Headphone">Headphone</button>
+            </div>
+            <button class="btn-add-primary" id="btnTambahProduk">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="12" y1="5" x2="12" y2="19" />
+                <line x1="5" y1="12" x2="19" y2="12" />
+              </svg>
+              Tambah Produk
+            </button>
           </div>
         </div>
-        <div class="pw-field">
-          <label>Password Baru</label>
-          <div class="pw-input-wrap">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-            <input type="password" name="newPassword" placeholder="Minimal 6 karakter" required minlength="6"/>
+
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Gambar</th>
+              <th>Nama Produk</th>
+              <th>Merk</th>
+              <th>Kategori</th>
+              <th>Harga</th>
+              <th>Stok</th>
+              <th>Status</th>
+              <th style="text-align:center">Aksi</th>
+            </tr>
+          </thead>
+          <tbody id="productTable">
+            <tr th:each="p : ${devices}" th:data-pid="${p.id}" th:data-kategori="${p.kategori}">
+              <td style="color:var(--muted);font-size:12px" th:text="'#' + ${p.id}"></td>
+              <td>
+                <img th:if="${p.imageUrl != null and !#strings.isEmpty(p.imageUrl)}" th:src="${p.imageUrl}"
+                  style="width:48px;height:48px;object-fit:cover;border-radius:8px;border:1px solid var(--border)"
+                  onerror="this.style.display='none'" alt="img" />
+                <span th:unless="${p.imageUrl != null and !#strings.isEmpty(p.imageUrl)}"
+                  style="color:var(--muted);font-size:11px">—</span>
+              </td>
+              <td>
+                <strong th:text="${p.nama}"></strong>
+                <div
+                  style="font-size:11px;color:var(--muted);margin-top:2px;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"
+                  th:text="${p.deskripsi}"></div>
+              </td>
+              <td th:text="${p.merk != null ? p.merk : '-'}"></td>
+              <td>
+                <span class="badge"
+                  th:classappend="${p.kategori == 'Hp'} ? 'badge-hp' : (p.kategori == 'Laptop' ? 'badge-laptop' : (p.kategori == 'Tablet' ? 'badge-tablet' : (p.kategori == 'Blender' ? 'badge-blender' : (p.kategori == 'Tv' ? 'badge-tv' : (p.kategori == 'Ac' ? 'badge-ac' : (p.kategori == 'Headphone' ? 'badge-hp' : 'badge-kulkas'))))))"
+                  th:text="${p.kategori}">
+                </span>
+              </td>
+              <td class="price-cell" th:text="'Rp ' + ${#numbers.formatDecimal(p.harga, 0, 'POINT', 0, 'NONE')}"></td>
+              <td th:id="'stok-val-' + ${p.id}" style="font-weight:600" th:text="${p.stok}"></td>
+              <td th:id="'stok-badge-' + ${p.id}">
+                <span th:if="${p.stok == 0}" class="stock-badge stock-out">● Habis</span>
+                <span th:if="${p.stok > 0 and p.stok < 10}" class="stock-badge stock-low">● Rendah</span>
+                <span th:if="${p.stok >= 10}" class="stock-badge stock-ok">● Tersedia</span>
+              </td>
+              <td style="text-align:center;width:60px">
+                <div class="action-wrap">
+                  <button class="action-btn" th:data-pid="${p.id}" title="Aksi">
+                    <svg viewBox="0 0 24 24">
+                      <circle cx="12" cy="5" r="1.3" fill="currentColor" />
+                      <circle cx="12" cy="12" r="1.3" fill="currentColor" />
+                      <circle cx="12" cy="19" r="1.3" fill="currentColor" />
+                    </svg>
+                  </button>
+                  <div class="drop-menu" th:id="'drop-' + ${p.id}">
+                    <div class="drop-head" th:text="${#strings.abbreviate(p.nama, 24)}"></div>
+                    <div class="drop-item di-edit" th:data-action="edit" th:data-pid="${p.id}" th:data-nama="${p.nama}"
+                      th:data-merk="${p.merk}" th:data-harga="${p.harga}" th:data-stok="${p.stok}"
+                      th:data-kategori="${p.kategori}" th:data-imageurl="${p.imageUrl}"
+                      th:data-deskripsi="${p.deskripsi}" th:data-spesifikasi="${p.spesifikasi}">
+                      <svg viewBox="0 0 24 24">
+                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                      </svg>
+                      Edit Produk
+                    </div>
+                    <div class="drop-divider"></div>
+                    <div class="drop-item di-delete" th:data-action="delete" th:data-pid="${p.id}"
+                      th:data-nama="${p.nama}" th:data-stok="${p.stok}">
+                      <svg viewBox="0 0 24 24">
+                        <polyline points="3 6 5 6 21 6" />
+                        <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
+                        <path d="M10 11v6M14 11v6" />
+                        <path d="M9 6V4h6v2" />
+                      </svg>
+                      Hapus Produk
+                    </div>
+                  </div>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- MODAL STOK / HAPUS -->
+      <div class="modal-overlay" id="modalOverlay">
+        <div class="modal-box">
+          <div class="modal-icon-wrap" id="mIconWrap"><svg id="mIconSvg" viewBox="0 0 24 24"></svg></div>
+          <div class="modal-title" id="mTitle"></div>
+          <div class="modal-subtitle" id="mSubtitle"></div>
+          <div class="modal-product-tag" id="mProduct"></div>
+          <div class="modal-stok-row" id="mStokRow">
+            <div class="modal-stok-box">
+              <div class="msb-label">Stok Sekarang</div>
+              <div class="msb-val" id="mStokNow"></div>
+            </div>
+            <div class="modal-stok-box">
+              <div class="msb-label">Stok Setelah</div>
+              <div class="msb-val" id="mStokAfter"></div>
+            </div>
+          </div>
+          <div id="mQtySection">
+            <div class="modal-qty-label" id="mQtyLabel">Jumlah</div>
+            <div class="modal-qty-row">
+              <button class="qty-btn" id="qtyMinus">−</button>
+              <input class="qty-input" type="number" id="qtyInput" value="1" min="1" />
+              <button class="qty-btn" id="qtyPlus">+</button>
+            </div>
+          </div>
+          <div class="modal-actions">
+            <button class="btn-cancel" id="mBtnCancel">Batal</button>
+            <button class="btn-ok" id="mBtnOk">Konfirmasi</button>
           </div>
         </div>
-        <div class="pw-field">
-          <label>Konfirmasi Password Baru</label>
-          <div class="pw-input-wrap">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-            <input type="password" name="confirmPassword" placeholder="Ulangi password baru" required/>
+      </div>
+
+      <div id="toast">
+        <div class="t-dot" id="tDot"></div><span id="tMsg"></span>
+      </div>
+
+    </div>
+
+    <!-- PENGIRIMAN PAGE -->
+    <div class="page" id="page-Pengiriman">
+      <div class="page-heading">Pengiriman Barang</div>
+      <div class="page-sub">Daftar pesanan yang telah dibayar oleh pelanggan</div>
+
+      <div class="card" style="margin-bottom:1.5rem;padding:1rem 1.25rem;">
+        <div class="search-box">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <circle cx="11" cy="11" r="8" />
+            <line x1="21" y1="21" x2="16.65" y2="16.65" />
+          </svg>
+          <input type="text" id="orderSearchInput" placeholder="Cari nama, email, atau nomor..." />
+        </div>
+      </div>
+
+      <div class="user-table-wrapper">
+        <table class="user-table" id="ordersTable">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Nama</th>
+              <th>Email</th>
+              <th>Nomor</th>
+              <th>Alamat</th>
+              <th>Via Pembayaran</th>
+              <th>Tanggal</th>
+              <th>Status</th>
+              <th>Aksi</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr th:each="o, stat : ${orders}">
+              <td th:text="${stat.index + 1}">1</td>
+              <td th:text="${o.namaUser}">-</td>
+              <td th:text="${o.emailUser}">-</td>
+              <td th:text="${o.nomerUser}">-</td>
+              <td th:text="${o.alamatUser}" style="max-width:200px;white-space:normal;">-</td>
+              <td>
+                <span th:text="${o.viaPembayaran}"
+                  th:classappend="${o.viaPembayaran == 'BANK_TRANSFER'} ? 'ubtn ubtn-info' : 'ubtn ubtn-warn'"
+                  style="padding:2px 8px;border-radius:4px;font-size:0.78rem;">-</span>
+              </td>
+              <td th:text="${#temporals.format(o.tanggal, 'dd MMM yyyy HH:mm')}">-</td>
+              <td>
+                <span th:text="${o.status}" th:classappend="${o.status == 'SELESAI' ? 'ubtn ubtn-ok' : (o.status == 'DIKIRIM' ? 'ubtn ubtn-info' : (o.status == 'DIPROSES' ? 'ubtn ubtn-warn' : 'ubtn ubtn-pending'))}"
+                  style="padding:2px 8px;border-radius:4px;font-size:0.78rem;">-</span>
+              </td>
+              <td>
+                <form th:action="@{'/admin/orders/update-status'}" method="post"
+                  style="display:flex;gap:4px;align-items:center;">
+                  <input type="hidden" name="id" th:value="${o.id}" />
+                  <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                  <select name="status" class="form-select" style="font-size:0.8rem;padding:2px 6px;">
+                    <option value="MENUNGGU" th:selected="${o.status == 'MENUNGGU'}">Menunggu</option>
+                    <option value="DIPROSES" th:selected="${o.status == 'DIPROSES'}">Diproses</option>
+                    <option value="DIKIRIM" th:selected="${o.status == 'DIKIRIM'}">Dikirim</option>
+                    <option value="SELESAI" th:selected="${o.status == 'SELESAI'}">Selesai</option>
+                  </select>
+                  <button type="submit" class="ubtn ubtn-ok" style="padding:2px 8px;font-size:0.8rem;">Simpan</button>
+                </form>
+              </td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(orders)}">
+              <td colspan="9" style="text-align:center;padding:2rem;color:#888;">Belum ada pesanan masuk.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- COMPLAINTS PAGE -->
+    <div class="page" id="page-complaints">
+      <div class="page-heading">Manajemen Pengaduan</div>
+      <div class="page-sub">Kelola dan selesaikan pengaduan atau keluhan dari pelanggan</div>
+
+      <div class="card" style="margin-bottom:1.5rem;padding:1rem 1.25rem;">
+        <div class="search-box">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <circle cx="11" cy="11" r="8" />
+            <line x1="21" y1="21" x2="16.65" y2="16.65" />
+          </svg>
+          <input type="text" id="complaintSearchInput" placeholder="Cari pelapor, kategori, atau judul..." />
+        </div>
+      </div>
+
+      <div class="user-table-wrapper">
+        <table class="user-table" id="complaintsTable">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Pelapor</th>
+              <th>Kategori</th>
+              <th>Perangkat</th>
+              <th>Detail Masalah</th>
+              <th>Tanggal</th>
+              <th>Status</th>
+              <th style="text-align:center">Aksi</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr th:each="c : ${complaints}">
+              <td style="color:var(--muted);font-size:12px" th:text="'#' + ${c.id}"></td>
+              <td>
+                <strong th:text="${c.user.username}"></strong>
+                <div style="font-size:11px;color:var(--muted)" th:text="${c.user.email}"></div>
+              </td>
+              <td>
+                <span class="badge"
+                  th:classappend="${c.kategori == 'Kualitas Produk' ? 'badge-hp' : (c.kategori == 'Kesalahan Pengiriman' ? 'badge-laptop' : (c.kategori == 'Kendala Transaksi' ? 'badge-tablet' : (c.kategori == 'Layanan Pelanggan' ? 'badge-blender' : 'badge-kulkas')))}"
+                  th:text="${c.kategori}"></span>
+              </td>
+              <td>
+                <span th:if="${c.electronic != null}"
+                  th:text="${c.electronic.merk} + ' ' + ${c.electronic.nama}"></span>
+                <span th:unless="${c.electronic != null}" style="color:var(--muted)">—</span>
+              </td>
+              <td style="max-width:300px">
+                <strong th:text="${c.judul}"></strong>
+                <div style="font-size:12px;color:var(--text-muted);margin-top:4px;word-break:break-word;"
+                  th:text="${c.deskripsi}"></div>
+              </td>
+              <td style="font-size:12px" th:text="${#temporals.format(c.tanggal, 'dd/MM/yyyy HH:mm')}"></td>
+              <td>
+                <form th:action="@{/admin/complaints/update-status}" method="post" style="margin:0">
+                  <input type="hidden" name="id" th:value="${c.id}" />
+                  <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                  <select name="status" onchange="this.form.submit()"
+                    style="background:rgba(0,0,0,0.3);color:white;border:1px solid var(--border-glass);padding:4px 8px;border-radius:6px;font-size:12px;cursor:pointer;">
+                    <option value="PENDING" th:selected="${c.status == 'PENDING'}">PENDING</option>
+                    <option value="DIPROSES" th:selected="${c.status == 'DIPROSES'}">DIPROSES</option>
+                    <option value="SELESAI" th:selected="${c.status == 'SELESAI'}">SELESAI</option>
+                  </select>
+                </form>
+              </td>
+              <td style="text-align:center">
+                <a th:href="@{'/admin/complaints/delete/' + ${c.id}}" class="ubtn ubtn-del"
+                  onclick="return confirm('Hapus pengaduan ini?')">Hapus</a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL TAMBAH/EDIT PRODUK -->
+  <div class="big-modal-overlay" id="produkModalOverlay">
+    <div class="big-modal">
+      <div class="big-modal-header">
+        <span id="produkModalTitle">Tambah Produk</span>
+        <button class="big-modal-close" id="closeProdukModal">&times;</button>
+      </div>
+      <form id="produkForm" th:action="@{/admin/tambah}" method="post" class="big-modal-form">
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+        <input type="hidden" id="produkFormId" name="id" value="" />
+
+        <div class="bm-row">
+          <div class="bm-field">
+            <label>Nama Produk <span class="req">*</span></label>
+            <input type="text" id="pNama" name="nama" placeholder="Contoh: Samsung S24 Ultra" required />
+          </div>
+          <div class="bm-field">
+            <label>Merk <span class="req">*</span></label>
+            <input type="text" id="pMerk" name="merk" placeholder="Contoh: Samsung" required />
           </div>
         </div>
-        <div class="pw-modal-actions">
-          <button type="button" class="pw-btn-cancel" id="btnClosePw2">Batal</button>
-          <button type="submit" class="pw-btn-save">Simpan Password</button>
+        <div class="bm-row">
+          <div class="bm-field">
+            <label>Kategori <span class="req">*</span></label>
+            <select id="pKategori" name="kategori" required>
+              <option value="">-- Pilih Kategori --</option>
+              <option value="Hp">Smartphone (HP)</option>
+              <option value="Laptop">Laptop</option>
+              <option value="Tablet">Tablet</option>
+              <option value="Tv">Smart TV</option>
+              <option value="Ac">AC</option>
+              <option value="Blender">Blender</option>
+              <option value="Kulkas">Kulkas</option>
+              <option value="Headphone">Headphone</option>
+            </select>
+          </div>
+          <div class="bm-field">
+            <label>Harga (Rp) <span class="req">*</span></label>
+            <input type="number" id="pHarga" name="harga" placeholder="Contoh: 14999000" min="0" required />
+          </div>
+        </div>
+        <div class="bm-row">
+          <div class="bm-field">
+            <label>Stok</label>
+            <input type="number" id="pStok" name="stok" placeholder="0" min="0" value="0" />
+          </div>
+          <div class="bm-field">
+            <label>URL Gambar</label>
+            <input type="text" id="pImageUrl" name="imageUrl" placeholder="https://..." />
+          </div>
+        </div>
+        <div class="bm-field" style="grid-column:1/-1">
+          <label>Deskripsi</label>
+          <textarea id="pDeskripsi" name="deskripsi" rows="3" placeholder="Deskripsi singkat produk..."></textarea>
+        </div>
+        <div class="bm-field" style="grid-column:1/-1">
+          <label>Spesifikasi <small style="color:var(--muted);font-weight:400">(format: Key: Value | Key:
+              Value)</small></label>
+          <textarea id="pSpesifikasi" name="spesifikasi" rows="3"
+            placeholder="Processor: Snapdragon 8 Gen 3 | Layar: 6.8 inci | Baterai: 5000 mAh"></textarea>
+        </div>
+        <div class="bm-actions">
+          <button type="button" class="pw-btn-cancel" id="closeProdukModal2">Batal</button>
+          <button type="submit" class="pw-btn-save" id="produkSubmitBtn">Simpan Produk</button>
         </div>
       </form>
     </div>
   </div>
 
-  <!-- DASHBOARD PAGE -->
-  <div class="page active" id="page-dashboard">
-    <div class="page-heading">Dashboard</div>
-    <div class="page-sub">Ringkasan performa toko elektronik hari ini</div>
-    <div class="stats-grid">
-      <div class="stat-card">
-        <div class="stat-icon"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>
-        <div class="stat-label">Total Penjualan</div>
-        <div class="stat-value">Rp 84,2jt</div>
-        <div class="stat-delta up">↑ 12.5% dari bulan lalu</div>
+  <!-- MODAL TAMBAH/EDIT USER -->
+  <div class="big-modal-overlay" id="userModalOverlay">
+    <div class="big-modal" style="max-width:480px">
+      <div class="big-modal-header">
+        <span id="userModalTitle">Tambah User</span>
+        <button class="big-modal-close" id="closeUserModal">&times;</button>
       </div>
-      <div class="stat-card">
-        <div class="stat-icon"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg></div>
-        <div class="stat-label">Total Order</div>
-        <div class="stat-value">1.247</div>
-        <div class="stat-delta up">↑ 8.3% dari bulan lalu</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-icon"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="m16 8 5 5-5 5"/></svg></div>
-        <div class="stat-label">Produk Terjual</div>
-        <div class="stat-value">342</div>
-        <div class="stat-delta down">↓ 2.1% dari bulan lalu</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-icon"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg></div>
-        <div class="stat-label">Stok Tersisa</div>
-        <div class="stat-value">1.893</div>
-        <div class="stat-delta up">↑ 3.7% restock baru</div>
-      </div>
-    </div>
-    <div class="chart-grid">
-      <div class="card">
-        <div class="card-title">Grafik Penjualan Bulanan</div>
-        <div class="card-sub">Total pendapatan per kategori produk (Jan–Des)</div>
-        <div class="chart-wrap"><canvas id="salesChart"></canvas></div>
-      </div>
-      <div class="card">
-        <div class="card-title">Stok Per Kategori</div>
-        <div class="card-sub">Sisa stok unit saat ini</div>
-        <div class="stock-list" id="stockList"></div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-title">Produk Paling Populer</div>
-      <div class="card-sub">Berdasarkan jumlah unit terjual bulan ini</div>
-      <table><thead><tr><th>#</th><th>Nama Produk</th><th>Kategori</th><th>Terjual</th><th>Pendapatan</th><th>Stok</th></tr></thead>
-        <tbody id="popularTable"></tbody>
-      </table>
-    </div>
-  </div>
-
-  <!-- USERS PAGE -->
-  <div class="page" id="page-users">
-    <div class="page-heading">Manajemen User</div>
-    <div class="page-sub">Kelola semua pengguna sistem Electro</div>
-
-    <!-- CUSTOMER SECTION dan SEARCH USER -->
-    <div class="card" style="margin-bottom:1.5rem;padding:1rem 1.25rem;display:flex;align-items:center;gap:1rem">
-      <div class="search-box" style="flex:1">
-        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-        <input type="text" id="userSearchInput" placeholder="Cari username atau email..." />
-      </div>
-      <button class="btn-add-primary" id="btnTambahUser">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-        Tambah User
-      </button>
-    </div>
-
-    <div class="user-table-wrapper">
-      <table class="user-table">
-        <thead><tr><th>ID</th><th>Username</th><th>Email</th><th>Role</th><th style="text-align:center">Aksi</th></tr></thead>
-        <tbody>
-          <tr th:each="user : ${users}" th:if="${user.role != 'ADMIN'}">
-            <td style="color:var(--muted);font-size:12px" th:text="'#' + ${user.id}"></td>
-            <td><strong th:text="${user.username}"></strong></td>
-            <td th:text="${user.email}"></td>
-            <td><span class="ub-role" th:text="${user.role}"></span></td>
-            <td style="text-align:center">
-              <div class="user-action-btns">
-                <button class="ubtn ubtn-edit"
-                  th:data-id="${user.id}"
-                  th:data-username="${user.username}"
-                  th:data-email="${user.email}"
-                  th:data-role="${user.role}"
-                  onclick="openEditUser(this)">Edit</button>
-                <form th:action="@{'/admin/user/hapus/' + ${user.id}}" method="get" style="display:inline">
-                  <button type="submit" class="ubtn ubtn-del" onclick="return confirm('Hapus user ini?')">Hapus</button>
-                </form>
-              </div>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-
-  <!-- TABLE PAGE -->
-  <div class="page" id="page-table">
-    <div class="page-heading">Database Produk</div>
-    <div class="page-sub">Semua produk elektronik yang tersedia di toko</div>
-
-    <div class="card">
-      <div class="table-controls">
-        <div class="search-box">
-          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-          <input type="text" id="searchInput" placeholder="Cari produk..." />
+      <form id="userForm" th:action="@{/admin/user/tambah}" method="post" class="big-modal-form">
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+        <input type="hidden" id="userFormId" name="id" value="" />
+        <div class="bm-field">
+          <label>Username <span class="req">*</span></label>
+          <input type="text" id="uUsername" name="username" placeholder="Masukkan username" required />
         </div>
-        <div style="display:flex;gap:8px;align-items:center">
-          <div class="filter-group" id="filterGroup">
-            <button class="filter-btn active" data-cat="all">Semua</button>
-            <button class="filter-btn" data-cat="Hp">HP</button>
-            <button class="filter-btn" data-cat="Laptop">Laptop</button>
-            <button class="filter-btn" data-cat="Tablet">Tablet</button>
-            <button class="filter-btn" data-cat="Tv">TV</button>
-            <button class="filter-btn" data-cat="Ac">AC</button>
-            <button class="filter-btn" data-cat="Blender">Blender</button>
-            <button class="filter-btn" data-cat="Kulkas">Kulkas</button>
-            <button class="filter-btn" data-cat="Headphone">Headphone</button>
-          </div>
-          <button class="btn-add-primary" id="btnTambahProduk">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-            Tambah Produk
-          </button>
+        <div class="bm-field">
+          <label>Email <span class="req">*</span></label>
+          <input type="email" id="uEmail" name="email" placeholder="Masukkan email" required />
         </div>
-      </div>
-
-      <table>
-        <thead>
-          <tr>
-            <th>ID</th><th>Gambar</th><th>Nama Produk</th><th>Merk</th><th>Kategori</th>
-            <th>Harga</th><th>Stok</th><th>Status</th><th style="text-align:center">Aksi</th>
-          </tr>
-        </thead>
-        <tbody id="productTable">
-          <tr th:each="p : ${devices}"
-              th:data-pid="${p.id}"
-              th:data-kategori="${p.kategori}">
-            <td style="color:var(--muted);font-size:12px" th:text="'#' + ${p.id}"></td>
-            <td>
-              <img th:if="${p.imageUrl != null and !#strings.isEmpty(p.imageUrl)}"
-                   th:src="${p.imageUrl}"
-                   style="width:48px;height:48px;object-fit:cover;border-radius:8px;border:1px solid var(--border)"
-                   onerror="this.style.display='none'"
-                   alt="img"/>
-              <span th:unless="${p.imageUrl != null and !#strings.isEmpty(p.imageUrl)}"
-                    style="color:var(--muted);font-size:11px">—</span>
-            </td>
-            <td>
-              <strong th:text="${p.nama}"></strong>
-              <div style="font-size:11px;color:var(--muted);margin-top:2px;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"
-                   th:text="${p.deskripsi}"></div>
-            </td>
-            <td th:text="${p.merk != null ? p.merk : '-'}"></td>
-            <td>
-              <span class="badge"
-                th:classappend="${p.kategori == 'Hp'} ? 'badge-hp' : (p.kategori == 'Laptop' ? 'badge-laptop' : (p.kategori == 'Tablet' ? 'badge-tablet' : (p.kategori == 'Blender' ? 'badge-blender' : (p.kategori == 'Tv' ? 'badge-tv' : (p.kategori == 'Ac' ? 'badge-ac' : (p.kategori == 'Headphone' ? 'badge-hp' : 'badge-kulkas'))))))"
-                th:text="${p.kategori}">
-              </span>
-            </td>
-            <td class="price-cell" th:text="'Rp ' + ${#numbers.formatDecimal(p.harga, 0, 'POINT', 0, 'NONE')}"></td>
-            <td th:id="'stok-val-' + ${p.id}" style="font-weight:600" th:text="${p.stok}"></td>
-            <td th:id="'stok-badge-' + ${p.id}">
-              <span th:if="${p.stok == 0}"  class="stock-badge stock-out">● Habis</span>
-              <span th:if="${p.stok > 0 and p.stok < 10}" class="stock-badge stock-low">● Rendah</span>
-              <span th:if="${p.stok >= 10}" class="stock-badge stock-ok">● Tersedia</span>
-            </td>
-            <td style="text-align:center;width:60px">
-              <div class="action-wrap">
-                <button class="action-btn" th:data-pid="${p.id}" title="Aksi">
-                  <svg viewBox="0 0 24 24">
-                    <circle cx="12" cy="5"  r="1.3" fill="currentColor"/>
-                    <circle cx="12" cy="12" r="1.3" fill="currentColor"/>
-                    <circle cx="12" cy="19" r="1.3" fill="currentColor"/>
-                  </svg>
-                </button>
-                <div class="drop-menu" th:id="'drop-' + ${p.id}">
-                  <div class="drop-head" th:text="${#strings.abbreviate(p.nama, 24)}"></div>
-                  <div class="drop-item di-edit"
-                    th:data-action="edit"
-                    th:data-pid="${p.id}"
-                    th:data-nama="${p.nama}"
-                    th:data-merk="${p.merk}"
-                    th:data-harga="${p.harga}"
-                    th:data-stok="${p.stok}"
-                    th:data-kategori="${p.kategori}"
-                    th:data-imageurl="${p.imageUrl}"
-                    th:data-deskripsi="${p.deskripsi}"
-                    th:data-spesifikasi="${p.spesifikasi}">
-                    <svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-                    Edit Produk
-                  </div>
-                  <div class="drop-divider"></div>
-                  <div class="drop-item di-delete" th:data-action="delete" th:data-pid="${p.id}" th:data-nama="${p.nama}">
-                    <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg>
-                    Hapus Produk
-                  </div>
-                </div>
-              </div>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-
-    <!-- MODAL STOK / HAPUS -->
-    <div class="modal-overlay" id="modalOverlay">
-      <div class="modal-box">
-        <div class="modal-icon-wrap" id="mIconWrap"><svg id="mIconSvg" viewBox="0 0 24 24"></svg></div>
-        <div class="modal-title" id="mTitle"></div>
-        <div class="modal-subtitle" id="mSubtitle"></div>
-        <div class="modal-product-tag" id="mProduct"></div>
-        <div class="modal-stok-row" id="mStokRow">
-          <div class="modal-stok-box"><div class="msb-label">Stok Sekarang</div><div class="msb-val" id="mStokNow"></div></div>
-          <div class="modal-stok-box"><div class="msb-label">Stok Setelah</div><div class="msb-val" id="mStokAfter"></div></div>
-        </div>
-        <div id="mQtySection">
-          <div class="modal-qty-label" id="mQtyLabel">Jumlah</div>
-          <div class="modal-qty-row">
-            <button class="qty-btn" id="qtyMinus">−</button>
-            <input class="qty-input" type="number" id="qtyInput" value="1" min="1"/>
-            <button class="qty-btn" id="qtyPlus">+</button>
+        <div class="bm-field" id="uPasswordField">
+          <label>Password <span class="req">*</span></label>
+          <div class="pw-input-wrap">
+            <input type="password" id="uPassword" name="password" placeholder="Masukkan password" minlength="6" />
+            <button type="button" class="pw-toggle-btn toggle-pw-btn" id="toggleUserPw" tabindex="-1"
+              title="Tampilkan/Sembunyikan password">
+              <svg class="eye-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M2 8c4 4 16 4 20 0" /><path d="M12 11v4" /><path d="M8 9.5l-2 3" /><path d="M16 9.5l2 3" />
+              </svg>
+            </button>
           </div>
         </div>
-        <div class="modal-actions">
-          <button class="btn-cancel" id="mBtnCancel">Batal</button>
-          <button class="btn-ok" id="mBtnOk">Konfirmasi</button>
-        </div>
-      </div>
-    </div>
-
-    <div id="toast"><div class="t-dot" id="tDot"></div><span id="tMsg"></span></div>
-
-  </div>
-
-      <!-- PENGIRIMAN PAGE -->
-    <div class="page" id="page-Pengiriman">
-    <div class="page-heading">Pengiriman Barang</div>
-    <div class="page-sub">Daftar pesanan yang telah dibayar oleh pelanggan</div>
-
-    <div class="card" style="margin-bottom:1.5rem;padding:1rem 1.25rem;">
-      <div class="search-box">
-        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-          <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
-        </svg>
-        <input type="text" id="orderSearchInput" placeholder="Cari nama, email, atau nomor..."/>
-      </div>
-    </div>
-
-    <div class="user-table-wrapper">
-      <table class="user-table" id="ordersTable">
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>Nama</th>
-            <th>Email</th>
-            <th>Nomor</th>
-            <th>Alamat</th>
-            <th>Via Pembayaran</th>
-            <th>Tanggal</th>
-            <th>Status</th>
-            <th>Aksi</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr th:each="o, stat : ${orders}">
-            <td th:text="${stat.index + 1}">1</td>
-            <td th:text="${o.namaUser}">-</td>
-            <td th:text="${o.emailUser}">-</td>
-            <td th:text="${o.nomerUser}">-</td>
-            <td th:text="${o.alamatUser}" style="max-width:200px;white-space:normal;">-</td>
-            <td>
-              <span th:text="${o.viaPembayaran}"
-                    th:classappend="${o.viaPembayaran == 'BANK_TRANSFER'} ? 'ubtn ubtn-info' : 'ubtn ubtn-warn'"
-                    style="padding:2px 8px;border-radius:4px;font-size:0.78rem;">-</span>
-            </td>
-            <td th:text="${#temporals.format(o.tanggal, 'dd MMM yyyy HH:mm')}">-</td>
-            <td>
-              <span th:text="${o.status}"
-                    th:classappend="${o.status == 'SELESAI'} ? 'ubtn ubtn-ok' :
-                                    (${o.status == 'DIKIRIM'} ? 'ubtn ubtn-info' :
-                                    (${o.status == 'DIPROSES'} ? 'ubtn ubtn-warn' : 'ubtn ubtn-pending'))"
-                    style="padding:2px 8px;border-radius:4px;font-size:0.78rem;">-</span>
-            </td>
-            <td>
-              <form th:action="@{'/admin/orders/update-status'}" method="post" style="display:flex;gap:4px;align-items:center;">
-                <input type="hidden" name="id" th:value="${o.id}"/>
-                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
-                <select name="status" class="form-select" style="font-size:0.8rem;padding:2px 6px;">
-                  <option value="MENUNGGU"  th:selected="${o.status == 'MENUNGGU'}">Menunggu</option>
-                  <option value="DIPROSES"  th:selected="${o.status == 'DIPROSES'}">Diproses</option>
-                  <option value="DIKIRIM"   th:selected="${o.status == 'DIKIRIM'}">Dikirim</option>
-                  <option value="SELESAI"   th:selected="${o.status == 'SELESAI'}">Selesai</option>
-                </select>
-                <button type="submit" class="ubtn ubtn-ok" style="padding:2px 8px;font-size:0.8rem;">Simpan</button>
-              </form>
-            </td>
-          </tr>
-          <tr th:if="${#lists.isEmpty(orders)}">
-            <td colspan="9" style="text-align:center;padding:2rem;color:#888;">Belum ada pesanan masuk.</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-
-  <!-- COMPLAINTS PAGE -->
-  <div class="page" id="page-complaints">
-    <div class="page-heading">Manajemen Pengaduan</div>
-    <div class="page-sub">Kelola dan selesaikan pengaduan atau keluhan dari pelanggan</div>
-
-    <div class="card" style="margin-bottom:1.5rem;padding:1rem 1.25rem;">
-      <div class="search-box">
-        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-        <input type="text" id="complaintSearchInput" placeholder="Cari pelapor, kategori, atau judul..." />
-      </div>
-    </div>
-
-    <div class="user-table-wrapper">
-      <table class="user-table" id="complaintsTable">
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Pelapor</th>
-            <th>Kategori</th>
-            <th>Perangkat</th>
-            <th>Detail Masalah</th>
-            <th>Tanggal</th>
-            <th>Status</th>
-            <th style="text-align:center">Aksi</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr th:each="c : ${complaints}">
-            <td style="color:var(--muted);font-size:12px" th:text="'#' + ${c.id}"></td>
-            <td>
-              <strong th:text="${c.user.username}"></strong>
-              <div style="font-size:11px;color:var(--muted)" th:text="${c.user.email}"></div>
-            </td>
-            <td>
-              <span class="badge" th:classappend="${c.kategori == 'Kualitas Produk' ? 'badge-hp' : (c.kategori == 'Kesalahan Pengiriman' ? 'badge-laptop' : (c.kategori == 'Kendala Transaksi' ? 'badge-tablet' : (c.kategori == 'Layanan Pelanggan' ? 'badge-blender' : 'badge-kulkas')))}" th:text="${c.kategori}"></span>
-            </td>
-            <td>
-              <span th:if="${c.electronic != null}" th:text="${c.electronic.merk} + ' ' + ${c.electronic.nama}"></span>
-              <span th:unless="${c.electronic != null}" style="color:var(--muted)">—</span>
-            </td>
-            <td style="max-width:300px">
-              <strong th:text="${c.judul}"></strong>
-              <div style="font-size:12px;color:var(--text-muted);margin-top:4px;word-break:break-word;" th:text="${c.deskripsi}"></div>
-            </td>
-            <td style="font-size:12px" th:text="${#temporals.format(c.tanggal, 'dd/MM/yyyy HH:mm')}"></td>
-            <td>
-              <form th:action="@{/admin/complaints/update-status}" method="post" style="margin:0">
-                <input type="hidden" name="id" th:value="${c.id}"/>
-                <select name="status" onchange="this.form.submit()" style="background:rgba(0,0,0,0.3);color:white;border:1px solid var(--border-glass);padding:4px 8px;border-radius:6px;font-size:12px;cursor:pointer;">
-                  <option value="PENDING" th:selected="${c.status == 'PENDING'}">PENDING</option>
-                  <option value="DIPROSES" th:selected="${c.status == 'DIPROSES'}">DIPROSES</option>
-                  <option value="SELESAI" th:selected="${c.status == 'SELESAI'}">SELESAI</option>
-                </select>
-              </form>
-            </td>
-            <td style="text-align:center">
-              <a th:href="@{'/admin/complaints/delete/' + ${c.id}}" class="ubtn ubtn-del" onclick="return confirm('Hapus pengaduan ini?')">Hapus</a>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-</div>
-
-<!-- MODAL TAMBAH/EDIT PRODUK -->
-<div class="big-modal-overlay" id="produkModalOverlay">
-  <div class="big-modal">
-    <div class="big-modal-header">
-      <span id="produkModalTitle">Tambah Produk</span>
-      <button class="big-modal-close" id="closeProdukModal">&times;</button>
-    </div>
-    <form id="produkForm" th:action="@{/admin/tambah}" method="post" class="big-modal-form">
-      <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
-      <input type="hidden" id="produkFormId" name="id" value=""/>
-
-      <div class="bm-row">
         <div class="bm-field">
-          <label>Nama Produk <span class="req">*</span></label>
-          <input type="text" id="pNama" name="nama" placeholder="Contoh: Samsung S24 Ultra" required/>
-        </div>
-        <div class="bm-field">
-          <label>Merk <span class="req">*</span></label>
-          <input type="text" id="pMerk" name="merk" placeholder="Contoh: Samsung" required/>
-        </div>
-      </div>
-      <div class="bm-row">
-        <div class="bm-field">
-          <label>Kategori <span class="req">*</span></label>
-          <select id="pKategori" name="kategori" required>
-            <option value="">-- Pilih Kategori --</option>
-            <option value="Hp">Smartphone (HP)</option>
-            <option value="Laptop">Laptop</option>
-            <option value="Tablet">Tablet</option>
-            <option value="Tv">Smart TV</option>
-            <option value="Ac">AC</option>
-            <option value="Blender">Blender</option>
-            <option value="Kulkas">Kulkas</option>
-            <option value="Headphone">Headphone</option>
-          </select>
-        </div>
-        <div class="bm-field">
-          <label>Harga (Rp) <span class="req">*</span></label>
-          <input type="number" id="pHarga" name="harga" placeholder="Contoh: 14999000" min="0" required/>
-        </div>
-      </div>
-      <div class="bm-row">
-        <div class="bm-field">
-          <label>Stok</label>
-          <input type="number" id="pStok" name="stok" placeholder="0" min="0" value="0"/>
-        </div>
-        <div class="bm-field">
-          <label>URL Gambar</label>
-          <input type="text" id="pImageUrl" name="imageUrl" placeholder="https://..."/>
-        </div>
-      </div>
-      <div class="bm-field" style="grid-column:1/-1">
-        <label>Deskripsi</label>
-        <textarea id="pDeskripsi" name="deskripsi" rows="3" placeholder="Deskripsi singkat produk..."></textarea>
-      </div>
-      <div class="bm-field" style="grid-column:1/-1">
-        <label>Spesifikasi <small style="color:var(--muted);font-weight:400">(format: Key: Value | Key: Value)</small></label>
-        <textarea id="pSpesifikasi" name="spesifikasi" rows="3" placeholder="Processor: Snapdragon 8 Gen 3 | Layar: 6.8 inci | Baterai: 5000 mAh"></textarea>
-      </div>
-      <div class="bm-actions">
-        <button type="button" class="pw-btn-cancel" id="closeProdukModal2">Batal</button>
-        <button type="submit" class="pw-btn-save" id="produkSubmitBtn">Simpan Produk</button>
-      </div>
-    </form>
-  </div>
-</div>
-
-<!-- MODAL TAMBAH/EDIT USER -->
-<div class="big-modal-overlay" id="userModalOverlay">
-  <div class="big-modal" style="max-width:480px">
-    <div class="big-modal-header">
-      <span id="userModalTitle">Tambah User</span>
-      <button class="big-modal-close" id="closeUserModal">&times;</button>
-    </div>
-    <form id="userForm" th:action="@{/admin/user/tambah}" method="post" class="big-modal-form">
-      <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
-      <input type="hidden" id="userFormId" name="id" value=""/>
-      <div class="bm-field">
-        <label>Username <span class="req">*</span></label>
-        <input type="text" id="uUsername" name="username" placeholder="Username" required/>
-      </div>
-      <div class="bm-field">
-        <label>Email <span class="req">*</span></label>
-        <input type="email" id="uEmail" name="email" placeholder="email@example.com" required/>
-      </div>
-      <div class="bm-field" id="uPasswordField">
-        <label>Password <span class="req">*</span></label>
-        <div class="pw-input-wrap">
-          <input type="password" id="uPassword" name="password" placeholder="Minimal 6 karakter" minlength="6"/>
-          <button type="button" class="pw-toggle-btn" id="toggleUserPw" tabindex="-1" title="Tampilkan/Sembunyikan password">
-            <svg id="eyeIcon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
-              <circle cx="12" cy="12" r="3"/>
+          <label>Role</label>
+          <div class="role-static-badge">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+              <circle cx="12" cy="7" r="4" />
             </svg>
-            <svg id="eyeOffIcon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none">
-              <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/>
-              <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/>
-              <line x1="1" y1="1" x2="23" y2="23"/>
-            </svg>
-          </button>
+            USER (Customer)
+          </div>
+          <input type="hidden" id="uRole" name="role" value="USER" />
         </div>
-      </div>
-      <div class="bm-field">
-        <label>Role</label>
-        <div class="role-static-badge">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-          USER (Customer)
+        <div class="bm-actions">
+          <button type="button" class="pw-btn-cancel" id="closeUserModal2">Batal</button>
+          <button type="submit" class="pw-btn-save">Simpan User</button>
         </div>
-        <input type="hidden" id="uRole" name="role" value="USER"/>
-      </div>
-      <div class="bm-actions">
-        <button type="button" class="pw-btn-cancel" id="closeUserModal2">Batal</button>
-        <button type="submit" class="pw-btn-save">Simpan User</button>
-      </div>
-    </form>
+      </form>
+    </div>
   </div>
-</div>
 
-<script th:src="@{/js/admin.js}"></script>
+  <script th:src="@{/js/admin.js}"></script>
 </body>
+
 </html>

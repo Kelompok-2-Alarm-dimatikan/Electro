@@ -33,7 +33,10 @@ public class UserService implements UserDetailsService {
 
     public void register(String username, String email, String password) {
         if (userRepository.existsByUsername(username)) {
-            throw new IllegalArgumentException("Username already used!");
+            throw new IllegalArgumentException("Username sudah digunakan!");
+        }
+        if (userRepository.existsByEmail(email)) {
+            throw new IllegalArgumentException("Email sudah terdaftar!");
         }
         User user = new User(username, email, passwordEncoder.encode(password), "USER");
         userRepository.save(user);

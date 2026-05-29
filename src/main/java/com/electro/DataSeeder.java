@@ -6,6 +6,7 @@ import com.electro.service.UserService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.jdbc.core.JdbcTemplate;
 
 @Configuration
 public class DataSeeder {
@@ -13,8 +14,18 @@ public class DataSeeder {
     @Bean
     CommandLineRunner initData(ElectroRepository electroRepo,
                                UserRepository userRepo,
-                               UserService userService) {
+                               UserService userService,
+                               JdbcTemplate jdbcTemplate,
+                               org.springframework.security.crypto.password.PasswordEncoder passwordEncoder) {
         return args -> {
+            try {
+                jdbcTemplate.execute("ALTER TABLE users MODIFY COLUMN notified BOOLEAN DEFAULT FALSE;");
+                jdbcTemplate.execute("ALTER TABLE orders MODIFY COLUMN notified BOOLEAN DEFAULT FALSE;");
+                jdbcTemplate.execute("UPDATE users SET provider = 'LOCAL' WHERE provider IS NULL");
+            } catch (Exception e) {
+                // Ignore if it fails
+            }
+
             boolean needsReseed = electroRepo.count() < 19 
                 || electroRepo.findAll().stream().anyMatch(e -> e.getImageUrl() == null || e.getImageUrl().isEmpty());
             if (needsReseed) {

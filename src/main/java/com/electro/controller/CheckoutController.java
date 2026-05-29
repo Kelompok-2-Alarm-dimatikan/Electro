@@ -39,35 +39,43 @@ public class CheckoutController {
 
     @PostMapping("/submit")
     @ResponseBody
-    public ResponseEntity<?> submitCheckout(@RequestBody CheckoutRequest request, Authentication auth) { 
+    public ResponseEntity<?> submitCheckout(@RequestBody CheckoutRequest request, Authentication auth) {
         try {
-            // Validasi & kurangi stok
+            double totalHarga = 0.0;
+            int totalBarang = 0;
             for (CheckoutRequest.Item item : request.getItems()) {
                 electroService.kurangiStok(item.getId(), item.getQty());
+                var electronicOpt = electroService.getElectroById(item.getId());
+                if (electronicOpt.isPresent()) {
+                    totalHarga += electronicOpt.get().getHarga() * item.getQty();
+                    totalBarang += item.getQty();
+                }
             }
 
-            // SIMPAN ORDER BARU
             Order order = new Order();
             order.setNamaUser(request.getFullName());
             order.setEmailUser(request.getEmail());
             order.setNomerUser(request.getPhone());
             order.setAlamatUser(request.getAddress());
             order.setViaPembayaran(request.getPaymentMethod());
+            order.setTotalHarga(totalHarga);
+            order.setTotalBarang(totalBarang);
+            order.setJumlahItem(totalBarang);
 
-            // Link ke user jika login
             if (auth != null) {
                 userRepository.findByUsername(auth.getName())
-                    .ifPresent(order::setUser);
+                        .ifPresent(order::setUser);
             }
 
             orderRepository.save(order);
-            // ← END SIMPAN ORDER
 
             return ResponseEntity.ok(Map.of("success", true, "message", "Checkout berhasil!"));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(Map.of("success", false, "message", e.getMessage()));
         } catch (Exception e) {
-            return ResponseEntity.internalServerError().body(Map.of("success", false, "message", "Terjadi kesalahan pada server."));
+            e.printStackTrace();
+            return ResponseEntity.internalServerError()
+                    .body(Map.of("success", false, "message", "Terjadi kesalahan pada server: " + e.getMessage()));
         }
     }
 }
@@ -76,29 +84,76 @@ class CheckoutRequest {
     private List<Item> items;
     private String address;
     private String paymentMethod;
-    private String fullName;   
-    private String email;      
-    private String phone;      
+    private String fullName;
+    private String email;
+    private String phone;
 
-    public List<Item> getItems() { return items; }
-    public void setItems(List<Item> items) { this.items = items; }
-    public String getAddress() { return address; }
-    public void setAddress(String address) { this.address = address; }
-    public String getPaymentMethod() { return paymentMethod; }
-    public void setPaymentMethod(String paymentMethod) { this.paymentMethod = paymentMethod; }
-    public String getFullName() { return fullName; }
-    public void setFullName(String fullName) { this.fullName = fullName; }
-    public String getEmail() { return email; }
-    public void setEmail(String email) { this.email = email; }
-    public String getPhone() { return phone; }
-    public void setPhone(String phone) { this.phone = phone; }
+    public List<Item> getItems() {
+        return items;
+    }
+
+    public void setItems(List<Item> items) {
+        this.items = items;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getPaymentMethod() {
+        return paymentMethod;
+    }
+
+    public void setPaymentMethod(String paymentMethod) {
+        this.paymentMethod = paymentMethod;
+    }
+
+    public String getFullName() {
+        return fullName;
+    }
+
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
 
     public static class Item {
         private Long id;
         private int qty;
-        public Long getId() { return id; }
-        public void setId(Long id) { this.id = id; }
-        public int getQty() { return qty; }
-        public void setQty(int qty) { this.qty = qty; }
+
+        public Long getId() {
+            return id;
+        }
+
+        public void setId(Long id) {
+            this.id = id;
+        }
+
+        public int getQty() {
+            return qty;
+        }
+
+        public void setQty(int qty) {
+            this.qty = qty;
+        }
     }
 }

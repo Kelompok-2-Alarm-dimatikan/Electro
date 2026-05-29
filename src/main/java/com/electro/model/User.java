@@ -1,4 +1,5 @@
 package com.electro.model;
+
 import jakarta.persistence.*;
 
 @Entity
@@ -11,7 +12,7 @@ public class User {
     @Column(unique = true, nullable = false)
     private String username;
 
-    @Column(unique = true, nullable = false) 
+    @Column(unique = true, nullable = false)
     private String email;
 
     @Column(nullable = false)
@@ -27,7 +28,10 @@ public class User {
     @Column(nullable = false)
     private String provider = "LOCAL"; // LOCAL atau GOOGLE
 
-    public User() {}
+    private boolean notified = false;
+
+    public User() {
+    }
 
     public User(String username, String email, String password, String role) {
         this.username = username;
@@ -87,5 +91,13 @@ public class User {
 
     public void setProvider(String provider) {
         this.provider = provider;
+    }
+
+    public boolean isNotified() {
+        return notified;
+    }
+
+    public void setNotified(boolean notified) {
+        this.notified = notified;
     }
 }
