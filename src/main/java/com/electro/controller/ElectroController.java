@@ -20,18 +20,22 @@ public class ElectroController {
             return "redirect:/admin";
         }
         model.addAttribute("electronic", electroService.getAllElectro());
-        return "index"; // → templates/index.html
-    }
-
-    @GetMapping("/search")
-    public String search(@RequestParam double harga, Model model) {
-        model.addAttribute("electronic", electroService.searchByHarga(harga));
         return "index";
     }
 
+    /** Searching: Linear Search by nama produk */
+    @GetMapping("/search")
+    public String search(@RequestParam String nama, Model model) {
+        model.addAttribute("electronic", electroService.searchByNama(nama));
+        model.addAttribute("keyword", nama);
+        return "index";
+    }
+
+    /** Sorting: Bubble Sort by harga ascending */
     @GetMapping("/sort")
     public String sort(Model model) {
         model.addAttribute("electronic", electroService.sortByHarga());
+        model.addAttribute("sorted", true);
         return "index";
     }
 

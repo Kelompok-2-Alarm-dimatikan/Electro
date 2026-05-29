@@ -7,6 +7,29 @@
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" th:href="@{/css/style.css}">
     <link rel="stylesheet" th:href="@{/css/product.css}">
+    <style>
+        #clearSearch {
+            display: none;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255,255,255,0.08);
+            border: none;
+            border-radius: 50%;
+            width: 26px;
+            height: 26px;
+            min-width: 26px;
+            cursor: pointer;
+            color: var(--text-muted);
+            padding: 0;
+            transition: background 0.2s, color 0.2s;
+            flex-shrink: 0;
+        }
+        #clearSearch.visible { display: flex; }
+        #clearSearch:hover {
+            background: rgba(239,68,68,0.18);
+            color: #ef4444;
+        }
+    </style>
 </head>
 <body>
 
@@ -33,10 +56,10 @@
         <div class="profile-wrap" id="profileWrap">
             <button class="profile-btn" onclick="toggleProfile()">
                 <div class="profile-avatar">
-                    <img th:if="${#authentication.principal instanceof T(com.electro.security.CustomUserDetails) && #authentication.principal.avatar != null && !#authentication.principal.avatar.isEmpty()}" 
-                         th:src="${#authentication.principal.avatar}" 
+                    <img th:if="${#authentication.principal instanceof T(com.electro.security.CustomUserDetails) && #authentication.principal.avatar != null && !#authentication.principal.avatar.isEmpty()}"
+                         th:src="${#authentication.principal.avatar}"
                          style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%; display: block;" alt="Avatar"/>
-                    <span th:unless="${#authentication.principal instanceof T(com.electro.security.CustomUserDetails) && #authentication.principal.avatar != null && !#authentication.principal.avatar.isEmpty()}" 
+                    <span th:unless="${#authentication.principal instanceof T(com.electro.security.CustomUserDetails) && #authentication.principal.avatar != null && !#authentication.principal.avatar.isEmpty()}"
                           th:text="${#strings.substring(#authentication.name, 0, 1).toUpperCase()}">U</span>
                 </div>
                 <div class="profile-info">
@@ -72,46 +95,36 @@
             <p class="page-subtitle">Temukan perangkat ekosistem digital terbaik Anda</p>
         </div>
         <div class="product-count">
-            Total: <span id="countValue" th:text="${electronic.size()}">0</span> Items
+            Total: <span id="countValue">0</span> Items
         </div>
     </div>
 
     <div class="filter-wrapper">
-        <div class="search-box">
+        <div class="search-box" id="searchForm">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-            <input type="text" id="searchInput" placeholder="Cari produk impian Anda...">
+            <input type="text" id="searchInput" name="nama"
+                   placeholder="Cari produk impian Anda..."
+                   autocomplete="off">
+            <button type="button" id="clearSearch"
+                    onclick="clearAndSubmit()" aria-label="Hapus pencarian">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            </button>
         </div>
         <div class="filter-controls">
             <div class="chips-container">
-                <button class="chip active" data-category="all">
-                    <span>Semua</span>
-                </button>
-                <button class="chip" data-category="Hp">
-                    <span>Smartphone</span>
-                </button>
-                <button class="chip" data-category="Laptop">
-                    <span>Laptop</span>
-                </button>
-                <button class="chip" data-category="Tablet">
-                    <span>Tablet</span>
-                </button>
-                <button class="chip" data-category="Tv">
-                    <span>Smart TV</span>
-                </button>
-                <button class="chip" data-category="Ac">
-                    <span>AC</span>
-                </button>
-                <button class="chip" data-category="Blender">
-                    <span>Blender</span>
-                </button>
-                <button class="chip" data-category="Kulkas">
-                    <span>Kulkas</span>
-                </button>
-                <button class="chip" data-category="Headphone">
-                    <span>Headphone</span>
-                </button>
+                <button class="chip" data-category="all"><span>Semua</span></button>
+                <button class="chip" data-category="Hp"><span>Smartphone</span></button>
+                <button class="chip" data-category="Laptop"><span>Laptop</span></button>
+                <button class="chip" data-category="Tablet"><span>Tablet</span></button>
+                <button class="chip" data-category="Tv"><span>Smart TV</span></button>
+                <button class="chip" data-category="Ac"><span>AC</span></button>
+                <button class="chip" data-category="Blender"><span>Blender</span></button>
+                <button class="chip" data-category="Kulkas"><span>Kulkas</span></button>
+                <button class="chip" data-category="Headphone"><span>Headphone</span></button>
             </div>
-            <select id="sortSelect" class="sort-dropdown">
+            <select id="sortSelect" class="sort-dropdown"
+                    onchange="applySort(this.value)"
+                    >
                 <option value="default">Urutkan: Default</option>
                 <option value="low-high">Harga: Rendah ke Tinggi</option>
                 <option value="high-low">Harga: Tinggi ke Rendah</option>
@@ -120,48 +133,7 @@
     </div>
 
     <div class="product-grid" id="productGrid">
-        <div class="product-card" th:each="item : ${electronic}" 
-             th:attr="data-id=${item.id}, data-nama=${item.nama}, data-merk=${item.merk}, data-kategori=${item.kategori}, data-harga=${item.harga}, data-stok=${item.stok}, data-image=${item.imageUrl}, data-deskripsi=${item.deskripsi}, data-spesifikasi=${item.spesifikasi}">
-            
-            <div class="card-badges">
-                <span class="badge-cate" th:text="${item.kategori}">Kategori</span>
-                <span th:if="${item.stok <= 3 and item.stok > 0}" class="badge-stock alert">Sisa <span th:text="${item.stok}">0</span>!</span>
-                <span th:if="${item.stok == 0}" class="badge-stock empty">Habis</span>
-            </div>
-
-            <div class="card-image-area">
-                <img th:src="${item.imageUrl != null and !#strings.isEmpty(item.imageUrl) ? item.imageUrl : 'https://images.unsplash.com/photo-1546868871-7041f2a55e12?q=80&w=400&auto=format&fit=crop'}" 
-                     alt="Product Image" 
-                     th:attr="data-kategori=${item.kategori}"
-                     onerror="this.onerror=null; const k=this.dataset.kategori||''; const map={Hp:'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?q=80&w=400',Laptop:'https://images.unsplash.com/photo-1603302576837-37561b2e2302?q=80&w=400',Tablet:'https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?q=80&w=400',Tv:'https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?q=80&w=400',Ac:'https://images.unsplash.com/photo-1621905251189-08b45d6a269e?q=80&w=400',Blender:'https://images.unsplash.com/photo-1585515320310-259814833e62?q=80&w=400',Kulkas:'https://images.unsplash.com/photo-1584568694244-14fbdf83bd30?q=80&w=400',Headphone:'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=400'}; this.src=map[k]||'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?q=80&w=400';">
-                <div class="image-overlay-glow"></div>
-            </div>
-
-            <div class="card-content">
-                <span class="product-brand" th:text="${item.merk}">Merk</span>
-                <h3 class="product-name" th:text="${item.nama}">Nama Perangkat</h3>
-                
-                <div class="product-specs-chips">
-                    <span class="spec-chip">Premium Quality</span>
-                    <span class="spec-chip" th:text="${item.kategori} == 'Hp' ? '5G Ready' : (${item.kategori} == 'Laptop' ? 'Fast SSD' : (${item.kategori} == 'Tablet' ? 'Portable' : (${item.kategori} == 'Tv' ? '4K Display' : (${item.kategori} == 'Ac' ? 'Inverter' : (${item.kategori} == 'Headphone' ? 'Noise Cancel' : 'Smart Tech')))))">Tech</span>
-                    <span class="spec-chip">Garansi Resmi</span>
-                </div>
-                
-                <div class="price-row">
-                    <span class="product-price" th:text="'Rp ' + ${#numbers.formatInteger(item.harga, 0, 'POINT')}">Rp 0</span>
-                </div>
-            </div>
-
-            <div class="card-footer">
-                <button class="btn-add-cart" th:disabled="${item.stok == 0}" onclick="addToCartDirect(this.closest('.product-card'))">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
-                    Add to Cart
-                </button>
-                <button class="btn-detail" onclick="showDetail(this.closest('.product-card'))">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-                </button>
-            </div>
-        </div>
+        <!-- produk dirender oleh product.js via AJAX -->
     </div>
 </main>
 
@@ -170,8 +142,7 @@
         <h3>Keranjang Belanja</h3>
         <button class="close-cart" onclick="toggleCart()">✕</button>
     </div>
-    <div class="cart-items" id="cartItems">
-        </div>
+    <div class="cart-items" id="cartItems"></div>
     <div class="cart-footer">
         <div class="total-row">
             <span>Total Bayar:</span>
@@ -196,21 +167,16 @@
             </div>
             <h2 class="modal-title" id="modalNama">Nama Produk</h2>
             <div class="modal-price" id="modalHarga">Rp 0</div>
-            
             <div class="modal-divider"></div>
-            
             <div class="modal-desc-section">
                 <h4>Deskripsi Spesifikasi</h4>
                 <p id="modalDesc">Memiliki efisiensi daya yang luar biasa, teknologi layar jernih anti-flicker, serta arsitektur chipset generasi terbaru untuk menjamin kelancaran aktivitas gaming dan multitasking berat Anda tanpa kendala suhu berlebih.</p>
             </div>
-            
             <div class="modal-divider"></div>
-            
             <div class="modal-stock-status">
                 <span>Ketersediaan:</span>
                 <strong id="modalStok">Stok 0 unit</strong>
             </div>
-
             <div class="modal-actions">
                 <div class="qty-control">
                     <button onclick="changeQty(-1)">−</button>

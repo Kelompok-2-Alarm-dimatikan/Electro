@@ -153,7 +153,6 @@ function getFriendlyPaymentName(method) {
     switch (method) {
         case 'BANK_TRANSFER': return '🏦 Transfer Bank (Virtual Account)';
         case 'E_WALLET': return '📱 Dompet Digital / E-Wallet';
-        case 'COD': return '📦 Bayar di Tempat (COD)';
         default: return method;
     }
 }

@@ -20,6 +20,11 @@ public class Order {
     private String status;
     private Double totalHarga = 0.0;
     private Integer totalBarang = 0;
+
+    // Kolom jumlah_item di DB samakan dengan totalBarang
+    @Column(name = "jumlah_item", nullable = false)
+    private Integer jumlahItem = 0;
+
     private boolean notified = false;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -31,95 +36,45 @@ public class Order {
         this.tanggal = LocalDateTime.now();
     }
 
-    public long getId() {
-        return id;
-    }
+    public long getId() { return id; }
 
-    public String getNamaUser() {
-        return namaUser;
-    }
+    public String getNamaUser() { return namaUser; }
+    public void setNamaUser(String namaUser) { this.namaUser = namaUser; }
 
-    public void setNamaUser(String namaUser) {
-        this.namaUser = namaUser;
-    }
+    public String getEmailUser() { return emailUser; }
+    public void setEmailUser(String emailUser) { this.emailUser = emailUser; }
 
-    public String getEmailUser() {
-        return emailUser;
-    }
+    public String getNomerUser() { return nomerUser; }
+    public void setNomerUser(String nomerUser) { this.nomerUser = nomerUser; }
 
-    public void setEmailUser(String emailUser) {
-        this.emailUser = emailUser;
-    }
+    public String getAlamatUser() { return alamatUser; }
+    public void setAlamatUser(String alamatUser) { this.alamatUser = alamatUser; }
 
-    public String getNomerUser() {
-        return nomerUser;
-    }
+    public String getViaPembayaran() { return viaPembayaran; }
+    public void setViaPembayaran(String viaPembayaran) { this.viaPembayaran = viaPembayaran; }
 
-    public void setNomerUser(String nomerUser) {
-        this.nomerUser = nomerUser;
-    }
+    public LocalDateTime getTanggal() { return tanggal; }
+    public void setTanggal(LocalDateTime tanggal) { this.tanggal = tanggal; }
 
-    public String getAlamatUser() {
-        return alamatUser;
-    }
+    public String getStatus() { return status; }
+    public void setStatus(String status) { this.status = status; }
 
-    public void setAlamatUser(String alamatUser) {
-        this.alamatUser = alamatUser;
-    }
+    public User getUser() { return user; }
+    public void setUser(User user) { this.user = user; }
 
-    public String getViaPembayaran() {
-        return viaPembayaran;
-    }
+    public Double getTotalHarga() { return totalHarga; }
+    public void setTotalHarga(Double totalHarga) { this.totalHarga = totalHarga; }
 
-    public void setViaPembayaran(String viaPembayaran) {
-        this.viaPembayaran = viaPembayaran;
-    }
-
-    public LocalDateTime getTanggal() {
-        return tanggal;
-    }
-
-    public void setTanggal(LocalDateTime tanggal) {
-        this.tanggal = tanggal;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    public Double getTotalHarga() {
-        return totalHarga;
-    }
-
-    public void setTotalHarga(Double totalHarga) {
-        this.totalHarga = totalHarga;
-    }
-
-    public Integer getTotalBarang() {
-        return totalBarang;
-    }
-
+    public Integer getTotalBarang() { return totalBarang; }
     public void setTotalBarang(Integer totalBarang) {
         this.totalBarang = totalBarang;
+        // jumlah_item selalu sinkron dengan totalBarang
+        this.jumlahItem = totalBarang;
     }
 
-    public boolean isNotified() {
-        return notified;
-    }
+    public Integer getJumlahItem() { return jumlahItem; }
+    public void setJumlahItem(Integer jumlahItem) { this.jumlahItem = jumlahItem; }
 
-    public void setNotified(boolean notified) {
-        this.notified = notified;
-    }
+    public boolean isNotified() { return notified; }
+    public void setNotified(boolean notified) { this.notified = notified; }
 }
