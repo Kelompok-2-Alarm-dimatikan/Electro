@@ -1,5 +1,7 @@
 package com.electro.controller;
 import com.electro.model.User;
+import com.electro.repository.ComplaintRepository;
+import com.electro.repository.OrderRepository;
 import com.electro.repository.UserRepository;
 import com.electro.security.CustomUserDetails;
 import jakarta.servlet.http.HttpServletRequest;
@@ -14,6 +16,7 @@ import org.springframework.security.web.authentication.logout.SecurityContextLog
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.security.web.context.SecurityContextRepository;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
@@ -131,6 +134,13 @@ public class SettingsController {
         return "settings";
     }
 
+    @Autowired
+    private OrderRepository orderRepository;
+
+    @Autowired
+    private ComplaintRepository complaintRepository;
+
+    @Transactional
     @PostMapping("/delete")
     public String deleteAccount(@AuthenticationPrincipal CustomUserDetails currentUser,
                                  @RequestParam(required = false) String password,
@@ -145,6 +155,11 @@ public class SettingsController {
             model.addAttribute("error", "Password konfirmasi salah!");
             return "settings";
         }
+
+        // Hapus relasi FK dulu sebelum hapus user
+        orderRepository.deleteByUser(user);
+        complaintRepository.deleteByUser(user);
+
         userRepository.delete(user);
 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();

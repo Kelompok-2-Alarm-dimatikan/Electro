@@ -5,6 +5,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import jakarta.servlet.http.HttpSession;
+
 @Controller
 public class RegisterController {
 
@@ -33,5 +35,11 @@ public class RegisterController {
             model.addAttribute("error", e.getMessage());
             return "register";
         }
+    }
+
+    @GetMapping("/register/google")
+    public String registerWithGoogle(HttpSession session) {
+        session.setAttribute("oauth_register", true);
+        return "redirect:/oauth2/authorization/google";
     }
 }

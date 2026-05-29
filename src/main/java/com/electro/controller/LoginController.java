@@ -8,11 +8,15 @@ import org.springframework.ui.Model;
 public class LoginController {
 
     @GetMapping("/login")
-    public String login(@RequestParam(required = false) String error, Model model){
+    public String login(@RequestParam(required = false) String error, Model model) {
 
-        if(error != null){
-            model.addAttribute("error", "Username atau password salah!");
+        if (error != null) {
+            if ("account_not_found".equals(error)) {
+                model.addAttribute("error", "Akun Google Anda tidak ditemukan. Silakan daftar terlebih dahulu.");
+            } else {
+                model.addAttribute("error", "Username atau password salah!");
+            }
         }
-        return "login"; 
+        return "login";
     }
 }

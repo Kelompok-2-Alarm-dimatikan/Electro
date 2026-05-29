@@ -26,7 +26,7 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/css/**", "/js/**", "/register", "/login", "/").permitAll()
+                        .requestMatchers("/css/**", "/js/**", "/register", "/register/google", "/login", "/").permitAll()
                         .requestMatchers("/admin/**").hasAuthority("ADMIN")
                         .requestMatchers("/electronic/**", "/product/**", "/settings/**", "/checkout").authenticated()
                         .anyRequest().authenticated())
@@ -38,7 +38,8 @@ public class SecurityConfig {
                         .loginPage("/login")
                         .userInfoEndpoint(userInfo -> userInfo
                                 .oidcUserService(customOidcUserService))
-                        .defaultSuccessUrl("/electronic", true))
+                        .defaultSuccessUrl("/electronic", true)
+                        .failureUrl("/login?error=account_not_found"))
                 .logout(logout -> logout.permitAll());
 
         return http.build();

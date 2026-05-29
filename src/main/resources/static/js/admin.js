@@ -1,4 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
+
+  // ─── 1. BACA DATA SERVER DULU (sebelum fungsi apapun yang pakai CHART_DATA) ───
   const _sd = document.getElementById('serverData');
   const rawStock   = _sd ? (_sd.getAttribute('data-stock')   || '[]') : '[]';
   const rawPopular = _sd ? (_sd.getAttribute('data-popular') || '[]') : '[]';
@@ -7,7 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let serverChartDatasets = [];
   try { serverChartDatasets = JSON.parse(rawChart); } catch(e) { console.error('chart parse err', e); }
 
-  // CHART DATA & OPTIONS
+  // ─── 2. CHART DATA & OPTIONS ───
   const CHART_DATA = {
     labels: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agt', 'Sep', 'Okt', 'Nov', 'Des'],
     datasets: serverChartDatasets.length > 0 ? serverChartDatasets : [
@@ -35,7 +37,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
 
-  // CHART BUILD
+  // ─── 3. CHART BUILD ───
   let salesChartInstance = null;
 
   function buildChart() {
@@ -70,7 +72,7 @@ document.addEventListener('DOMContentLoaded', () => {
     ro.observe(chartWrap);
   }
 
-  // NAVIGASI SIDEBAR
+  // ─── 4. NAVIGASI SIDEBAR ───
   const labels     = { dashboard:'Dashboard', users:'Manajemen User', table:'Tabel Produk', Pengiriman:'Pengiriman Barang', complaints:'Manajemen Pengaduan' };
   const navItems   = document.querySelectorAll('.nav-item');
   const pages      = document.querySelectorAll('.page');
@@ -118,7 +120,7 @@ document.addEventListener('DOMContentLoaded', () => {
     requestAnimationFrame(() => requestAnimationFrame(buildChart));
   }
 
-  // STOCK LIST
+  // ─── 5. STOCK LIST ───
   let stockData = [];
   try { stockData = JSON.parse(rawStock); } catch(e) { console.error('stock parse err', e); }
   if (!stockData || stockData.length === 0) stockData = [{ label:'HP', count:0, color:'#4f8ef7' }];
@@ -137,7 +139,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // POPULAR TABLE
+  // ─── 6. POPULAR TABLE ───
   let popularData = [];
   try { popularData = JSON.parse(rawPopular); } catch(e) { console.error('popular parse err', e); }
   if (!popularData || popularData.length === 0) popularData = [{ nama:'Belum ada data', kat:'-', terjual:0, harga:0, stok:0 }];
@@ -167,7 +169,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // SEARCH & FILTER
+  // ─── 7. SEARCH & FILTER ───
   const searchInput = document.getElementById('searchInput');
   if (searchInput) {
     searchInput.addEventListener('input', e => {
@@ -220,7 +222,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // DROPDOWN AKSI PRODUK
+  // ─── 8. DROPDOWN AKSI PRODUK ───
   const productTable = document.getElementById('productTable');
   if (productTable) {
     productTable.addEventListener('click', e => {
@@ -255,7 +257,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   document.addEventListener('click', closeDropdown);
 
-  // MODAL STOK / HAPUS
+  // ─── 9. MODAL STOK / HAPUS ───
   const overlay    = document.getElementById('modalOverlay');
   const mIconWrap  = document.getElementById('mIconWrap');
   const mIconSvg   = document.getElementById('mIconSvg');
@@ -335,7 +337,7 @@ document.addEventListener('DOMContentLoaded', () => {
     closeModal();
   });
 
-  // MODAL TAMBAH / EDIT PRODUK
+  // ─── 10. MODAL TAMBAH / EDIT PRODUK ───
   const produkOverlay = document.getElementById('produkModalOverlay');
   const produkForm    = document.getElementById('produkForm');
   const produkTitle   = document.getElementById('produkModalTitle');
@@ -375,7 +377,7 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('closeProdukModal2').addEventListener('click', closeProdukModal);
   produkOverlay.addEventListener('click', e => { if (e.target===produkOverlay) closeProdukModal(); });
 
-  // PASSWORD TOGGLE
+  // ─── 11. PASSWORD TOGGLE ───
   document.querySelectorAll('.pw-toggle-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       const targetId = btn.dataset.target;
@@ -395,7 +397,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // MODAL TAMBAH / EDIT USER
+  // ─── 12. MODAL TAMBAH / EDIT USER ───
   const userOverlay = document.getElementById('userModalOverlay');
   const userForm    = document.getElementById('userForm');
   const userTitle   = document.getElementById('userModalTitle');
@@ -431,7 +433,7 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('closeUserModal2').addEventListener('click', closeUserModal);
   userOverlay.addEventListener('click', e => { if (e.target===userOverlay) closeUserModal(); });
 
-  // HELPER SUBMIT FORM
+  // ─── 13. HELPER SUBMIT FORM ───
   function submitForm(action, params, method='POST') {
     const form = document.createElement('form');
     form.method = method==='GET' ? 'GET' : 'POST';
@@ -451,7 +453,7 @@ document.addEventListener('DOMContentLoaded', () => {
     form.submit();
   }
 
-  // TOAST
+  // ─── 14. TOAST ───
   let toastTimer = null;
   function showToast(msg, color='#4fc78a') {
     const toast = document.getElementById('toast');
@@ -465,7 +467,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 }); // end DOMContentLoaded
 
-// PROFILE PANEL (IIFE terpisah)
+// ─── PROFILE PANEL (IIFE terpisah) ───
 (function () {
   const wrapper = document.getElementById('profileWrapper');
   const btn     = document.getElementById('profileBtn');

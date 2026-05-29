@@ -7,4 +7,5 @@ import java.util.List;
 public interface OrderRepository extends JpaRepository<Order, Long> {
     List<Order> findAllByOrderByTanggalDesc();
     List<Order> findByUser(User user);
+    void deleteByUser(User user);
 }

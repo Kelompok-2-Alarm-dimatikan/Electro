@@ -20,7 +20,6 @@ public class Order {
     private String status;
     private Double totalHarga = 0.0;
     private Integer totalBarang = 0;
-    private Integer jumlahItem = 0;
     private boolean notified = false;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -114,14 +113,6 @@ public class Order {
 
     public void setTotalBarang(Integer totalBarang) {
         this.totalBarang = totalBarang;
-    }
-
-    public Integer getJumlahItem() {
-        return jumlahItem;
-    }
-
-    public void setJumlahItem(Integer jumlahItem) {
-        this.jumlahItem = jumlahItem;
     }
 
     public boolean isNotified() {

@@ -16,8 +16,10 @@
 </head>
 
 <body>
+  <!-- Auto-navigate to users page when there's a user flash message -->
   <input type="hidden" id="flashPageTarget"
     th:value="${userError != null or userSuccess != null} ? 'users' : ''" />
+  <!-- Embed JSON data safely via script tag with th:utext (unescaped server data) -->
   <script id="serverData" type="application/json"
     th:attr="data-stock=${stockDataJson}, data-popular=${popularProductsJson}, data-chart=${monthlyChartJson}"></script>
 

@@ -41,6 +41,7 @@ public class CheckoutController {
     @ResponseBody
     public ResponseEntity<?> submitCheckout(@RequestBody CheckoutRequest request, Authentication auth) {
         try {
+            // Validasi & kurangi stok
             double totalHarga = 0.0;
             int totalBarang = 0;
             for (CheckoutRequest.Item item : request.getItems()) {
@@ -52,6 +53,7 @@ public class CheckoutController {
                 }
             }
 
+            // SIMPAN ORDER BARU
             Order order = new Order();
             order.setNamaUser(request.getFullName());
             order.setEmailUser(request.getEmail());
@@ -60,14 +62,15 @@ public class CheckoutController {
             order.setViaPembayaran(request.getPaymentMethod());
             order.setTotalHarga(totalHarga);
             order.setTotalBarang(totalBarang);
-            order.setJumlahItem(totalBarang);
 
+            // Link ke user jika login
             if (auth != null) {
                 userRepository.findByUsername(auth.getName())
                         .ifPresent(order::setUser);
             }
 
             orderRepository.save(order);
+            // ← END SIMPAN ORDER
 
             return ResponseEntity.ok(Map.of("success", true, "message", "Checkout berhasil!"));
         } catch (IllegalArgumentException e) {
